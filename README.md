@@ -79,3 +79,36 @@ prisma/              schema.prisma（本番DB用）
 ---
 
 設計書の全文は [`SPEC.md`](SPEC.md) を参照してください（元 .docx から抽出）。
+
+---
+
+## コラム記事（SEO）の追加方法
+
+コラムは **ファイルベース**で管理しています。記事はサーバー側で静的生成されるため、検索エンジンに正しくインデックスされます（メタ情報・OGP・JSON-LD・sitemap・robots すべて自動）。
+
+### 記事を1本追加する手順
+
+1. `content/blog/` に Markdown ファイルを作成（ファイル名がURLになる）
+   - 例: `content/blog/my-article.md` → 公開URL `/blog/my-article`
+2. 先頭に以下の **frontmatter** を書く:
+
+   ```markdown
+   ---
+   title: "記事のタイトル（検索結果に出る）"
+   description: "120文字程度の説明（meta description / SNS共有文に使用）"
+   date: 2026-06-01
+   category: Power Platform入門
+   tags: [PowerApps, 業務改善]
+   author: EST編集部
+   coverColor: "#1a56a0"   # サムネイルの色（任意）
+   draft: false            # true にすると非公開
+   ---
+
+   ここから本文を Markdown で書きます。## で見出し、表やリストも使えます。
+   ```
+3. `git add` → `git commit` → `git push` すると、Vercel が自動で再デプロイし記事が公開されます。
+
+> ローカルで確認: `npm run dev` → http://localhost:3000/blog
+> sitemap・OGPに本番URLを反映するには、Vercel の環境変数 `NEXT_PUBLIC_SITE_URL` に公開URLを設定してください。
+
+将来「ブラウザの管理画面から記事を書きたい」場合は、記事の保存先をファイルから CMS/DB に差し替えます（画面はそのまま流用可）。
