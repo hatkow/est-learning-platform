@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-noto: 'Noto Sans JP', system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: #0f172a;
+  background: #ffffff;
+}
+
+/* スクロールバー（横スクロールカード用） */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-est-600 focus-visible:ring-offset-2 disabled:opacity-60;
+  }
+  .btn-primary {
+    @apply btn bg-est-600 text-white hover:bg-est-700;
+  }
+  .btn-outline {
+    @apply btn border border-est-600 text-est-700 hover:bg-est-50;
+  }
+  .btn-ghost {
+    @apply btn text-slate-700 hover:bg-slate-100;
+  }
+  .btn-lg {
+    @apply px-7 py-3 text-base;
+  }
+  .card {
+    @apply rounded-xl border border-slate-200 bg-white;
+  }
+  .input {
+    @apply w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm outline-none transition focus:border-est-600 focus:ring-2 focus:ring-est-100;
+  }
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold;
+  }
+}

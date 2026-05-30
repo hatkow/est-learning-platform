@@ -1,0 +1,155 @@
+// 設計書 4. データベース設計 に基づく Prisma スキーマ
+// 本デモアプリはDBを使わずモックデータで動作しますが、
+// 本番移行時はこのスキーマで PostgreSQL に接続します。
+// 反映例: npx prisma migrate dev
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+// ===== NextAuth 用 =====
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ===== アプリケーション =====
+model User {
+  id            String       @id @default(cuid())
+  email         String       @unique
+  name          String?
+  image         String?
+  role          Role         @default(USER)
+  emailVerified DateTime?
+  createdAt     DateTime     @default(now())
+  accounts      Account[]
+  sessions      Session[]
+  enrollments   Enrollment[]
+  progress      Progress[]
+  reviews       Review[]
+  orders        Order[]
+}
+
+model Category {
+  id      String   @id @default(cuid())
+  name    String
+  slug    String   @unique
+  courses Course[]
+}
+
+model Course {
+  id           String       @id @default(cuid())
+  title        String
+  slug         String       @unique
+  description  String       @db.Text
+  thumbnail    String?
+  price        Int          @default(0) // 円。0 = 無料
+  isPublished  Boolean      @default(false)
+  categoryId   String
+  category     Category     @relation(fields: [categoryId], references: [id])
+  lessons      Lesson[]
+  enrollments  Enrollment[]
+  reviews      Review[]
+  orders       Order[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model Lesson {
+  id          String     @id @default(cuid())
+  title       String
+  description String?    @db.Text
+  videoUrl    String
+  duration    Int? // 秒
+  order       Int
+  isFree      Boolean    @default(false)
+  courseId    String
+  course      Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  progress    Progress[]
+}
+
+model Enrollment {
+  id         String   @id @default(cuid())
+  userId     String
+  courseId   String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  enrolledAt DateTime @default(now())
+
+  @@unique([userId, courseId])
+}
+
+model Progress {
+  id          String    @id @default(cuid())
+  userId      String
+  lessonId    String
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  rating    Int // 1-5
+  comment   String   @db.Text
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, courseId])
+}
+
+model Order {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  amount    Int
+  status    String   @default("paid")
+  user      User     @relation(fields: [userId], references: [id])
+  course    Course   @relation(fields: [courseId], references: [id])
+  createdAt DateTime @default(now())
+}
