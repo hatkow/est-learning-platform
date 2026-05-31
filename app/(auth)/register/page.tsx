@@ -62,7 +62,7 @@ export default function RegisterPage() {
         </label>
         <label className="flex items-start gap-2 text-sm text-slate-600">
           <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} className="mt-1" />
-          <span><a href="#" className="font-bold text-est-600 hover:underline">利用規約</a> および <a href="#" className="font-bold text-est-600 hover:underline">プライバシーポリシー</a> に同意します</span>
+          <span><Link href="/terms" className="font-bold text-est-600 hover:underline">利用規約</Link> および <Link href="/privacy" className="font-bold text-est-600 hover:underline">プライバシーポリシー</Link> に同意します</span>
         </label>
         <button type="submit" disabled={loading} className="btn-primary w-full">{loading ? '登録中...' : '無料で登録する'}</button>
       </form>
