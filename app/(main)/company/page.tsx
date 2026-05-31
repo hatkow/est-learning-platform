@@ -29,7 +29,7 @@ const info: [string, React.ReactNode][] = [
 export default function CompanyPage() {
   return (
     <>
-      <PageHero eyebrow="COMPANY" title="運営会社" description="EST Learning Platform を運営する会社の概要です。" />
+      <PageHero eyebrow="COMPANY" title="運営会社" description="市民開発スクールを運営する会社の概要です。" />
 
       <div className="container-x py-12">
         <div className="mx-auto max-w-3xl">

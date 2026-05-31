@@ -4,7 +4,7 @@ import PageHero from '@/components/layout/PageHero'
 export const metadata: Metadata = {
   title: '利用規約',
   description:
-    'EST Learning Platform の利用規約です。本サービスのご利用にあたっての条件を定めています。',
+    '市民開発スクールの利用規約です。本サービスのご利用にあたっての条件を定めています。',
   alternates: { canonical: '/terms' },
 }
 
@@ -17,7 +17,7 @@ export default function TermsPage() {
         <div className="prose prose-slate mx-auto max-w-3xl prose-headings:font-bold prose-h2:mt-10 prose-h2:border-l-4 prose-h2:border-est-600 prose-h2:pl-3">
           <p className="lead">
             この利用規約（以下「本規約」といいます）は、イースト株式会社（以下「当社」といいます）が提供する
-            動画学習サービス「EST Learning Platform」（以下「本サービス」といいます）の利用条件を定めるものです。
+            動画学習サービス「市民開発スクール」（以下「本サービス」といいます）の利用条件を定めるものです。
             利用者の皆さま（以下「ユーザー」といいます）は、本規約に同意のうえ本サービスをご利用ください。
           </p>
 

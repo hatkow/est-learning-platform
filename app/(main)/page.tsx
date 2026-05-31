@@ -42,7 +42,7 @@ export default function HomePage() {
               ノーコードの「できる」を、<br />動画で最短ルートに。
             </h1>
             <p className="mt-5 max-w-lg text-base text-est-50/90">
-              PowerApps・Power Automate・Power BI の操作を、実際の画面で学べる動画学習プラットフォーム。
+              PowerApps・Power Automate・Power BI の操作を、実際の画面で学べる市民開発スクール。
               業務改善の第一歩を、今日から始めましょう。
             </p>
             <div className="mt-8 flex flex-wrap gap-3">

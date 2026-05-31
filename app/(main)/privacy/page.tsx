@@ -4,7 +4,7 @@ import PageHero from '@/components/layout/PageHero'
 export const metadata: Metadata = {
   title: 'プライバシーポリシー',
   description:
-    'EST Learning Platform における個人情報の取り扱いについて定めたプライバシーポリシーです。',
+    '市民開発スクールにおける個人情報の取り扱いについて定めたプライバシーポリシーです。',
   alternates: { canonical: '/privacy' },
 }
 
@@ -20,7 +20,7 @@ export default function PrivacyPage() {
       <div className="container-x py-12">
         <div className="prose prose-slate mx-auto max-w-3xl prose-headings:font-bold prose-h2:mt-10 prose-h2:border-l-4 prose-h2:border-est-600 prose-h2:pl-3">
           <p className="lead">
-            イースト株式会社（以下「当社」といいます）は、当社が提供する「EST Learning Platform」
+            イースト株式会社（以下「当社」といいます）は、当社が提供する「市民開発スクール」
             （以下「本サービス」といいます）におけるお客様の個人情報を、以下の方針に基づき適切に取り扱います。
           </p>
 
