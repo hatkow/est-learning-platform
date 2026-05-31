@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'お問い合わせ',
   description:
-    'EST Learning Platform に関するご質問・ご相談はこちらから。コース内容・料金・法人導入などお気軽にお問い合わせください。',
+    '市民開発スクールに関するご質問・ご相談はこちらから。コース内容・料金・法人導入などお気軽にお問い合わせください。',
   alternates: { canonical: '/contact' },
 }
 

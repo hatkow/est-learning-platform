@@ -37,7 +37,7 @@ function LoginInner() {
 
   return (
     <div>
-      <Link href="/" className="mb-8 inline-block text-lg font-extrabold text-est-700 lg:hidden">EST Learning</Link>
+      <Link href="/" className="mb-8 inline-block text-lg font-extrabold text-est-700 lg:hidden">市民開発スクール</Link>
       <h1 className="text-2xl font-black">ログイン</h1>
       <p className="mt-1 text-sm text-slate-500">アカウントにログインして学習を続けましょう。</p>
 

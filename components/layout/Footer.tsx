@@ -10,10 +10,10 @@ export default function Footer() {
             <span className="grid h-9 w-9 place-items-center rounded-lg bg-est-600 text-white">
               <GraduationCap size={20} />
             </span>
-            <span className="text-base font-extrabold text-est-700">EST Learning</span>
+            <span className="text-base font-extrabold text-est-700">市民開発スクール</span>
           </div>
           <p className="mt-3 text-sm text-slate-600">
-            イースト株式会社が提供する、Power Platform 内製化のための動画学習プラットフォーム。
+            イースト株式会社が運営する、Power Platform 内製化（市民開発）のための動画学習スクール。
           </p>
         </div>
 

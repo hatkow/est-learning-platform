@@ -13,15 +13,15 @@ const noto = Noto_Sans_JP({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'EST Learning Platform | イースト株式会社 DX推進動画学習',
-    template: '%s | EST Learning Platform',
+    default: '市民開発スクール | イースト株式会社 DX推進動画学習',
+    template: '%s | 市民開発スクール',
   },
   description:
-    'イースト株式会社が提供する Power Platform（PowerApps / Power Automate / Power BI）の動画学習プラットフォーム。ノーコードアプリの操作を動画で習得できます。',
+    'イースト株式会社が運営する市民開発スクール。Power Platform（PowerApps / Power Automate / Power BI）の操作を動画で学び、ノーコードでの内製化（市民開発）を支援します。',
   openGraph: {
     type: 'website',
     locale: 'ja_JP',
-    siteName: 'EST Learning Platform',
+    siteName: '市民開発スクール',
   },
 }
 

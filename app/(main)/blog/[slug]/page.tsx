@@ -54,7 +54,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     author: { '@type': 'Person', name: post.author },
     publisher: {
       '@type': 'Organization',
-      name: 'イースト株式会社 EST Learning Platform',
+      name: 'イースト株式会社 市民開発スクール',
     },
     mainEntityOfPage: { '@type': 'WebPage', '@id': `${siteUrl}/blog/${post.slug}` },
     keywords: post.tags.join(', '),

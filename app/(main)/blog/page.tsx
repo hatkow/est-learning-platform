@@ -4,7 +4,7 @@ import { getAllPosts, getCategories } from '@/lib/blog'
 import BlogCard from '@/components/blog/BlogCard'
 
 export const metadata: Metadata = {
-  title: 'コラム｜Power Platform・DX内製化の learning ガイド',
+  title: 'コラム｜Power Platform・DX内製化の学習ガイド',
   description:
     'PowerApps・Power Automate・Power BI の使い方やDX内製化のノウハウを、初心者にもわかりやすく解説するコラム記事の一覧です。',
   alternates: { canonical: '/blog' },

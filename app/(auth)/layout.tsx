@@ -9,7 +9,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="absolute inset-0 bg-[radial-gradient(600px_400px_at_80%_10%,rgba(255,255,255,0.15),transparent)]" />
         <Link href="/" className="relative flex items-center gap-2">
           <span className="grid h-9 w-9 place-items-center rounded-lg bg-white/15"><GraduationCap size={20} /></span>
-          <span className="text-lg font-extrabold">EST Learning</span>
+          <span className="text-lg font-extrabold">市民開発スクール</span>
         </Link>
         <div className="relative">
           <h2 className="text-3xl font-black leading-snug">
@@ -17,7 +17,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           </h2>
           <p className="mt-4 max-w-md text-est-50/90">
             PowerApps・Power Automate・Power BI を、実際の操作画面で学べる
-            イースト株式会社の動画学習プラットフォーム。
+            イースト株式会社の市民開発スクール。
           </p>
           <ul className="mt-6 space-y-2 text-sm text-est-50">
             <li>✓ 無料コースで今すぐスタート</li>

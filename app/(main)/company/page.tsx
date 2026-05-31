@@ -6,7 +6,7 @@ import PageHero from '@/components/layout/PageHero'
 export const metadata: Metadata = {
   title: '運営会社',
   description:
-    'EST Learning Platform を運営するイースト株式会社の会社概要です。事業内容・所在地などをご案内します。',
+    '市民開発スクールを運営するイースト株式会社の会社概要です。事業内容・所在地などをご案内します。',
   alternates: { canonical: '/company' },
 }
 
@@ -20,7 +20,7 @@ const info: [string, React.ReactNode][] = [
     '事業内容',
     <>
       Microsoft Power Platform（PowerApps / Power Automate / Power BI）の
-      導入・開発支援、内製化支援、動画学習プラットフォーム「EST Learning Platform」の運営
+      導入・開発支援、内製化支援、動画学習サービス「市民開発スクール」の運営
     </>,
   ],
   ['お問い合わせ', <Link href="/contact" className="font-bold text-est-600 hover:underline">お問い合わせフォーム</Link>],
