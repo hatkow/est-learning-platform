@@ -40,10 +40,10 @@ export default function Footer() {
         <div>
           <h4 className="mb-3 text-sm font-bold text-slate-900">会社情報</h4>
           <ul className="space-y-2 text-sm text-slate-600">
-            <li><a href="#" className="hover:text-est-700">運営会社</a></li>
-            <li><a href="#" className="hover:text-est-700">利用規約</a></li>
-            <li><a href="#" className="hover:text-est-700">プライバシーポリシー</a></li>
-            <li><a href="#" className="hover:text-est-700">お問い合わせ</a></li>
+            <li><Link href="/company" className="hover:text-est-700">運営会社</Link></li>
+            <li><Link href="/terms" className="hover:text-est-700">利用規約</Link></li>
+            <li><Link href="/privacy" className="hover:text-est-700">プライバシーポリシー</Link></li>
+            <li><Link href="/contact" className="hover:text-est-700">お問い合わせ</Link></li>
           </ul>
         </div>
       </div>
