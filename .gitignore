@@ -13,3 +13,6 @@ next-env.d.ts
 
 # Claude scheduled-task lock (local only)
 .claude/scheduled_tasks.lock
+
+# 画像素材の元フォルダ（public/images に配置済みのものを使用）
+/images/

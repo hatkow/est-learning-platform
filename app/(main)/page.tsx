@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRef, useState } from 'react'
 import {
   ArrowRight, ChevronLeft, ChevronRight, Sparkles, MonitorPlay,
@@ -65,20 +66,16 @@ export default function HomePage() {
           </div>
 
           {/* Visual */}
-          <div className="relative hidden md:block">
-            <div className="absolute right-0 top-4 w-72 rotate-3 rounded-2xl bg-white p-4 text-slate-800 shadow-2xl">
-              <div className="aspect-video rounded-lg bg-gradient-to-br from-est-600 to-est-900" />
-              <p className="mt-3 text-sm font-bold">PowerApps はじめの一歩</p>
-              <div className="mt-2 h-2 rounded-full bg-slate-100">
-                <div className="h-2 w-2/3 rounded-full bg-est-600" />
-              </div>
-            </div>
-            <div className="absolute bottom-2 left-2 w-64 -rotate-2 rounded-2xl bg-white p-4 text-slate-800 shadow-2xl">
-              <div className="aspect-video rounded-lg bg-gradient-to-br from-amber-500 to-amber-800" />
-              <p className="mt-3 text-sm font-bold">Power BI 入門</p>
-              <div className="mt-2 h-2 rounded-full bg-slate-100">
-                <div className="h-2 w-1/3 rounded-full bg-amber-500" />
-              </div>
+          <div className="relative hidden items-center justify-center md:flex">
+            <div className="overflow-hidden rounded-2xl bg-white/95 shadow-2xl">
+              <Image
+                src="/images/hero-home.png"
+                alt="ノーコードで業務アプリを組み立てるイメージ"
+                width={720}
+                height={405}
+                priority
+                className="h-auto w-full"
+              />
             </div>
           </div>
         </div>
@@ -179,15 +176,26 @@ export default function HomePage() {
           </div>
 
           <div className="grid gap-4">
-            <div className="rounded-2xl bg-white/10 p-6 backdrop-blur">
-              <span className="grid h-11 w-11 place-items-center rounded-lg bg-white/15"><Users size={22} /></span>
-              <h3 className="mt-3 font-bold">企業向け個別研修</h3>
-              <p className="mt-1 text-sm text-est-50/90">複数名へまとめて。習熟度・目的に合わせ、オンライン／訪問で実施します。</p>
+            <div className="overflow-hidden rounded-2xl bg-white shadow-xl">
+              <Image
+                src="/images/hero-business.png"
+                alt="チームでデータを分析し内製化を進めるイメージ"
+                width={720}
+                height={405}
+                className="h-auto w-full"
+              />
             </div>
-            <div className="rounded-2xl bg-white/10 p-6 backdrop-blur">
-              <span className="grid h-11 w-11 place-items-center rounded-lg bg-white/15"><PencilRuler size={22} /></span>
-              <h3 className="mt-3 font-bold">オリジナルカリキュラム制作</h3>
-              <p className="mt-1 text-sm text-est-50/90">自社の業務に合わせた教材をゼロから設計。継続的な社内教育の土台に。</p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="rounded-2xl bg-white/10 p-5 backdrop-blur">
+                <span className="grid h-10 w-10 place-items-center rounded-lg bg-white/15"><Users size={20} /></span>
+                <h3 className="mt-3 text-sm font-bold">企業向け個別研修</h3>
+                <p className="mt-1 text-xs text-est-50/90">複数名へまとめて。オンライン／訪問で実施。</p>
+              </div>
+              <div className="rounded-2xl bg-white/10 p-5 backdrop-blur">
+                <span className="grid h-10 w-10 place-items-center rounded-lg bg-white/15"><PencilRuler size={20} /></span>
+                <h3 className="mt-3 text-sm font-bold">カリキュラム制作</h3>
+                <p className="mt-1 text-xs text-est-50/90">自社業務に合わせた教材をゼロから設計。</p>
+              </div>
             </div>
           </div>
         </div>

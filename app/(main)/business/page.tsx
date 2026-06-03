@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   ArrowRight, Building2, CheckCircle2, ClipboardList, GraduationCap,
   Headset, Layers, PencilRuler, Users, Sparkles, MessageSquareQuote,
@@ -111,26 +112,41 @@ export default function BusinessPage() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-est-700 text-white">
         <div className="absolute inset-0 bg-[radial-gradient(700px_400px_at_85%_-10%,rgba(255,255,255,0.18),transparent),radial-gradient(600px_400px_at_-5%_110%,rgba(43,98,168,0.6),transparent)]" />
-        <div className="container-x relative py-16 md:py-24">
-          <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-sm font-medium">
-            <Sparkles size={15} /> 法人向け PowerApps・Power Platform 研修
-          </span>
-          <h1 className="mt-5 max-w-3xl text-4xl font-black leading-tight md:text-5xl">
-            貴社の業務に合わせた、<br />PowerApps 研修を。
-          </h1>
-          <p className="mt-5 max-w-2xl text-lg text-est-50/90">
-            複数の社員へのまとめての研修から、自社業務に合わせたオリジナルカリキュラムの制作まで。
-            Power Platform 導入支援のプロが、貴社の内製化を伴走支援します。
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/business/contact" className="btn btn-lg bg-white text-est-700 hover:bg-est-50">
-              無料で相談する <ArrowRight size={18} />
-            </Link>
-            <a href="#service" className="btn btn-lg border border-white/60 text-white hover:bg-white/10">
-              サービス内容を見る
-            </a>
+        <div className="container-x relative grid gap-10 py-16 md:grid-cols-2 md:items-center md:py-24">
+          <div>
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-sm font-medium">
+              <Sparkles size={15} /> 法人向け PowerApps・Power Platform 研修
+            </span>
+            <h1 className="mt-5 text-4xl font-black leading-tight md:text-5xl">
+              貴社の業務に合わせた、<br />PowerApps 研修を。
+            </h1>
+            <p className="mt-5 max-w-xl text-lg text-est-50/90">
+              複数の社員へのまとめての研修から、自社業務に合わせたオリジナルカリキュラムの制作まで。
+              Power Platform 導入支援のプロが、貴社の内製化を伴走支援します。
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/business/contact" className="btn btn-lg bg-white text-est-700 hover:bg-est-50">
+                無料で相談する <ArrowRight size={18} />
+              </Link>
+              <a href="#service" className="btn btn-lg border border-white/60 text-white hover:bg-white/10">
+                サービス内容を見る
+              </a>
+            </div>
+            <p className="mt-6 text-sm text-est-100">研修・カリキュラム制作とも <strong className="text-white">20,000円／時間〜</strong>（内容によりお見積り）</p>
           </div>
-          <p className="mt-6 text-sm text-est-100">研修・カリキュラム制作とも <strong className="text-white">20,000円／時間〜</strong>（内容によりお見積り）</p>
+
+          <div className="hidden md:block">
+            <div className="overflow-hidden rounded-2xl bg-white shadow-2xl">
+              <Image
+                src="/images/hero-business.png"
+                alt="チームで業務改善・内製化を進めるイメージ"
+                width={720}
+                height={405}
+                priority
+                className="h-auto w-full"
+              />
+            </div>
+          </div>
         </div>
       </section>
 
