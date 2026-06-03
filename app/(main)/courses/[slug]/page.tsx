@@ -11,6 +11,7 @@ import {
 } from '@/lib/data'
 import { useStore } from '@/lib/store'
 import StarRating from '@/components/course/StarRating'
+import BusinessBanner from '@/components/business/BusinessBanner'
 
 export default function CourseDetailPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -156,6 +157,9 @@ export default function CourseDetailPage() {
               </div>
             )}
           </section>
+
+          {/* 法人向け誘導 */}
+          <BusinessBanner />
         </div>
 
         {/* Sidebar */}

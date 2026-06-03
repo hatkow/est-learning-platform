@@ -5,6 +5,7 @@ import { ArrowLeft, CalendarDays, ChevronRight, Clock, Tag, User } from 'lucide-
 import { getPostBySlug, getPostSlugs, getRelatedPosts } from '@/lib/blog'
 import { siteUrl } from '@/lib/site'
 import BlogCard from '@/components/blog/BlogCard'
+import BusinessBanner from '@/components/business/BusinessBanner'
 
 // 全記事を静的生成（SSG）
 export function generateStaticParams() {
@@ -101,6 +102,11 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
               ))}
             </div>
           )}
+
+          {/* 法人向け誘導 */}
+          <div className="mt-10">
+            <BusinessBanner />
+          </div>
 
           <div className="mt-8">
             <Link href="/blog" className="inline-flex items-center gap-1.5 text-sm font-bold text-est-600 hover:underline">

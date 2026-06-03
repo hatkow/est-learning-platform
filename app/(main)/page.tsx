@@ -5,6 +5,7 @@ import { useRef, useState } from 'react'
 import {
   ArrowRight, ChevronLeft, ChevronRight, Sparkles, MonitorPlay,
   TrendingUp, ShieldCheck, Layers, BadgeJapaneseYen,
+  Users, PencilRuler, Building2,
 } from 'lucide-react'
 import { categories, courses } from '@/lib/data'
 import CourseCard from '@/components/course/CourseCard'
@@ -148,6 +149,47 @@ export default function HomePage() {
           {filtered.map((c) => (
             <CourseCard key={c.id} course={c} />
           ))}
+        </div>
+      </section>
+
+      {/* For Business */}
+      <section className="bg-est-700 text-white">
+        <div className="container-x grid gap-10 py-16 md:grid-cols-2 md:items-center">
+          <div>
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-sm font-bold">
+              <Building2 size={15} /> 法人向けサービス
+            </span>
+            <h2 className="mt-4 text-3xl font-black leading-tight">
+              社員の内製化を、<br />まとめて加速しませんか？
+            </h2>
+            <p className="mt-4 max-w-lg text-est-50/90">
+              個人での学習だけでなく、企業様向けに <strong className="text-white">PowerApps のカスタム研修</strong> を提供しています。
+              複数の社員へのまとめての研修から、自社業務に合わせたオリジナルカリキュラムの制作まで。
+              Power Platform 導入支援のプロが、貴社の内製化を伴走支援します。
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link href="/business" className="btn btn-lg bg-white text-est-700 hover:bg-est-50">
+                法人向け研修を見る <ArrowRight size={18} />
+              </Link>
+              <Link href="/business/contact" className="btn btn-lg border border-white/60 text-white hover:bg-white/10">
+                無料で相談する
+              </Link>
+            </div>
+            <p className="mt-5 text-sm text-est-100">研修・カリキュラム制作とも <strong className="text-white">20,000円／時間〜</strong></p>
+          </div>
+
+          <div className="grid gap-4">
+            <div className="rounded-2xl bg-white/10 p-6 backdrop-blur">
+              <span className="grid h-11 w-11 place-items-center rounded-lg bg-white/15"><Users size={22} /></span>
+              <h3 className="mt-3 font-bold">企業向け個別研修</h3>
+              <p className="mt-1 text-sm text-est-50/90">複数名へまとめて。習熟度・目的に合わせ、オンライン／訪問で実施します。</p>
+            </div>
+            <div className="rounded-2xl bg-white/10 p-6 backdrop-blur">
+              <span className="grid h-11 w-11 place-items-center rounded-lg bg-white/15"><PencilRuler size={22} /></span>
+              <h3 className="mt-3 font-bold">オリジナルカリキュラム制作</h3>
+              <p className="mt-1 text-sm text-est-50/90">自社の業務に合わせた教材をゼロから設計。継続的な社内教育の土台に。</p>
+            </div>
+          </div>
         </div>
       </section>
 
