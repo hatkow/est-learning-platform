@@ -22,6 +22,7 @@ export default function Footer() {
           <ul className="space-y-2 text-sm text-slate-600">
             <li><Link href="/courses" className="hover:text-est-700">コース一覧</Link></li>
             <li><Link href="/blog" className="hover:text-est-700">コラム</Link></li>
+            <li><Link href="/business" className="font-bold text-est-700 hover:underline">法人向け研修</Link></li>
             <li><Link href="/courses?cat=powerapps" className="hover:text-est-700">PowerApps</Link></li>
             <li><Link href="/courses?cat=power-automate" className="hover:text-est-700">Power Automate</Link></li>
             <li><Link href="/courses?cat=power-bi" className="hover:text-est-700">Power BI</Link></li>

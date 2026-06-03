@@ -1,0 +1,194 @@
+'use client'
+
+import Link from 'next/link'
+import { useState } from 'react'
+import { Building2, CheckCircle2, Clock, Mail, Send } from 'lucide-react'
+import PageHero from '@/components/layout/PageHero'
+
+const serviceTypes = [
+  '企業向け個別研修',
+  'オリジナルカリキュラム制作',
+  '両方・どちらか相談したい',
+  'まだ決まっていない／まず相談',
+]
+const products = ['PowerApps', 'Power Automate', 'Power BI', 'Power Platform 全般', '未定・相談したい']
+const headcounts = ['1〜5名', '6〜10名', '11〜30名', '31名以上', '未定']
+const timings = ['できるだけ早く', '1〜3か月以内', '3〜6か月以内', '時期は未定']
+
+export default function BusinessContactPage() {
+  const [form, setForm] = useState({
+    company: '',
+    name: '',
+    email: '',
+    phone: '',
+    serviceType: serviceTypes[0],
+    product: products[0],
+    headcount: headcounts[0],
+    timing: timings[0],
+    message: '',
+    agree: false,
+  })
+  const [error, setError] = useState('')
+  const [sending, setSending] = useState(false)
+  const [done, setDone] = useState(false)
+
+  const update = (k: keyof typeof form, v: string | boolean) => setForm((f) => ({ ...f, [k]: v }))
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    if (!form.company || !form.name || !form.email) {
+      setError('会社名・ご担当者名・メールアドレスは必須です。')
+      return
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      setError('メールアドレスの形式が正しくありません。')
+      return
+    }
+    if (!form.agree) {
+      setError('プライバシーポリシーへの同意が必要です。')
+      return
+    }
+    setSending(true)
+    // 本番では POST /api/business-contact → Resend 等で営業担当へメール送信
+    setTimeout(() => {
+      setSending(false)
+      setDone(true)
+    }, 900)
+  }
+
+  if (done) {
+    return (
+      <>
+        <PageHero eyebrow="BUSINESS" title="法人向け お問い合わせ" />
+        <div className="container-x grid place-items-center py-20">
+          <div className="card max-w-md p-10 text-center">
+            <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-emerald-100 text-emerald-600">
+              <CheckCircle2 size={36} />
+            </span>
+            <h2 className="mt-5 text-2xl font-black">送信が完了しました</h2>
+            <p className="mt-2 text-sm text-slate-600">
+              お問い合わせありがとうございます。担当者より、通常2〜3営業日以内にご連絡いたします。
+              内容を確認のうえ、最適なプランとお見積りをご提案いたします。
+            </p>
+            <div className="mt-7 flex flex-col gap-2">
+              <Link href="/business" className="btn-primary">法人向けページへ戻る</Link>
+              <Link href="/" className="btn-outline">トップへ</Link>
+            </div>
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <PageHero
+        eyebrow="BUSINESS"
+        title="法人向け お問い合わせ・無料相談"
+        description="研修・カリキュラム制作のご相談、お見積りはこちらから。まずはお気軽にどうぞ。"
+      />
+
+      <div className="container-x grid gap-10 py-12 lg:grid-cols-[1fr_320px]">
+        {/* Form */}
+        <div className="mx-auto w-full max-w-2xl lg:mx-0">
+          {error && <p className="mb-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+
+          <form onSubmit={submit} className="space-y-5">
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-bold text-slate-700">会社名 <span className="text-red-500">*</span></span>
+              <input value={form.company} onChange={(e) => update('company', e.target.value)} className="input" placeholder="株式会社サンプル" />
+            </label>
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-bold text-slate-700">ご担当者名 <span className="text-red-500">*</span></span>
+                <input value={form.name} onChange={(e) => update('name', e.target.value)} className="input" placeholder="山田 太郎" />
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-bold text-slate-700">メールアドレス <span className="text-red-500">*</span></span>
+                <input type="email" value={form.email} onChange={(e) => update('email', e.target.value)} className="input" placeholder="you@example.com" />
+              </label>
+            </div>
+
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-bold text-slate-700">電話番号（任意）</span>
+              <input value={form.phone} onChange={(e) => update('phone', e.target.value)} className="input" placeholder="03-0000-0000" />
+            </label>
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-bold text-slate-700">ご希望のサービス</span>
+                <select value={form.serviceType} onChange={(e) => update('serviceType', e.target.value)} className="input">
+                  {serviceTypes.map((t) => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-bold text-slate-700">対象の製品</span>
+                <select value={form.product} onChange={(e) => update('product', e.target.value)} className="input">
+                  {products.map((t) => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </label>
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-bold text-slate-700">対象人数</span>
+                <select value={form.headcount} onChange={(e) => update('headcount', e.target.value)} className="input">
+                  {headcounts.map((t) => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-bold text-slate-700">ご希望時期</span>
+                <select value={form.timing} onChange={(e) => update('timing', e.target.value)} className="input">
+                  {timings.map((t) => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </label>
+            </div>
+
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-bold text-slate-700">ご相談内容（任意）</span>
+              <textarea value={form.message} onChange={(e) => update('message', e.target.value)} rows={5} className="input" placeholder="現状の課題、ご要望、ご予算感などをご記入ください。" />
+            </label>
+
+            <label className="flex items-start gap-2 text-sm text-slate-600">
+              <input type="checkbox" checked={form.agree} onChange={(e) => update('agree', e.target.checked)} className="mt-1" />
+              <span><Link href="/privacy" className="font-bold text-est-600 hover:underline">プライバシーポリシー</Link>に同意します</span>
+            </label>
+
+            <button type="submit" disabled={sending} className="btn-primary btn-lg w-full sm:w-auto">
+              {sending ? '送信中...' : <><Send size={16} /> 無料相談を申し込む</>}
+            </button>
+          </form>
+        </div>
+
+        {/* Side info */}
+        <aside className="space-y-4">
+          <div className="card bg-est-50 p-6">
+            <span className="grid h-10 w-10 place-items-center rounded-lg bg-est-600 text-white"><Building2 size={20} /></span>
+            <h3 className="mt-3 font-bold">料金の目安</h3>
+            <p className="mt-2 text-sm text-slate-700">研修・カリキュラム制作とも</p>
+            <p className="text-2xl font-black text-est-700">20,000円／時間〜</p>
+            <p className="mt-1 text-xs text-slate-500">内容に応じて個別にお見積りします。</p>
+          </div>
+          <div className="card p-6">
+            <span className="grid h-10 w-10 place-items-center rounded-lg bg-est-50 text-est-600"><Mail size={20} /></span>
+            <h3 className="mt-3 font-bold">メールでのご相談</h3>
+            <p className="mt-1 text-sm text-slate-600">support@est-learning.example</p>
+          </div>
+          <div className="card p-6">
+            <span className="grid h-10 w-10 place-items-center rounded-lg bg-est-50 text-est-600"><Clock size={20} /></span>
+            <h3 className="mt-3 font-bold">対応時間</h3>
+            <p className="mt-1 text-sm text-slate-600">平日 10:00〜18:00<br />（土日祝・年末年始を除く）</p>
+            <p className="mt-2 text-xs text-slate-400">通常2〜3営業日以内にご返信します。</p>
+          </div>
+          <div className="card bg-slate-50 p-6">
+            <p className="text-xs text-slate-500">
+              ※ 本フォームはデモです。実際の送信は行われません（本番ではメール基盤 Resend 等に接続します）。
+            </p>
+          </div>
+        </aside>
+      </div>
+    </>
+  )
+}

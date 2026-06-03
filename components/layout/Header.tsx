@@ -65,6 +65,7 @@ export default function Header() {
         <nav className="ml-auto hidden items-center gap-1 md:flex">
           <Link href="/courses" className="btn-ghost">コース一覧</Link>
           <Link href="/blog" className="btn-ghost">コラム</Link>
+          <Link href="/business" className="btn-ghost font-bold text-est-700">法人向け研修</Link>
 
           {mounted && user ? (
             <>
@@ -126,6 +127,7 @@ export default function Header() {
           <div className="flex flex-col gap-1">
             <Link href="/courses" className="btn-ghost justify-start" onClick={() => setMenuOpen(false)}>コース一覧</Link>
             <Link href="/blog" className="btn-ghost justify-start" onClick={() => setMenuOpen(false)}>コラム</Link>
+            <Link href="/business" className="btn-ghost justify-start font-bold text-est-700" onClick={() => setMenuOpen(false)}>法人向け研修</Link>
             {mounted && user ? (
               <>
                 <Link href="/dashboard" className="btn-ghost justify-start" onClick={() => setMenuOpen(false)}>
