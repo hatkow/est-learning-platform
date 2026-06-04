@@ -138,8 +138,8 @@ export default function BusinessPage() {
           <div className="hidden md:block">
             <div className="overflow-hidden rounded-2xl bg-white shadow-2xl">
               <Image
-                src="/images/hero-business.png"
-                alt="チームで業務改善・内製化を進めるイメージ"
+                src="/images/business-hero.png"
+                alt="講師がチームに PowerApps 研修を行うイメージ"
                 width={720}
                 height={405}
                 priority
@@ -175,6 +175,15 @@ export default function BusinessPage() {
             <p className="text-sm font-bold text-est-600">SERVICE</p>
             <h2 className="mt-1 text-2xl font-black md:text-3xl">2つのサービス</h2>
             <p className="mt-3 text-slate-600">単発の研修から、継続的な社内教育の仕組みづくりまで対応します。</p>
+          </div>
+          <div className="mx-auto mt-8 max-w-3xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <Image
+              src="/images/business-service.png"
+              alt="カリキュラムや教材を制作し、受講者へ届けるイメージ"
+              width={1200}
+              height={675}
+              className="h-auto w-full"
+            />
           </div>
           <div className="mt-10 grid gap-6 lg:grid-cols-2">
             {services.map((s) => (
@@ -240,6 +249,15 @@ export default function BusinessPage() {
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-sm font-bold text-est-600">FLOW</p>
             <h2 className="mt-1 text-2xl font-black md:text-3xl">ご依頼の流れ</h2>
+          </div>
+          <div className="mx-auto mt-8 max-w-4xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <Image
+              src="/images/business-flow.png"
+              alt="相談・提案・受講・サポートまでの流れのイメージ"
+              width={1200}
+              height={675}
+              className="h-auto w-full"
+            />
           </div>
           <div className="mt-10 grid gap-6 md:grid-cols-4">
             {flow.map((f, i) => (
