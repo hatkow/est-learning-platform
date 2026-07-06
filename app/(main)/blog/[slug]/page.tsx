@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import { ArrowLeft, CalendarDays, ChevronRight, Clock, Tag, User } from 'lucide-react'
 import { getPostBySlug, getPostSlugs, getRelatedPosts } from '@/lib/blog'
 import { siteUrl } from '@/lib/site'
@@ -8,12 +9,13 @@ import BlogCard from '@/components/blog/BlogCard'
 import BusinessBanner from '@/components/business/BusinessBanner'
 
 // 全記事を静的生成（SSG）
-export function generateStaticParams() {
-  return getPostSlugs().map((slug) => ({ slug }))
+export async function generateStaticParams() {
+  const slugs = await getPostSlugs()
+  return slugs.map((slug) => ({ slug }))
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const post = getPostBySlug(params.slug)
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const post = await getPostBySlug(params.slug)
   if (!post) return {}
   const url = `/blog/${post.slug}`
   return {
@@ -38,11 +40,11 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   }
 }
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = getPostBySlug(params.slug)
+export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+  const post = await getPostBySlug(params.slug)
   if (!post) notFound()
 
-  const related = getRelatedPosts(post.slug)
+  const related = await getRelatedPosts(post.slug)
 
   // 構造化データ（JSON-LD）— Google に記事として正しく認識させる
   const jsonLd = {
@@ -69,8 +71,24 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       />
 
       {/* Hero */}
-      <div className="text-white" style={{ background: `linear-gradient(135deg, ${post.coverColor}, #0b1d39)` }}>
-        <div className="container-x py-12">
+      <div
+        className="relative text-white"
+        style={{ background: `linear-gradient(135deg, ${post.coverColor}, #0b1d39)` }}
+      >
+        {post.coverImage && (
+          <>
+            <Image
+              src={post.coverImage}
+              alt=""
+              fill
+              priority
+              className="object-cover"
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/40" />
+          </>
+        )}
+        <div className="container-x relative py-12">
           <nav className="mb-4 flex items-center gap-1 text-sm text-white/80">
             <Link href="/blog" className="hover:underline">コラム</Link>
             <ChevronRight size={14} />

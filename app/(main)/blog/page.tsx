@@ -11,13 +11,13 @@ export const metadata: Metadata = {
 }
 
 // サーバーコンポーネントで全記事を描画（SEO最適）。カテゴリ絞り込みはクエリで切替。
-export default function BlogIndexPage({
+export default async function BlogIndexPage({
   searchParams,
 }: {
   searchParams: { category?: string }
 }) {
-  const all = getAllPosts()
-  const categories = getCategories()
+  const all = await getAllPosts()
+  const categories = await getCategories()
   const active = searchParams.category
   const posts = active ? all.filter((p) => p.category === active) : all
 

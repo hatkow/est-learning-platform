@@ -3,7 +3,7 @@ import { courses } from '@/lib/data'
 import { getAllPosts } from '@/lib/blog'
 import { siteUrl } from '@/lib/site'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     { url: `${siteUrl}/`, changeFrequency: 'weekly', priority: 1 },
     { url: `${siteUrl}/courses`, changeFrequency: 'weekly', priority: 0.9 },
@@ -28,7 +28,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     }))
 
-  const blogPages: MetadataRoute.Sitemap = getAllPosts().map((p) => ({
+  const posts = await getAllPosts()
+  const blogPages: MetadataRoute.Sitemap = posts.map((p) => ({
     url: `${siteUrl}/blog/${p.slug}`,
     lastModified: p.updated ?? p.date,
     changeFrequency: 'monthly',
