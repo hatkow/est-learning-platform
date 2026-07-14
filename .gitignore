@@ -7,6 +7,7 @@
 npm-debug.log*
 .env*.local
 .env
+*.bak
 .vercel
 *.tsbuildinfo
 next-env.d.ts
@@ -16,3 +17,9 @@ next-env.d.ts
 
 # 画像素材の元フォルダ（public/images に配置済みのものを使用）
 /images/
+
+# 会員登録（リード情報）の仮の保存先。本番は LEADS_WEBHOOK_URL に切り替えるため不要
+/data/
+
+# ビルド時に microCMS から生成される講座キャッシュ（prebuild で再生成される）
+/lib/generated/

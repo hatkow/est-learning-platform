@@ -1,4 +1,6 @@
 import type { Category, Course, Lesson, Review } from './types'
+import { convertCmsCourse, type MicroCMSCourse } from './courseCms'
+import cmsCoursesRaw from './generated/courses.json'
 
 // サンプル動画（パブリックドメイン）。本番では Cloudinary 署名付きURLに差し替え。
 const SAMPLE_VIDEO =
@@ -40,7 +42,11 @@ const review = (userName: string, rating: number, comment: string, d: string): R
   createdAt: d,
 })
 
-export const courses: Course[] = [
+// microCMS から取得した講座（ビルド時に scripts/fetch-courses.mjs が生成）
+const cmsCourses: Course[] = (cmsCoursesRaw as MicroCMSCourse[]).map(convertCmsCourse)
+
+// サンプル講座（microCMS 未設定でも動くよう保持）
+const sampleCourses: Course[] = [
   {
     id: 'c-powerapps-basic',
     title: 'PowerApps はじめの一歩 — ノーコードアプリ開発入門',
@@ -282,6 +288,13 @@ export const courses: Course[] = [
     ],
   },
 ]
+
+// 公開する講座一覧。microCMS の講座があれば先頭に、続いてサンプル講座。
+// スラッグ重複時は microCMS 側を優先。
+export const courses: Course[] = (() => {
+  const cmsSlugs = new Set(cmsCourses.map((c) => c.slug))
+  return [...cmsCourses, ...sampleCourses.filter((c) => !cmsSlugs.has(c.slug))]
+})()
 
 // ===== アクセサ =====
 export const getCourseBySlug = (slug: string) => courses.find((c) => c.slug === slug)
