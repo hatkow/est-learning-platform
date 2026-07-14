@@ -52,10 +52,10 @@ export default async function HomePage() {
           <div className="relative hidden items-center justify-center md:flex">
             <div className="overflow-hidden rounded-2xl bg-white/95 shadow-2xl">
               <Image
-                src="/images/hero-home.png"
-                alt="ノーコードで業務アプリを組み立てるイメージ"
+                src="/images/top-fv.jpeg"
+                alt="AIが同僚として社員と共に働くオフィスのイメージ"
                 width={720}
-                height={405}
+                height={395}
                 priority
                 className="h-auto w-full"
               />
