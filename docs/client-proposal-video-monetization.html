@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>動画コンテンツ マネタイズご提案 | EST Learning Platform</title>
+<style>
+  :root {
+    --est-600: #0b5fff;
+    --est-500: #2f7dff;
+    --ink: #0f172a;
+    --sub: #475569;
+    --line: #e2e8f0;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --good: #059669;
+    --good-bg: #ecfdf5;
+    --bad: #b91c1c;
+    --bad-bg: #fef2f2;
+    --warn: #b45309;
+    --warn-bg: #fffbeb;
+    --accent-bg: #eff6ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.75;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 48px 24px 96px; }
+
+  header.hero {
+    background: linear-gradient(135deg, var(--est-600), #0b1d39);
+    color: #fff;
+    padding: 48px 24px;
+    border-radius: 20px;
+    margin-bottom: 40px;
+  }
+  header.hero p.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-size: 12px;
+    color: #bcd3ff;
+    font-weight: 700;
+    margin: 0 0 10px;
+  }
+  header.hero h1 { font-size: 27px; margin: 0 0 12px; font-weight: 900; }
+  header.hero p.lead { margin: 0; color: #dbe6ff; font-size: 15px; max-width: 62ch; }
+
+  h2.section-title {
+    font-size: 20px;
+    font-weight: 900;
+    margin: 56px 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2.section-title .num {
+    display: inline-grid;
+    place-items: center;
+    width: 28px; height: 28px;
+    border-radius: 999px;
+    background: var(--est-600);
+    color: #fff;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  p.section-desc { color: var(--sub); font-size: 14px; margin: 0 0 20px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+
+  /* Section 1: recommendation banner */
+  .verdict {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: var(--bad-bg);
+    border: 1px solid #fecaca;
+    border-radius: 14px;
+    padding: 20px 22px;
+  }
+  .verdict .icon {
+    flex-shrink: 0;
+    width: 36px; height: 36px;
+    border-radius: 999px;
+    background: var(--bad);
+    color: #fff;
+    display: grid; place-items: center;
+    font-weight: 900;
+    font-size: 18px;
+  }
+  .verdict p.main { margin: 0 0 4px; font-weight: 800; font-size: 15.5px; color: var(--bad); }
+  .verdict p.sub { margin: 0; font-size: 13.5px; color: #7f1d1d; }
+
+  .reason-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-top: 18px;
+  }
+  .reason-card {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px;
+    background: var(--card);
+  }
+  .reason-card .figure { font-size: 22px; font-weight: 900; color: var(--est-600); }
+  .reason-card p { margin: 6px 0 0; font-size: 13px; color: var(--sub); }
+
+  /* Comparison table B vs C */
+  table.compare { width: 100%; border-collapse: collapse; font-size: 13.5px; background: var(--card); border-radius: 14px; overflow: hidden; }
+  table.compare th, table.compare td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  table.compare th { background: #f1f5f9; font-size: 12px; color: var(--sub); }
+  table.compare th.b-col { color: var(--good); }
+  table.compare th.c-col { color: var(--est-600); }
+  table.compare tr:last-child td { border-bottom: none; }
+  table.compare td.label { font-weight: 700; color: var(--sub); font-size: 12px; width: 22%; }
+
+  .plan-header {
+    display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 14.5px;
+  }
+  .plan-header .dot { width: 9px; height: 9px; border-radius: 999px; }
+  .plan-header .dot.b { background: var(--good); }
+  .plan-header .dot.c { background: var(--est-600); }
+
+  /* Idea callout */
+  .idea-card {
+    border: 2px solid var(--est-500);
+    background: var(--accent-bg);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .idea-card p.eyebrow2 { margin: 0 0 6px; font-size: 11px; font-weight: 800; letter-spacing: .05em; color: var(--est-600); text-transform: uppercase; }
+  .idea-card h3 { margin: 0 0 10px; font-size: 17px; }
+  .idea-card p.body { margin: 0; font-size: 14px; color: var(--ink); }
+  .price-strike {
+    display: inline-flex; align-items: baseline; gap: 10px; margin-top: 14px;
+    background: #fff; border-radius: 10px; padding: 10px 16px; border: 1px solid var(--line);
+  }
+  .price-strike .old { text-decoration: line-through; color: #94a3b8; font-size: 15px; }
+  .price-strike .new { font-size: 24px; font-weight: 900; color: var(--est-600); }
+  .price-strike .label { font-size: 12px; color: var(--sub); }
+
+  /* Risk warning */
+  .risk-box {
+    background: var(--warn-bg);
+    border: 1px solid #fde68a;
+    border-radius: 14px;
+    padding: 20px 22px;
+    margin-top: 18px;
+  }
+  .risk-box p.title { margin: 0 0 10px; font-weight: 800; color: var(--warn); font-size: 14.5px; }
+  .risk-box ul { margin: 0; padding-left: 20px; font-size: 13.5px; color: #78350f; }
+  .risk-box ul li { margin-bottom: 8px; }
+  .risk-box ul li:last-child { margin-bottom: 0; }
+  .risk-box .calc {
+    display: inline-block; background: #fff; border: 1px solid #fde68a; border-radius: 8px;
+    padding: 2px 8px; font-weight: 700; color: var(--warn); margin: 0 2px;
+  }
+
+  .final-reco {
+    background: var(--good-bg);
+    border: 1px solid #a7f3d0;
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 20px;
+  }
+  .final-reco p.title { margin: 0 0 10px; font-weight: 900; color: var(--good); font-size: 16px; }
+  .final-reco ol { margin: 0; padding-left: 20px; font-size: 14px; color: #065f46; }
+  .final-reco ol li { margin-bottom: 8px; }
+
+  .footer-note {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: #94a3b8;
+  }
+
+  @media (max-width: 640px) {
+    table.compare { font-size: 12.5px; }
+    table.compare td.label { width: 30%; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">EST Learning Platform &mdash; ご提案資料</p>
+    <h1>大規模なシステム構築はせず、<br>低コストで成果につながる形にしませんか</h1>
+    <p class="lead">
+      Udemyのような本格的な学習プラットフォームは、開発費だけでなく毎月のランニングコストも重くなります。
+      同じ目的（企業研修へのお問い合わせ獲得）は、もっと小さな仕組みで達成できます。
+    </p>
+  </header>
+
+  <h2 class="section-title"><span class="num">1</span>結論：フルスペックのシステム構築は非推奨</h2>
+  <div class="verdict">
+    <div class="icon">✕</div>
+    <div>
+      <p class="main">Udemyのような会員登録・DB・受講管理を備えたシステムは作らない方が得策です</p>
+      <p class="sub">初期開発費が大きくなるだけでなく、サーバー・データベース・動画配信の維持費が毎月かかり続けます。今回の目的（動画から企業研修への問い合わせ獲得）に対して、明らかに投資が見合いません。</p>
+    </div>
+  </div>
+
+  <div class="reason-grid">
+    <div class="reason-card">
+      <div class="figure">月額 数万円〜</div>
+      <p>会員DB・認証・決済をすべて自前で持つ場合の運用コスト（サーバー代・DB代・保守含む）</p>
+    </div>
+    <div class="reason-card">
+      <div class="figure">開発工数 大</div>
+      <p>ログイン、購入、受講管理の画面を作り込む必要があり、公開までの期間も費用も膨らむ</p>
+    </div>
+    <div class="reason-card">
+      <div class="figure">本来の目的とズレ</div>
+      <p>動画販売はあくまで「おまけ」。主目的（企業研修への送客）に対してオーバースペック</p>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span class="num">2</span>B案・C案の比較</h2>
+  <p class="section-desc">同じ目的を、はるかに小さな仕組みで実現する2つの案です。どちらも会員登録・データベースを新たに作りません。</p>
+
+  <table class="compare">
+    <thead>
+      <tr>
+        <th class="label"></th>
+        <th class="b-col"><span class="plan-header"><span class="dot b"></span>B案：メール登録で視聴解放</span></th>
+        <th class="c-col"><span class="plan-header"><span class="dot c"></span>C案：¥100の少額決済</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label">仕組み</td>
+        <td>メールアドレスを入力すると動画が見られる</td>
+        <td>Stripeの決済画面で支払うと動画が見られる</td>
+      </tr>
+      <tr>
+        <td class="label">得られるもの</td>
+        <td>見込み客の連絡先（フォロー営業に直結）</td>
+        <td>少額の売上＋購入者の連絡先</td>
+      </tr>
+      <tr>
+        <td class="label">利用者の心理的ハードル</td>
+        <td>低い（無料・入力だけ）</td>
+        <td>ややある（支払いが発生）</td>
+      </tr>
+      <tr>
+        <td class="label">必要な実装</td>
+        <td>簡易フォーム＋メール保存のみ</td>
+        <td>Stripe Checkout＋Webhook（API 2本）</td>
+      </tr>
+      <tr>
+        <td class="label">運用コスト</td>
+        <td>ほぼゼロ</td>
+        <td>決済手数料3.6%＋少額特有のリスクあり（下記参照）</td>
+      </tr>
+      <tr>
+        <td class="label">企業研修への貢献度</td>
+        <td>◎（母数が増えやすく、フォロー対象を最大化できる）</td>
+        <td>○（支払うほど関心が高い人を絞り込める）</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title"><span class="num">3</span>新しい切り口：「¥10,000相当の情報を¥100で」</h2>
+  <p class="section-desc">動画そのものを「売る」のではなく、無料動画を見た方限定の特典として、情報の価値を打ち出す見せ方です。</p>
+
+  <div class="idea-card">
+    <p class="eyebrow2">ご提案アイデア</p>
+    <h3>無料動画を最後まで見た方だけに、特別価格でご案内</h3>
+    <p class="body">
+      「動画1本¥100」ではなく、「本来¥10,000相当のノウハウ・資料を、視聴特典として¥100でご提供」という見せ方にすることで、
+      購入のハードルが下がり、かつ"お得感"が企業研修への信頼にもつながります。仕組み自体はC案（Stripe Checkout）とまったく同じで、実装は増えません。
+    </p>
+    <div class="price-strike">
+      <span class="old">通常価格 ¥10,000</span>
+      <span class="new">¥100</span>
+      <span class="label">視聴特典価格</span>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span class="num">4</span>ただし、¥100という価格には注意が必要です</h2>
+  <p class="section-desc">「¥10,000相当を¥100で」という見せ方自体は良い切り口ですが、実際の価格をそのまま¥100にするのはおすすめしません。</p>
+
+  <div class="risk-box">
+    <p class="title">¥100の決済は、見た目以上に赤字になりやすい</p>
+    <ul>
+      <li><strong>決済手数料自体は軽い：</strong> Stripeの手数料は一律3.6%・固定費用なしなので、¥100の決済でも手数料は約<span class="calc">¥3.6</span>で、これ単体では問題ありません。</li>
+      <li><strong>しかし「返金・チャージバック」1件で吹き飛ぶ：</strong> 日本では、チャージバック（購入者による支払い異議申し立て）が発生すると<span class="calc">1件あたり¥1,500</span>の手数料がかかります。¥100の商品を<span class="calc">約16個</span>売った利益が、たった1件のチャージバックで消えてしまう計算です。</li>
+      <li><strong>少額決済は不正利用の標的になりやすい：</strong> クレジットカードの不正利用（カードテスティング）は、少額決済ほど狙われやすい傾向があります。件数が増えるほどチャージバックのリスクも比例して高まります。</li>
+      <li><strong>売上に対して運用の手間が見合わない：</strong> 経理処理・問い合わせ対応など、1件あたりの人的コストは金額に関係なく一定です。¥100の売上ではその手間を吸収しきれません。</li>
+    </ul>
+  </div>
+
+  <div class="final-reco">
+    <p class="title">ご提案</p>
+    <ol>
+      <li>「¥10,000相当を特別価格で」という見せ方・切り口は採用する</li>
+      <li>ただし実際の価格は¥100ではなく、<strong>¥500〜¥1,000程度</strong>に引き上げ、チャージバック等が起きても赤字にならない余白を持たせる</li>
+      <li>それでも"お得感"は十分に演出できる（¥10,000 → ¥980 でも96%オフの訴求力は変わらない）</li>
+      <li>本命はあくまで企業研修への送客。この特別価格の情報提供も「関心の高い見込み客の見極め」として位置づける</li>
+    </ol>
+  </div>
+
+  <div class="footer-note">
+    EST Learning Platform &mdash; クライアントご提案資料 &middot; B案・C案 比較 / 価格設定に関する留意点
+  </div>
+
+</div>
+</body>
+</html>
