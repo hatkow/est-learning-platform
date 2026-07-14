@@ -9,7 +9,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="absolute inset-0 bg-[radial-gradient(600px_400px_at_80%_10%,rgba(255,255,255,0.15),transparent)]" />
         <Link href="/" className="relative flex items-center gap-2">
           <span className="grid h-9 w-9 place-items-center rounded-lg bg-white/15"><GraduationCap size={20} /></span>
-          <span className="text-lg font-extrabold">市民開発スクール</span>
+          <span className="text-lg font-extrabold">AI・Powerplatformスクール</span>
         </Link>
         <div className="relative">
           <h2 className="text-3xl font-black leading-snug">
