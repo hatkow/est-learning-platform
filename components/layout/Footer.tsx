@@ -10,7 +10,7 @@ export default function Footer() {
             <span className="grid h-9 w-9 place-items-center rounded-lg bg-est-600 text-white">
               <GraduationCap size={20} />
             </span>
-            <span className="text-base font-extrabold text-est-700">市民開発スクール</span>
+            <span className="text-base font-extrabold text-est-700">AI・Powerplatformスクール</span>
           </div>
           <p className="mt-3 text-sm text-slate-600">
             イースト株式会社が運営する、Power Platform 内製化（市民開発）のための動画学習スクール。
@@ -23,6 +23,9 @@ export default function Footer() {
             <li><Link href="/courses" className="hover:text-est-700">コース一覧</Link></li>
             <li><Link href="/blog" className="hover:text-est-700">コラム</Link></li>
             <li><Link href="/business" className="font-bold text-est-700 hover:underline">法人向け研修</Link></li>
+            <li><Link href="/courses?cat=copilot" className="hover:text-est-700">Copilot</Link></li>
+            <li><Link href="/courses?cat=copilot-cowork" className="hover:text-est-700">Copilot Cowork</Link></li>
+            <li><Link href="/courses?cat=copilot-agent" className="hover:text-est-700">Copilotエージェント</Link></li>
             <li><Link href="/courses?cat=powerapps" className="hover:text-est-700">PowerApps</Link></li>
             <li><Link href="/courses?cat=power-automate" className="hover:text-est-700">Power Automate</Link></li>
             <li><Link href="/courses?cat=power-bi" className="hover:text-est-700">Power BI</Link></li>

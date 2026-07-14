@@ -45,7 +45,7 @@ export default function Header() {
           <span className="leading-tight">
             <span className="block text-[11px] font-medium text-slate-500">イースト株式会社</span>
             <span className="block text-base font-extrabold tracking-tight text-est-700">
-              市民開発スクール
+              AI・Powerplatformスクール
             </span>
           </span>
         </Link>

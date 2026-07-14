@@ -1,33 +1,24 @@
-'use client'
-
 import Link from 'next/link'
 import Image from 'next/image'
-import { useRef, useState } from 'react'
 import {
-  ArrowRight, ChevronLeft, ChevronRight, Sparkles, MonitorPlay,
-  TrendingUp, ShieldCheck, Layers, BadgeJapaneseYen,
-  Users, PencilRuler, Building2,
+  ArrowRight, Sparkles, FileText, Clapperboard,
+  GraduationCap, BookOpenCheck, Users, PencilRuler, Building2, Bot,
 } from 'lucide-react'
 import { categories, courses } from '@/lib/data'
-import CourseCard from '@/components/course/CourseCard'
+import { getAllPosts } from '@/lib/blog'
+import RecommendedCarousel from '@/components/home/RecommendedCarousel'
+import CategoryCourses from '@/components/home/CategoryCourses'
+import BlogCarousel from '@/components/home/BlogCarousel'
 
-export default function HomePage() {
-  const scroller = useRef<HTMLDivElement>(null)
-  const [activeCat, setActiveCat] = useState<string>('all')
-
-  const recommended = [...courses].sort((a, b) => b.studentsCount - a.studentsCount).slice(0, 6)
-  const filtered =
-    activeCat === 'all' ? courses : courses.filter((c) => c.categoryId === activeCat)
-
-  const scroll = (dir: -1 | 1) => {
-    scroller.current?.scrollBy({ left: dir * 360, behavior: 'smooth' })
-  }
+export default async function HomePage() {
+  const recommended = [...courses].sort((a, b) => b.studentsCount - a.studentsCount).slice(0, 15)
+  const posts = (await getAllPosts()).slice(0, 8)
 
   const features = [
-    { icon: MonitorPlay, title: '実画面で学ぶ動画講座', text: '実際の操作画面を見ながら、手を動かして学べます。' },
-    { icon: TrendingUp, title: '進捗トラッキング', text: '視聴状況を自動記録。続きからすぐに再開できます。' },
-    { icon: BadgeJapaneseYen, title: '無料＋有料コース', text: 'まずは無料コースから。必要に応じて有料で深掘り。' },
-    { icon: ShieldCheck, title: '安心の自社運営', text: 'イースト株式会社が品質を担保したオリジナル教材。' },
+    { icon: FileText, title: '解説記事', text: '要点を素早くつかめる、読み物形式の解説コンテンツ。' },
+    { icon: Clapperboard, title: '解説動画', text: '実際の操作画面を見ながら、手を動かして学べます。' },
+    { icon: GraduationCap, title: '有料研修', text: '個人・企業向けに、より踏み込んだ内容を伴走支援。' },
+    { icon: BookOpenCheck, title: 'オリジナル教材', text: 'イースト株式会社が品質を担保した独自コンテンツ。' },
   ]
 
   return (
@@ -38,14 +29,14 @@ export default function HomePage() {
         <div className="container-x relative grid gap-10 py-16 md:grid-cols-2 md:py-24">
           <div>
             <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-sm font-medium">
-              <Sparkles size={15} /> Power Platform 内製化を、動画で。
+              <Sparkles size={15} /> AIによる業務改善・組織改善を。
             </span>
             <h1 className="mt-5 text-4xl font-black leading-tight md:text-5xl">
-              ノーコードの「できる」を、<br />動画で最短ルートに。
+              AIを検索ツールで終わらせない。<br />組織として利用。
             </h1>
             <p className="mt-5 max-w-lg text-base text-est-50/90">
-              PowerApps・Power Automate・Power BI の操作を、実際の画面で学べる市民開発スクール。
-              業務改善の第一歩を、今日から始めましょう。
+              Copilot・Cowork・エージェント・PowerApps・Power Automate・PowerBI の利活用や操作を、
+              記事・動画セミナーなどで学べるスクール。業務改善の第一歩を、今日から始めましょう。
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/courses" className="btn btn-lg bg-white text-est-700 hover:bg-est-50">
@@ -54,14 +45,6 @@ export default function HomePage() {
               <Link href="/register" className="btn btn-lg border border-white/60 text-white hover:bg-white/10">
                 無料で会員登録
               </Link>
-            </div>
-            <div className="mt-10 flex gap-8">
-              {[['6+', '公開コース'], ['8,500+', '受講者数'], ['3', '対応製品']].map(([v, l]) => (
-                <div key={l}>
-                  <div className="text-3xl font-black">{v}</div>
-                  <div className="text-xs text-est-100">{l}</div>
-                </div>
-              ))}
             </div>
           </div>
 
@@ -92,61 +75,6 @@ export default function HomePage() {
             <p className="mt-1.5 text-sm text-slate-600">{f.text}</p>
           </div>
         ))}
-      </section>
-
-      {/* Recommended (horizontal scroll) */}
-      <section className="container-x py-6">
-        <div className="mb-5 flex items-end justify-between">
-          <div>
-            <h2 className="text-2xl font-black">おすすめコース</h2>
-            <p className="text-sm text-slate-600">人気の高い注目コースをピックアップ</p>
-          </div>
-          <div className="hidden gap-2 sm:flex">
-            <button onClick={() => scroll(-1)} className="grid h-9 w-9 place-items-center rounded-full border border-slate-300 hover:bg-slate-50" aria-label="前へ">
-              <ChevronLeft size={18} />
-            </button>
-            <button onClick={() => scroll(1)} className="grid h-9 w-9 place-items-center rounded-full border border-slate-300 hover:bg-slate-50" aria-label="次へ">
-              <ChevronRight size={18} />
-            </button>
-          </div>
-        </div>
-        <div ref={scroller} className="no-scrollbar -mx-1 flex snap-x gap-5 overflow-x-auto px-1 pb-2">
-          {recommended.map((c) => (
-            <div key={c.id} className="w-[300px] shrink-0 snap-start sm:w-[340px]">
-              <CourseCard course={c} />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* By category (tabs) */}
-      <section className="container-x py-12">
-        <div className="mb-6 flex items-center gap-2">
-          <Layers className="text-est-600" />
-          <h2 className="text-2xl font-black">カテゴリ別コース</h2>
-        </div>
-        <div className="no-scrollbar mb-6 flex gap-2 overflow-x-auto pb-1">
-          <button
-            onClick={() => setActiveCat('all')}
-            className={`shrink-0 rounded-full px-4 py-2 text-sm font-bold transition ${activeCat === 'all' ? 'bg-est-600 text-white' : 'border border-slate-300 text-slate-700 hover:bg-slate-50'}`}
-          >
-            すべて
-          </button>
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCat(cat.id)}
-              className={`shrink-0 rounded-full px-4 py-2 text-sm font-bold transition ${activeCat === cat.id ? 'bg-est-600 text-white' : 'border border-slate-300 text-slate-700 hover:bg-slate-50'}`}
-            >
-              {cat.name}
-            </button>
-          ))}
-        </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((c) => (
-            <CourseCard key={c.id} course={c} />
-          ))}
-        </div>
       </section>
 
       {/* For Business */}
@@ -185,7 +113,7 @@ export default function HomePage() {
                 className="h-auto w-full"
               />
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-3">
               <div className="rounded-2xl bg-white/10 p-5 backdrop-blur">
                 <span className="grid h-10 w-10 place-items-center rounded-lg bg-white/15"><Users size={20} /></span>
                 <h3 className="mt-3 text-sm font-bold">企業向け個別研修</h3>
@@ -196,21 +124,32 @@ export default function HomePage() {
                 <h3 className="mt-3 text-sm font-bold">カリキュラム制作</h3>
                 <p className="mt-1 text-xs text-est-50/90">自社業務に合わせた教材をゼロから設計。</p>
               </div>
+              <div className="rounded-2xl bg-white/10 p-5 backdrop-blur">
+                <span className="grid h-10 w-10 place-items-center rounded-lg bg-white/15"><Bot size={20} /></span>
+                <h3 className="mt-3 text-sm font-bold">AI導入インハウスセミナー</h3>
+                <p className="mt-1 text-xs text-est-50/90">150万円〜。貴社専属でAI活用を集中支援。</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
+
+      <RecommendedCarousel courses={recommended} />
+
+      <BlogCarousel posts={posts} />
 
       {/* CTA */}
       <section className="bg-est-50">
         <div className="container-x flex flex-col items-center gap-5 py-16 text-center">
           <h2 className="text-3xl font-black text-est-800">学びをはじめる準備はできましたか？</h2>
           <p className="max-w-xl text-slate-600">
-            会員登録は無料。まずは無料コースから、Power Platform の世界をのぞいてみましょう。
+            会員登録は無料。まずは無料コースから、AI活用の世界をのぞいてみましょう。
           </p>
           <Link href="/register" className="btn-primary btn-lg">無料で会員登録する <ArrowRight size={18} /></Link>
         </div>
       </section>
+
+      <CategoryCourses categories={categories} courses={courses} />
     </>
   )
 }
