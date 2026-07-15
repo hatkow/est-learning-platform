@@ -150,7 +150,7 @@ function parseFile(fileName: string): Post {
     tags: Array.isArray(data.tags) ? data.tags : [],
     author: data.author ?? 'EST編集部',
     coverColor: data.coverColor ?? '#1a56a0',
-    coverImage: undefined,
+    coverImage: data.coverImage ?? undefined,
     readingMinutes: readingMinutes(content),
     draft: data.draft === true,
     html,
