@@ -85,6 +85,8 @@ export default async function HomePage() {
         ))}
       </section>
 
+      <RecommendedCarousel courses={recommended} />
+
       {/* For Business */}
       <section className="bg-est-700 text-white">
         <div className="container-x grid gap-10 py-16 md:grid-cols-2 md:items-center">
@@ -168,8 +170,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      <RecommendedCarousel courses={recommended} />
 
       <BlogCarousel posts={posts} />
 
