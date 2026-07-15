@@ -49,18 +49,30 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   // 構造化データ（JSON-LD）— Google に記事として正しく認識させる
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    headline: post.title,
-    description: post.description,
-    datePublished: post.date,
-    dateModified: post.updated ?? post.date,
-    author: { '@type': 'Person', name: post.author },
-    publisher: {
-      '@type': 'Organization',
-      name: 'イースト株式会社 市民開発スクール',
-    },
-    mainEntityOfPage: { '@type': 'WebPage', '@id': `${siteUrl}/blog/${post.slug}` },
-    keywords: post.tags.join(', '),
+    '@graph': [
+      {
+        '@type': 'BlogPosting',
+        headline: post.title,
+        description: post.description,
+        datePublished: post.date,
+        dateModified: post.updated ?? post.date,
+        author: { '@type': 'Person', name: post.author },
+        publisher: {
+          '@type': 'Organization',
+          name: 'イースト株式会社 AI・Powerplatformスクール',
+        },
+        mainEntityOfPage: { '@type': 'WebPage', '@id': `${siteUrl}/blog/${post.slug}` },
+        keywords: post.tags.join(', '),
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'コラム', item: `${siteUrl}/blog` },
+          { '@type': 'ListItem', position: 2, name: post.category, item: `${siteUrl}/blog?category=${encodeURIComponent(post.category)}` },
+          { '@type': 'ListItem', position: 3, name: post.title, item: `${siteUrl}/blog/${post.slug}` },
+        ],
+      },
+    ],
   }
 
   return (

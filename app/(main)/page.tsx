@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import type { Metadata } from 'next'
 import {
   ArrowRight, Sparkles, FileText, Clapperboard,
   GraduationCap, BookOpenCheck, Users, PencilRuler, Building2, Bot,
@@ -10,6 +11,19 @@ import { getAllPosts } from '@/lib/blog'
 import RecommendedCarousel from '@/components/home/RecommendedCarousel'
 import CategoryCourses from '@/components/home/CategoryCourses'
 import BlogCarousel from '@/components/home/BlogCarousel'
+
+export const metadata: Metadata = {
+  title: { absolute: 'AI・Powerplatformスクール | イースト株式会社 DX推進動画学習' },
+  description:
+    'Copilot・AIエージェント・PowerApps・Power Automate・Power BIの利活用や操作を、記事・動画セミナーなどで学べるスクール。無料コースから今日、業務改善の第一歩を。',
+  alternates: { canonical: '/' },
+  openGraph: {
+    title: 'AI・Powerplatformスクール | イースト株式会社 DX推進動画学習',
+    description:
+      'Copilot・AIエージェント・PowerApps・Power Automate・Power BIの利活用や操作を、記事・動画セミナーなどで学べるスクール。',
+    url: '/',
+  },
+}
 
 export default async function HomePage() {
   const recommended = [...courses].sort((a, b) => b.studentsCount - a.studentsCount).slice(0, 15)
@@ -73,7 +87,9 @@ export default async function HomePage() {
       </section>
 
       {/* Features */}
-      <section className="container-x grid gap-5 py-14 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="container-x py-14">
+        <h2 className="sr-only">選ばれる理由</h2>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {features.map((f) => (
           <div key={f.title} className="card p-6">
             <span className="grid h-11 w-11 place-items-center rounded-lg bg-est-50 text-est-600">
@@ -83,6 +99,7 @@ export default async function HomePage() {
             <p className="mt-1.5 text-sm text-slate-600">{f.text}</p>
           </div>
         ))}
+        </div>
       </section>
 
       <RecommendedCarousel courses={recommended} />

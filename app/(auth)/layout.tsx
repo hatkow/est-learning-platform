@@ -1,5 +1,12 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import { GraduationCap } from 'lucide-react'
+
+// ログイン・会員登録は一意コンテンツを持たない遷移ページのため検索結果から除外する
+export const metadata: Metadata = {
+  title: 'ログイン・会員登録',
+  robots: { index: false, follow: true },
+}
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (

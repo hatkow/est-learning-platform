@@ -6,8 +6,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      // 管理画面・マイページ・決済はクロール不要
-      disallow: ['/admin', '/dashboard', '/checkout'],
+      // 管理画面・マイページ・決済・受講者限定の動画視聴ページはクロール不要
+      disallow: ['/admin', '/dashboard', '/checkout', '/learn'],
     },
     sitemap: `${siteUrl}/sitemap.xml`,
   }
