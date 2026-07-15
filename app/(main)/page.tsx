@@ -3,7 +3,7 @@ import Image from 'next/image'
 import {
   ArrowRight, Sparkles, FileText, Clapperboard,
   GraduationCap, BookOpenCheck, Users, PencilRuler, Building2, Bot,
-  CheckCircle2, Download,
+  CheckCircle2,
 } from 'lucide-react'
 import { categories, courses } from '@/lib/data'
 import { getAllPosts } from '@/lib/blog'
@@ -142,18 +142,18 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Seminar document lead magnet */}
+      {/* AI in-house seminar inquiry */}
       <section className="container-x py-14">
         <div className="overflow-hidden rounded-2xl border border-est-100 bg-est-50 md:grid md:grid-cols-[1fr_auto] md:items-center">
           <div className="p-8 md:p-10">
             <span className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-sm font-bold text-est-700">
-              <FileText size={15} /> 無料資料
+              <Bot size={15} /> 法人向けセミナー
             </span>
             <h2 className="mt-4 text-2xl font-black leading-tight text-est-900 md:text-3xl">
-              生成AI業務利用セミナー資料を無料プレゼント
+              生成AI業務利用セミナー（超基礎編）
             </h2>
             <p className="mt-2 text-sm font-bold text-slate-500">
-              超基礎編 ～Microsoft Copilotで、安全に・効果的に業務効率化～
+              ～Microsoft Copilotで、安全に・効果的に業務効率化～
             </p>
             <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
               {seminarHighlights.map((h) => (
@@ -162,8 +162,8 @@ export default async function HomePage() {
                 </li>
               ))}
             </ul>
-            <Link href="/documents/ai-seminar" className="btn-primary mt-7">
-              <Download size={16} /> 資料を無料で受け取る
+            <Link href="/business/contact" className="btn-primary mt-7">
+              セミナーについて相談する <ArrowRight size={16} />
             </Link>
           </div>
         </div>

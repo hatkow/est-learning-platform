@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    await saveLead({ company, name, email, marketingOptIn, source: 'member_registration' })
+    await saveLead({ company, name, email, marketingOptIn })
     return NextResponse.json({ ok: true })
   } catch {
     return NextResponse.json({ error: '送信に失敗しました。時間をおいて再度お試しください。' }, { status: 500 })
