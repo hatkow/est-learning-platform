@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server'
 import { saveLead } from '@/lib/leads'
+import { sendSeminarMaterial } from '@/lib/mailer'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const DOWNLOAD_URL = '/docs/ai-seminar-kiso.pdf'
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null)
@@ -16,9 +18,19 @@ export async function POST(req: Request) {
   }
 
   try {
-    await saveLead({ company, name, email, marketingOptIn, source: 'member_registration' })
-    return NextResponse.json({ ok: true })
+    await saveLead({ company, name, email, marketingOptIn, source: 'seminar_request' })
   } catch {
     return NextResponse.json({ error: '送信に失敗しました。時間をおいて再度お試しください。' }, { status: 500 })
   }
+
+  // メール送信の成否はダウンロード可否に影響させない（未設定でも資料は受け取れる）
+  let emailSent = false
+  try {
+    const result = await sendSeminarMaterial({ to: email, name })
+    emailSent = result.sent
+  } catch {
+    emailSent = false
+  }
+
+  return NextResponse.json({ ok: true, emailSent, downloadUrl: DOWNLOAD_URL })
 }

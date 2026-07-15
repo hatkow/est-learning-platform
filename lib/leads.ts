@@ -12,11 +12,14 @@ import path from 'node:path'
 const LEADS_WEBHOOK_URL = process.env.LEADS_WEBHOOK_URL
 const LOCAL_LEADS_FILE = path.join(process.cwd(), 'data', 'leads.json')
 
+export type LeadSource = 'member_registration' | 'seminar_request'
+
 export interface LeadInput {
   company: string
   name: string
   email: string
   marketingOptIn: boolean
+  source: LeadSource
 }
 
 async function saveLocally(lead: LeadInput & { receivedAt: string }) {

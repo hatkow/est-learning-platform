@@ -3,6 +3,7 @@ import Image from 'next/image'
 import {
   ArrowRight, Sparkles, FileText, Clapperboard,
   GraduationCap, BookOpenCheck, Users, PencilRuler, Building2, Bot,
+  CheckCircle2, Download,
 } from 'lucide-react'
 import { categories, courses } from '@/lib/data'
 import { getAllPosts } from '@/lib/blog'
@@ -13,6 +14,13 @@ import BlogCarousel from '@/components/home/BlogCarousel'
 export default async function HomePage() {
   const recommended = [...courses].sort((a, b) => b.studentsCount - a.studentsCount).slice(0, 15)
   const posts = (await getAllPosts()).slice(0, 8)
+
+  const seminarHighlights = [
+    '生成AIの基本とMicrosoft Copilotの役割',
+    '安全に使うためのルールとNG事例',
+    'ハンズオン形式のプロンプト実践演習',
+    '情報漏えい・ハルシネーションへの回答',
+  ]
 
   const features = [
     { icon: FileText, title: '解説記事', text: '要点を素早くつかめる、読み物形式の解説コンテンツ。' },
@@ -130,6 +138,33 @@ export default async function HomePage() {
                 <p className="mt-1 text-xs text-est-50/90">150万円〜。貴社専属でAI活用を集中支援。</p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Seminar document lead magnet */}
+      <section className="container-x py-14">
+        <div className="overflow-hidden rounded-2xl border border-est-100 bg-est-50 md:grid md:grid-cols-[1fr_auto] md:items-center">
+          <div className="p-8 md:p-10">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-sm font-bold text-est-700">
+              <FileText size={15} /> 無料資料
+            </span>
+            <h2 className="mt-4 text-2xl font-black leading-tight text-est-900 md:text-3xl">
+              生成AI業務利用セミナー資料を無料プレゼント
+            </h2>
+            <p className="mt-2 text-sm font-bold text-slate-500">
+              超基礎編 ～Microsoft Copilotで、安全に・効果的に業務効率化～
+            </p>
+            <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
+              {seminarHighlights.map((h) => (
+                <li key={h} className="flex items-start gap-2 text-sm text-slate-700">
+                  <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-est-600" /> {h}
+                </li>
+              ))}
+            </ul>
+            <Link href="/documents/ai-seminar" className="btn-primary mt-7">
+              <Download size={16} /> 資料を無料で受け取る
+            </Link>
           </div>
         </div>
       </section>
