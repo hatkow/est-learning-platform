@@ -8,6 +8,7 @@ const SAMPLE_VIDEO =
 
 export const categories: Category[] = [
   { id: 'cat-basic', name: '基礎・共通', slug: 'basic' },
+  { id: 'cat-copilot', name: 'Copilot(AI)', slug: 'copilot' },
   { id: 'cat-powerapps', name: 'PowerApps', slug: 'powerapps' },
   { id: 'cat-automate', name: 'Power Automate', slug: 'power-automate' },
   { id: 'cat-bi', name: 'Power BI', slug: 'power-bi' },

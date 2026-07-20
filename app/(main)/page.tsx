@@ -37,10 +37,10 @@ export default async function HomePage() {
   ]
 
   const features = [
-    { icon: FileText, title: '解説記事', text: '要点を素早くつかめる、読み物形式の解説コンテンツ。' },
-    { icon: Clapperboard, title: '解説動画', text: '実際の操作画面を見ながら、手を動かして学べます。' },
-    { icon: GraduationCap, title: '有料研修', text: '個人・企業向けに、より踏み込んだ内容を伴走支援。' },
-    { icon: BookOpenCheck, title: 'オリジナル教材', text: 'イースト株式会社が品質を担保した独自コンテンツ。' },
+    { icon: FileText, title: '解説記事', text: '技術的な話やセキュリティの話など、読み物としては重たいけれど大事なことを解説します。' },
+    { icon: Clapperboard, title: '解説動画', text: '解説記事の内容を、動画でもわかりやすく解説します。' },
+    { icon: GraduationCap, title: '有料研修', text: '法人向けセミナーを開催。生成AI業務利用セミナーなど。' },
+    { icon: BookOpenCheck, title: 'オリジナル教材', text: 'Copilotのプロンプトや設定ノウハウなど、実践的なコンテンツを順次追加します。' },
   ]
 
   return (
@@ -112,12 +112,12 @@ export default async function HomePage() {
               <Building2 size={15} /> 法人向けサービス
             </span>
             <h2 className="mt-4 text-3xl font-black leading-tight">
-              社員の内製化を、<br />まとめて加速しませんか？
+              内製化やAIの業務活用を、<br />加速しませんか？
             </h2>
             <p className="mt-4 max-w-lg text-est-50/90">
-              個人での学習だけでなく、企業様向けに <strong className="text-white">PowerApps のカスタム研修</strong> を提供しています。
+              個人での学習だけでなく、企業様向けに <strong className="text-white">Copilot(AI)・Power Automate・PowerApps のカスタム研修</strong> を提供しています。
               複数の社員へのまとめての研修から、自社業務に合わせたオリジナルカリキュラムの制作まで。
-              Power Platform 導入支援のプロが、貴社の内製化を伴走支援します。
+              実務や開発経験豊富な、Copilotや Power Platform 活用・導入支援のプロが、貴社の内製化・AI活用を伴走支援します。
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Link href="/business" className="btn btn-lg bg-white text-est-700 hover:bg-est-50">
@@ -161,29 +161,72 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* AI in-house seminar inquiry */}
+      {/* 有料研修メニュー */}
       <section className="container-x py-14">
-        <div className="overflow-hidden rounded-2xl border border-est-100 bg-est-50 md:grid md:grid-cols-[1fr_auto] md:items-center">
-          <div className="p-8 md:p-10">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-sm font-bold text-est-700">
-              <Bot size={15} /> 法人向けセミナー
-            </span>
-            <h2 className="mt-4 text-2xl font-black leading-tight text-est-900 md:text-3xl">
-              生成AI業務利用セミナー（超基礎編）
-            </h2>
-            <p className="mt-2 text-sm font-bold text-slate-500">
-              ～Microsoft Copilotで、安全に・効果的に業務効率化～
-            </p>
-            <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
-              {seminarHighlights.map((h) => (
-                <li key={h} className="flex items-start gap-2 text-sm text-slate-700">
-                  <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-est-600" /> {h}
+        <div className="mx-auto max-w-3xl text-center">
+          <span className="inline-flex items-center gap-2 rounded-full bg-est-50 px-3 py-1 text-sm font-bold text-est-700">
+            <GraduationCap size={15} /> 有料研修メニュー
+          </span>
+          <h2 className="mt-4 text-2xl font-black leading-tight md:text-3xl">法人向けセミナー・研修</h2>
+          <p className="mt-2 text-sm text-slate-500">貴社の状況に合わせて、単発セミナーから伴走型の導入支援までご用意しています。</p>
+        </div>
+
+        <div className="mx-auto mt-10 grid max-w-5xl gap-6 lg:grid-cols-2">
+          {/* 生成AI業務利用セミナー */}
+          <div className="overflow-hidden rounded-2xl border border-est-100 bg-est-50">
+            <div className="p-8">
+              <span className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-sm font-bold text-est-700">
+                <Bot size={15} /> 単発セミナー
+              </span>
+              <h3 className="mt-4 text-xl font-black leading-tight text-est-900">
+                生成AI業務利用セミナー（超基礎編）
+              </h3>
+              <p className="mt-1.5 text-sm font-bold text-slate-500">
+                ～Microsoft Copilotで、安全に・効果的に業務効率化～
+              </p>
+              <ul className="mt-5 space-y-2">
+                {seminarHighlights.map((h) => (
+                  <li key={h} className="flex items-start gap-2 text-sm text-slate-700">
+                    <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-est-600" /> {h}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/business/contact" className="btn-primary mt-7">
+                セミナーについて相談する <ArrowRight size={16} />
+              </Link>
+            </div>
+          </div>
+
+          {/* AI導入インハウスセミナー */}
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+            <div className="p-8">
+              <span className="inline-flex items-center gap-2 rounded-full bg-est-50 px-3 py-1 text-sm font-bold text-est-700">
+                <Users size={15} /> 3ヶ月・伴走型
+              </span>
+              <h3 className="mt-4 text-xl font-black leading-tight">
+                AI導入インハウスセミナー
+              </h3>
+              <p className="mt-1.5 text-sm font-bold text-slate-500">
+                ～貴社専属チームで、AI活用・市民開発を定着させる～
+              </p>
+              <ul className="mt-5 space-y-2">
+                <li className="flex items-start gap-2 text-sm text-slate-700">
+                  <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-est-600" /> 短期集中型のコンサルティング・研修
                 </li>
-              ))}
-            </ul>
-            <Link href="/business/contact" className="btn-primary mt-7">
-              セミナーについて相談する <ArrowRight size={16} />
-            </Link>
+                <li className="flex items-start gap-2 text-sm text-slate-700">
+                  <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-est-600" /> Copilot・PowerApps・Power Automateの実務活用
+                </li>
+                <li className="flex items-start gap-2 text-sm text-slate-700">
+                  <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-est-600" /> 貴社専属でAI活用・市民開発を集中支援
+                </li>
+              </ul>
+              <div className="mt-5 rounded-xl bg-est-50 p-4">
+                <p className="text-2xl font-black text-est-700">150万円<span className="text-base font-bold">／3ヶ月〜</span></p>
+              </div>
+              <Link href="/business/contact" className="btn-primary mt-5">
+                セミナーについて相談する <ArrowRight size={16} />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
