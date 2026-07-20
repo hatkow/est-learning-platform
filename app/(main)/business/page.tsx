@@ -229,9 +229,9 @@ export default function BusinessPage() {
         </div>
       </section>
 
-      {/* Use cases link */}
-      <section className="container-x pb-4">
-        <Link href="/business/cases" className="group flex flex-col items-start gap-4 rounded-2xl border border-slate-200 bg-white p-8 transition hover:border-est-300 hover:shadow-md md:flex-row md:items-center md:justify-between">
+      {/* Use cases / Team links */}
+      <section className="container-x grid gap-4 pb-4 md:grid-cols-2">
+        <Link href="/business/cases" className="group flex flex-col items-start gap-4 rounded-2xl border border-slate-200 bg-white p-8 transition hover:border-est-300 hover:shadow-md">
           <div>
             <p className="text-sm font-bold text-est-600">USE CASES</p>
             <h2 className="mt-1 text-xl font-black">活用シーンを見る</h2>
@@ -239,6 +239,16 @@ export default function BusinessPage() {
           </div>
           <span className="inline-flex items-center gap-1.5 font-bold text-est-600 group-hover:underline">
             活用シーン一覧へ <ArrowRight size={18} />
+          </span>
+        </Link>
+        <Link href="/business/team" className="group flex flex-col items-start gap-4 rounded-2xl border border-slate-200 bg-white p-8 transition hover:border-est-300 hover:shadow-md">
+          <div>
+            <p className="text-sm font-bold text-est-600">TEAM</p>
+            <h2 className="mt-1 text-xl font-black">コンサルタント紹介</h2>
+            <p className="mt-1 text-sm text-slate-600">研修・DX推進支援を担当するコンサルタントチームをご紹介します。</p>
+          </div>
+          <span className="inline-flex items-center gap-1.5 font-bold text-est-600 group-hover:underline">
+            メンバー一覧へ <ArrowRight size={18} />
           </span>
         </Link>
       </section>
