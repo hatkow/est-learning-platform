@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import {
@@ -57,8 +58,14 @@ export default function CourseDetailPage() {
   return (
     <>
       {/* Hero */}
-      <section className="text-white" style={{ background: `linear-gradient(135deg, ${course.thumbnailColor}, #0b1d39)` }}>
-        <div className="container-x grid gap-8 py-12 lg:grid-cols-3">
+      <section className="relative overflow-hidden text-white" style={{ background: `linear-gradient(135deg, ${course.thumbnailColor}, #0b1d39)` }}>
+        {course.thumbnail && (
+          <>
+            <Image src={course.thumbnail} alt="" fill priority className="object-cover" sizes="100vw" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
+          </>
+        )}
+        <div className="container-x relative grid gap-8 py-12 lg:grid-cols-3">
           <div className="lg:col-span-2">
             <nav className="mb-3 flex items-center gap-1 text-sm text-white/80">
               <Link href="/courses" className="hover:underline">コース一覧</Link>
@@ -165,7 +172,11 @@ export default function CourseDetailPage() {
         {/* Sidebar */}
         <aside className="lg:col-span-1">
           <div className="card sticky top-20 overflow-hidden">
-            <div className="aspect-video" style={{ background: `linear-gradient(135deg, ${course.thumbnailColor}, #0b1d39)` }} />
+            <div className="relative aspect-video" style={{ background: `linear-gradient(135deg, ${course.thumbnailColor}, #0b1d39)` }}>
+              {course.thumbnail && (
+                <Image src={course.thumbnail} alt={course.title} fill className="object-cover" sizes="(max-width: 1024px) 100vw, 360px" />
+              )}
+            </div>
             <div className="p-6">
               <div className="mb-4 flex items-baseline gap-2">
                 <span className={`text-3xl font-black ${course.price === 0 ? 'text-emerald-600' : 'text-slate-900'}`}>

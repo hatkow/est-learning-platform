@@ -24,6 +24,7 @@ export interface MicroCMSCourse {
   instructorTitle?: string
   price?: number
   thumbnailColor?: string
+  eyecatch?: { url?: string } | null
   lessons?: MicroCMSLesson[]
   publishedAt?: string
   createdAt?: string
@@ -78,7 +79,7 @@ export function convertCmsCourse(item: MicroCMSCourse): Course {
     slug: item.slug || courseId,
     description: item.subtitle || description.slice(0, 60),
     longDescription: description,
-    thumbnail: '',
+    thumbnail: item.eyecatch?.url || '',
     thumbnailColor: item.thumbnailColor || '#1a56a0',
     price: typeof item.price === 'number' ? item.price : 0,
     isPublished: true, // microCMS で公開状態のものだけ API に出る

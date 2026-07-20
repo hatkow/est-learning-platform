@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Clock, PlayCircle, Users } from 'lucide-react'
 import type { Course } from '@/lib/types'
 import { courseDuration, courseRating, formatDuration, formatPrice, getCategoryById } from '@/lib/data'
@@ -18,6 +19,18 @@ export default function CourseCard({ course }: { course: Course }) {
         className="relative flex aspect-video items-end p-4 text-white"
         style={{ background: `linear-gradient(135deg, ${course.thumbnailColor}, #0b1d39)` }}
       >
+        {course.thumbnail && (
+          <>
+            <Image
+              src={course.thumbnail}
+              alt=""
+              fill
+              className="object-cover transition group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/10" />
+          </>
+        )}
         <div className="absolute right-3 top-3 flex gap-1.5">
           {course.price === 0 && (
             <span className="badge bg-emerald-500 text-white">無料</span>
