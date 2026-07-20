@@ -138,7 +138,7 @@ export default function BusinessPage() {
           <div className="hidden md:block">
             <div className="overflow-hidden rounded-2xl bg-white shadow-2xl">
               <Image
-                src="/images/business-hero.png"
+                src="/images/pic-003.png"
                 alt="講師がチームに PowerApps 研修を行うイメージ"
                 width={720}
                 height={405}
@@ -178,7 +178,7 @@ export default function BusinessPage() {
           </div>
           <div className="mx-auto mt-8 max-w-3xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <Image
-              src="/images/business-service.png"
+              src="/images/pic-001.png"
               alt="カリキュラムや教材を制作し、受講者へ届けるイメージ"
               width={1200}
               height={675}
@@ -262,7 +262,7 @@ export default function BusinessPage() {
           </div>
           <div className="mx-auto mt-8 max-w-4xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <Image
-              src="/images/business-flow.png"
+              src="/images/pic-002.png"
               alt="相談・提案・受講・サポートまでの流れのイメージ"
               width={1200}
               height={675}

@@ -46,10 +46,18 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-est-700 text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(700px_400px_at_85%_-10%,rgba(255,255,255,0.18),transparent),radial-gradient(600px_400px_at_-5%_110%,rgba(43,98,168,0.6),transparent)]" />
-        <div className="container-x relative grid gap-10 py-16 md:grid-cols-2 md:py-24">
-          <div>
+      <section className="relative min-h-[520px] overflow-hidden text-white">
+        <Image
+          src="/images/fv-001.png"
+          alt="AIエージェントと社員が協働するオフィスのイメージ"
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#050b1f]/85 via-[#050b1f]/40 to-transparent" />
+        <div className="container-x relative flex min-h-[520px] items-center py-16 md:py-24">
+          <div className="max-w-xl">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-sm font-medium">
               <Sparkles size={15} /> AIによる業務改善・組織改善を。
             </span>
@@ -67,20 +75,6 @@ export default async function HomePage() {
               <Link href="/register" className="btn btn-lg border border-white/60 text-white hover:bg-white/10">
                 無料で会員登録
               </Link>
-            </div>
-          </div>
-
-          {/* Visual */}
-          <div className="relative hidden items-center justify-center md:flex">
-            <div className="overflow-hidden rounded-2xl bg-white/95 shadow-2xl">
-              <Image
-                src="/images/top-fv.jpeg"
-                alt="AIが同僚として社員と共に働くオフィスのイメージ"
-                width={720}
-                height={395}
-                priority
-                className="h-auto w-full"
-              />
             </div>
           </div>
         </div>
@@ -133,8 +127,8 @@ export default async function HomePage() {
           <div className="grid gap-4">
             <div className="overflow-hidden rounded-2xl bg-white shadow-xl">
               <Image
-                src="/images/hero-business.png"
-                alt="チームでデータを分析し内製化を進めるイメージ"
+                src="/images/pic-004.png"
+                alt="チームでAIインサイトを分析し内製化を進めるイメージ"
                 width={720}
                 height={405}
                 className="h-auto w-full"

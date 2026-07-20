@@ -19,7 +19,7 @@ const scenes = [
     challenge: '紙の点検表を Excel に手入力していて二度手間・転記ミスが課題。',
     solution: '現場社員5名に PowerApps の集合研修を実施。点検アプリを内製できる体制に。',
     result: '点検記録のデジタル化を自社で実現。横展開も社内で進められるように。',
-    image: '/images/case-manufacturing.png',
+    image: '/images/pic-009.png',
   },
   {
     industry: '小売・サービス業',
@@ -27,7 +27,7 @@ const scenes = [
     challenge: '顧客対応や各店舗からの売上報告を、人手でさばききれていない。',
     solution: 'Power Automate・Power BI と問い合わせ自動化を題材にカリキュラムを制作・研修。',
     result: '対応・集計を効率化し、ダッシュボードで可視化。本部の負荷を大幅に削減。',
-    image: '/images/case-retail.png',
+    image: '/images/pic-007.png',
   },
   {
     industry: '士業・コンサル',
@@ -35,7 +35,7 @@ const scenes = [
     challenge: '紙・Excel 中心の業務が多く、転記や管理に時間がかかっていた。',
     solution: '自社の業務に合わせた PowerApps 管理アプリの作り方を個別研修。',
     result: '紙業務をデジタルへ移行。改善も自分たちで回せる体制に。',
-    image: '/images/case-professional.png',
+    image: '/images/pic-008.png',
   },
   {
     industry: '自治体・公共',
@@ -43,7 +43,7 @@ const scenes = [
     challenge: '紙の申請書の処理に職員の工数が割かれていた。',
     solution: '職員向けに PowerApps・Power Automate の基礎から実践までを段階研修。',
     result: '申請受付・回覧をデジタル化。外注に頼らず継続的に改善できる体制に。',
-    image: '/images/case-public.png',
+    image: '/images/pic-006.png',
   },
 ]
 
