@@ -81,7 +81,7 @@ const jsonLd = {
     {
       '@type': 'Service',
       name: '法人向け PowerApps・Power Platform 研修／カリキュラム制作',
-      provider: { '@type': 'Organization', name: 'イースト株式会社 市民開発スクール' },
+      provider: { '@type': 'Organization', name: 'イースト株式会社 AI・Powerplatformスクール' },
       areaServed: 'JP',
       description:
         '企業向けの個別 PowerApps 研修と、自社業務に合わせたオリジナルカリキュラム制作。研修・制作とも 20,000円／時間〜。',

@@ -1,8 +1,8 @@
-# 市民開発スクール
+# AI・Powerplatformスクール
 
 > イースト株式会社 **DX推進動画学習プラットフォーム** — `EST_Learning_Platform_設計書.docx`（設計書 Ver 1.0）に基づく実装。
 
-Power Platform（PowerApps / Power Automate / Power BI）の操作を動画で学べる、Udemy ライクな自社運営型の動画学習サービス「市民開発スクール」です。
+Power Platform（PowerApps / Power Automate / Power BI）の操作を動画で学べる、Udemy ライクな自社運営型の動画学習サービス「AI・Powerplatformスクール」です。
 
 ## このリポジトリについて
 

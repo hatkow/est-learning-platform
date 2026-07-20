@@ -24,7 +24,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           </h2>
           <p className="mt-4 max-w-md text-est-50/90">
             PowerApps・Power Automate・Power BI を、実際の操作画面で学べる
-            イースト株式会社の市民開発スクール。
+            イースト株式会社のAI・Powerplatformスクール。
           </p>
           <ul className="mt-6 space-y-2 text-sm text-est-50">
             <li>✓ 無料コースで今すぐスタート</li>
