@@ -55,7 +55,7 @@ const sampleCourses: Course[] = [
     description: 'ドラッグ＆ドロップで業務アプリを作る基本をゼロから学びます。',
     longDescription:
       'PowerApps を初めて触る方向けの入門コースです。キャンバスアプリの作成、画面・コントロールの配置、データソース接続、簡単な関数の使い方までを、実際の業務シーンを例に解説します。プログラミング経験は不要です。',
-    thumbnail: '',
+    thumbnail: '/images/movie-001.png',
     thumbnailColor: '#1a56a0',
     price: 0,
     isPublished: true,
@@ -96,7 +96,7 @@ const sampleCourses: Course[] = [
     description: 'データ設計、コンポーネント化、権限管理まで実務レベルを習得。',
     longDescription:
       'PowerApps の基本を理解した方向けの実践コース。Dataverse を用いたデータ設計、再利用可能なコンポーネント、ギャラリーとフォームの高度な使い方、パフォーマンス最適化、ユーザー権限の考え方まで、運用を見据えた開発手法を解説します。',
-    thumbnail: '',
+    thumbnail: '/images/movie-002.png',
     thumbnailColor: '#164684',
     price: 12800,
     isPublished: true,
@@ -136,7 +136,7 @@ const sampleCourses: Course[] = [
     description: '承認・通知・データ連携など、日々の手作業をフローで自動化。',
     longDescription:
       'Power Automate でクラウドフローを作成し、メール通知、承認ワークフロー、Excel/SharePoint へのデータ連携などを自動化する方法を学びます。トリガーとアクションの考え方を理解し、ノーコードで業務効率化を実現します。',
-    thumbnail: '',
+    thumbnail: '/images/movie-003.png',
     thumbnailColor: '#0a7d68',
     price: 0,
     isPublished: true,
@@ -177,7 +177,7 @@ const sampleCourses: Course[] = [
     description: 'データ取り込みからレポート作成・共有までを一気通貫で学習。',
     longDescription:
       'Power BI Desktop を使って、データの取り込み（Power Query）、データモデルの作成、ビジュアルによるレポート作成、ダッシュボードの共有までを学びます。売上分析を題材に、伝わるレポートの作り方を習得します。',
-    thumbnail: '',
+    thumbnail: '/images/movie-004.png',
     thumbnailColor: '#b8860b',
     price: 9800,
     isPublished: true,
@@ -217,7 +217,7 @@ const sampleCourses: Course[] = [
     description: 'メジャー設計とDAX関数で、本格的な分析ダッシュボードを構築。',
     longDescription:
       'Power BI の分析力を引き上げる DAX に特化した実践コース。CALCULATE を中心としたコンテキストの理解、タイムインテリジェンス、メジャー設計のベストプラクティスを通じて、再利用性の高い分析ロジックを構築します。',
-    thumbnail: '',
+    thumbnail: '/images/movie-005.png',
     thumbnailColor: '#8a6508',
     price: 14800,
     isPublished: true,
@@ -254,7 +254,7 @@ const sampleCourses: Course[] = [
     description: 'PowerApps / Automate / BI の役割と連携を俯瞰する基礎講座。',
     longDescription:
       'これから Power Platform を学ぶすべての方へ。DX の考え方から、PowerApps・Power Automate・Power BI それぞれの役割、3つを組み合わせた業務改善の進め方までを、具体的な事例とともに俯瞰的に解説します。',
-    thumbnail: '',
+    thumbnail: '/images/movie-006.png',
     thumbnailColor: '#2a62a8',
     price: 0,
     isPublished: true,
