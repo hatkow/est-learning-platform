@@ -129,8 +129,11 @@ export default function CourseDetailPage() {
                     {lesson.isFree && !enrolled && <span className="badge bg-emerald-50 text-emerald-700">無料プレビュー</span>}
                     <span className="text-xs text-slate-500">{formatDuration(lesson.duration)}</span>
                     {canPreview && (
-                      <Link href={`/learn/${course.id}/${lesson.id}`} className="text-xs font-bold text-est-600 hover:underline">
-                        視聴
+                      <Link
+                        href={`/learn/${course.id}/${lesson.id}`}
+                        className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-est-600 px-3.5 py-1.5 text-xs font-bold text-white transition hover:bg-est-700"
+                      >
+                        <PlayCircle size={14} /> 視聴する
                       </Link>
                     )}
                   </li>
