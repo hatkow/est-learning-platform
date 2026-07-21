@@ -1,0 +1,438 @@
+<!doctype html>
+<title>実装内容・本番公開に向けたご説明資料</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root {
+    --est-600: #0b5fff;
+    --est-700: #0a1d39;
+    --ink: #0f172a;
+    --sub: #475569;
+    --line: #e2e8f0;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --warn: #b45309;
+    --warn-bg: #fffbeb;
+    --good: #059669;
+    --good-bg: #ecfdf5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.75;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 48px 24px 96px; }
+
+  header.hero {
+    background: linear-gradient(135deg, var(--est-600), var(--est-700));
+    color: #fff;
+    padding: 44px 28px;
+    border-radius: 20px;
+    margin-bottom: 40px;
+  }
+  header.hero p.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-size: 12px;
+    color: #bcd3ff;
+    font-weight: 700;
+    margin: 0 0 10px;
+  }
+  header.hero h1 { font-size: 26px; margin: 0 0 12px; font-weight: 900; }
+  header.hero p.lead { margin: 0; color: #dbe6ff; font-size: 14.5px; max-width: 60ch; }
+
+  h2.section-title {
+    font-size: 20px;
+    font-weight: 900;
+    margin: 56px 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2.section-title .num {
+    display: inline-grid;
+    place-items: center;
+    width: 28px; height: 28px;
+    border-radius: 999px;
+    background: var(--est-600);
+    color: #fff;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  p.section-desc { color: var(--sub); font-size: 14px; margin: 0 0 20px; }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+  }
+  .feature-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+  .feature-card h3 {
+    margin: 0 0 8px;
+    font-size: 14.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .feature-card h3::before {
+    content: "";
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 999px;
+    background: var(--est-600);
+    flex-shrink: 0;
+  }
+  .feature-card ul {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 13px;
+    color: var(--sub);
+  }
+  .feature-card ul li { margin-bottom: 5px; }
+  .feature-card ul li:last-child { margin-bottom: 0; }
+
+  .todo-item {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px 22px;
+    margin-bottom: 14px;
+  }
+  .todo-item .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .todo-item h3 { margin: 0; font-size: 16px; }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .badge.required { background: var(--warn-bg); color: var(--warn); }
+  .badge.decided { background: var(--good-bg); color: var(--good); }
+  .todo-item p.body { margin: 0; font-size: 13.5px; color: var(--sub); }
+  .todo-item ul.details {
+    margin: 10px 0 0;
+    padding-left: 20px;
+    font-size: 13.5px;
+    color: var(--sub);
+  }
+  .todo-item ul.details li { margin-bottom: 6px; }
+
+  .callout {
+    border-radius: 14px;
+    padding: 18px 20px;
+    font-size: 13.5px;
+    margin: 20px 0;
+  }
+  .callout.info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e3a8a; }
+  .callout.warn { background: var(--warn-bg); border: 1px solid #fde68a; color: #78350f; }
+  .callout p { margin: 0; }
+  .callout p + p { margin-top: 8px; }
+  .callout ul { margin: 8px 0 0; padding-left: 20px; }
+  .callout ul li { margin-bottom: 4px; }
+  .callout .callout-title { font-weight: 800; display: block; margin-bottom: 6px; }
+
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+  }
+  .status-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+  .status-card .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .status-card h3 { margin: 0; font-size: 14.5px; }
+  .status-card p { margin: 0; font-size: 13px; color: var(--sub); }
+  .badge.client { background: #f1f5f9; color: var(--sub); }
+  .badge.linked { background: var(--warn-bg); color: var(--warn); }
+
+  .data-diagram {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-top: 14px;
+  }
+  .data-diagram h4 {
+    margin: 0 0 20px;
+    font-size: 12.5px;
+    color: var(--sub);
+    font-weight: 800;
+    letter-spacing: .02em;
+  }
+  .flow-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  .flow-row:last-of-type { margin-bottom: 0; }
+  .flow-node {
+    flex: 1;
+    min-width: 0;
+    border-radius: 12px;
+    padding: 14px 10px;
+    text-align: center;
+    font-size: 12.5px;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  .flow-node .icon { font-size: 20px; display: block; margin-bottom: 4px; }
+  .flow-node .sub { display: block; font-size: 10.5px; font-weight: 700; margin-top: 4px; }
+  .flow-node.user { background: #eef2f7; color: var(--ink); }
+  .flow-node.server { background: var(--warn-bg); color: var(--warn); }
+  .flow-node.server .sub { color: #92400e; }
+  .flow-node.dest { background: var(--good-bg); color: var(--good); }
+  .flow-arrow { font-size: 18px; color: #94a3b8; flex-shrink: 0; }
+  .no-db {
+    margin-top: 20px;
+    text-align: center;
+    padding: 10px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 10px;
+    color: #94a3b8;
+    font-weight: 800;
+    font-size: 12.5px;
+  }
+  @media (max-width: 620px) {
+    .flow-row { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); }
+    .flow-node { width: 100%; }
+  }
+
+  .footer-note {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: #94a3b8;
+  }
+
+  @media print {
+    body { background: #fff; }
+    .todo-item, .feature-card { break-inside: avoid; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">AI・Powerplatformスクール</p>
+    <h1>実装内容のご報告と、本番公開に向けたご確認事項</h1>
+    <p class="lead">
+      これまでにテストサイトへ反映した内容の全体像と、実際に一般公開する前に確定・ご準備いただきたい事項をまとめました。
+    </p>
+  </header>
+
+  <h2 class="section-title"><span class="num">1</span>実装した内容</h2>
+  <p class="section-desc">テストサイトに反映済みの内容です。カテゴリごとに整理しています。</p>
+
+  <div class="callout warn">
+    <span class="callout-title">⚠ 内容確認の際にご注意ください：以下はまだサンプル（仮）データです</span>
+    <p>本日ご覧いただく画面の一部は、動作確認用の仮データです。「実際の内容」と誤解されませぬようご留意ください。</p>
+    <ul>
+      <li><strong>コンサルタント紹介ページの6名</strong> — 全員サンプルプロフィール（イニシャル表記、実在の担当者ではありません）</li>
+      <li><strong>コース一覧の講師名・受講者数・レビュー</strong> — サンプルデータ</li>
+      <li><strong>講座動画そのもの</strong> — まだ仮のサンプル動画（実際の講座映像ではありません）</li>
+      <li><strong>フッターの「Copilot」関連リンク</strong> — 該当コースが未作成のため0件表示になります</li>
+    </ul>
+  </div>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h3>トップページ</h3>
+      <ul>
+        <li>AI・Copilotブランドへ全面リニューアル（見出し・コピー・ヒーロー画像）</li>
+        <li>おすすめコースの表示位置を上部に変更</li>
+        <li>有料研修メニュー（単発セミナー／3ヶ月伴走型）を新設</li>
+        <li>画像をイラストから実写風素材に統一</li>
+      </ul>
+    </div>
+    <div class="feature-card">
+      <h3>コース機能</h3>
+      <ul>
+        <li>コース情報をmicroCMS（外部CMS）で管理できるよう連携</li>
+        <li>コースサムネイル画像のアップロード・表示に対応</li>
+        <li>カテゴリに「Copilot(AI)」を追加</li>
+        <li>サンプル6コース分のサムネイル画像を設定</li>
+      </ul>
+    </div>
+    <div class="feature-card">
+      <h3>コラム（ブログ）</h3>
+      <ul>
+        <li>既存サイト（dx.est.co.jp）から記事10本を移行（アイキャッチ画像含む）</li>
+        <li>新カテゴリ「生成AI活用」を追加</li>
+      </ul>
+    </div>
+    <div class="feature-card">
+      <h3>法人向けページ</h3>
+      <ul>
+        <li>コンサルタント紹介ページを新設</li>
+        <li>会社概要に事業内容セクションを追加</li>
+        <li>活用シーン・サービス紹介の画像を実写風に統一</li>
+      </ul>
+    </div>
+    <div class="feature-card">
+      <h3>会員登録・お問い合わせ</h3>
+      <ul>
+        <li>パスワード不要・メールアドレスのみのシンプルな登録に変更</li>
+        <li>自社データベースを持たず、外部送信のみで完結する設計に</li>
+      </ul>
+    </div>
+    <div class="feature-card">
+      <h3>SEO・ブランド統一</h3>
+      <ul>
+        <li>メタデータ・構造化データ・サイトマップ等のSEO対策一式を実装</li>
+        <li>旧サイト名の表記をすべて現行ブランド名に統一</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span class="num">2</span>本番公開までにご確認・ご準備いただきたいこと</h2>
+  <p class="section-desc">一般公開する前に、貴社側でのご判断・ご準備が必要な項目です。</p>
+
+  <div class="todo-item">
+    <div class="head">
+      <h3>ドメイン</h3>
+      <span class="badge required">要確定</span>
+    </div>
+    <p class="body">現在はVercelの仮URL（est-learning-platform-mcau.vercel.app）で運用しています。</p>
+    <ul class="details">
+      <li>本番公開には独自ドメイン（例：貴社ドメインのサブドメイン）のご準備が必要です</li>
+      <li>SSL証明書はドメイン設定後にVercel側で自動発行されます（追加費用・作業は不要）</li>
+      <li>ドメイン確定後、サイト内部の設定（環境変数）を1箇所更新する必要があります（検索エンジン向けの情報に反映されるため）</li>
+    </ul>
+  </div>
+
+  <div class="todo-item">
+    <div class="head">
+      <h3>データの保存先（会員登録・お問い合わせ）</h3>
+      <span class="badge required">要確定</span>
+    </div>
+    <p class="body">「自社でデータベースを持たない」方針で設計していますが、データの行き先は決めていただく必要があります。</p>
+    <ul class="details">
+      <li>会員登録（メールアドレス）は、貴社が指定する外部システム（CRM等）へ転送する設計です。転送先が未設定の間は、開発用の仮の置き場に保存される状態になっており、これは本番運用には使えません</li>
+      <li>お問い合わせフォームは、担当者へのメール転送のみで、データの保管は行いません（変更なし）</li>
+    </ul>
+
+    <div class="data-diagram">
+      <h4>図解：データの流れ</h4>
+
+      <div class="flow-row">
+        <div class="flow-node user"><span class="icon">👤</span>会員登録<br>フォーム入力</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node server"><span class="icon">⚙️</span>Vercel（処理のみ）<span class="sub">一瞬経由するだけ／保存しない</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node dest"><span class="icon">🏢</span>貴社の外部システム<span class="sub">（CRM等・未確定）</span></div>
+      </div>
+
+      <div class="flow-row">
+        <div class="flow-node user"><span class="icon">👤</span>お問い合わせ<br>フォーム入力</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node server"><span class="icon">⚙️</span>Vercel（処理のみ）<span class="sub">一瞬経由するだけ／保存しない</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node dest"><span class="icon">📧</span>担当者の<br>メール受信箱</div>
+      </div>
+
+      <div class="no-db">✕　自社（開発側）のデータベースは存在しません</div>
+    </div>
+  </div>
+
+  <div class="todo-item">
+    <div class="head">
+      <h3>講座動画のアップロード</h3>
+      <span class="badge required">要準備・オープン日を左右する可能性大</span>
+    </div>
+    <p class="body">現在、全レッスンの動画は仮のサンプル動画のままです。</p>
+    <ul class="details">
+      <li>実際の講座動画をYouTube（限定公開）へアップロードし、各レッスンのURLを差し替える作業が必要です</li>
+      <li>サムネイル画像は本サイトの機能ですでにアップロード対応済みです</li>
+      <li><strong>オープン日を決める上で、このタスクが最も時間を要する可能性があります。</strong>必要な動画本数・撮影/編集の進捗状況を、この場でご確認いただくことをおすすめします</li>
+    </ul>
+  </div>
+
+  <div class="todo-item">
+    <div class="head">
+      <h3>コンテンツ管理の運用方法</h3>
+      <span class="badge required">要ご相談</span>
+    </div>
+    <p class="body">記事・コースの追加や更新を、今後どなたが・どう行うかの運用体制です。</p>
+    <ul class="details">
+      <li>コラム記事：microCMSの管理画面から執筆・公開が可能です（貴社メンバーの招待も可能）</li>
+      <li>コース情報：microCMS連携の仕組みは完成していますが、実際に使うには貴社にてmicroCMSのアカウント登録・設定が必要です</li>
+      <li>サイト内の管理画面（コース編集画面など）は見た目のみのモックで、実際の保存機能はまだ実装していません</li>
+    </ul>
+  </div>
+
+  <div class="todo-item">
+    <div class="head">
+      <h3>その他の確認事項</h3>
+      <span class="badge decided">ご認識合わせ</span>
+    </div>
+    <ul class="details">
+      <li>GitHubリポジトリは現在Public（公開）設定です。これは既にご確認いただき、問題ないとのご回答をいただいております</li>
+      <li>プライバシーポリシー・利用規約は暫定的な文面のため、公開前に内容の最終確認をおすすめします</li>
+      <li>アクセス解析（Google Analytics等）・Google Search Consoleは未設定です。導入をご希望の場合はお知らせください</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title"><span class="num">3</span>その他、貴社にて進行中の項目</h2>
+  <p class="section-desc">開発側の作業ではなく、貴社側でご対応・ご進行中の項目です。状況共有のため記載しています。</p>
+
+  <div class="status-grid">
+    <div class="status-card">
+      <div class="head">
+        <h3>サブドメイン申請（ai）</h3>
+        <span class="badge client">貴社対応</span>
+      </div>
+      <p>申請が通り次第、Vercel側の設定＋SSL発行は自動対応できます。開発側の技術的な準備は不要です。</p>
+    </div>
+    <div class="status-card">
+      <div class="head">
+        <h3>YouTube・noteチャネル開設／コンテンツアップ</h3>
+        <span class="badge client">貴社対応</span>
+      </div>
+      <p>貴社側でのご対応事項です。YouTubeチャネルは「講座動画のアップロード」（上記②）とも関係します。</p>
+    </div>
+    <div class="status-card">
+      <div class="head">
+        <h3>AI室共用メアド</h3>
+        <span class="badge linked">要連携確認</span>
+      </div>
+      <p>会員登録・お問い合わせデータの転送先として使う場合は、上記「データの保存先」の設定と関わります。決まり次第ご連携ください。</p>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <p><strong>まとめ：</strong> サイトの「作り」自体は本番相当まで進んでいますが、①ドメイン、②データの送信先、③実際の講座動画、④コンテンツ運用体制の4点は、貴社側でのご判断・ご準備待ちの状態です。この4点が揃い次第、公開に向けた最終調整に入れます。</p>
+  </div>
+
+  <div class="footer-note">
+    AI・Powerplatformスクール &mdash; 実装状況のご報告資料
+  </div>
+
+</div>

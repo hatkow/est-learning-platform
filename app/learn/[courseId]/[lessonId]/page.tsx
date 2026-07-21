@@ -22,6 +22,8 @@ export default function LearnPage() {
   const toggleLesson = useStore((s) => s.toggleLesson)
   const progressMap = useStore((s) => s.progress)
   const courseProgress = useStore((s) => s.courseProgress)
+  const updateWatchProgress = useStore((s) => s.updateWatchProgress)
+  const getWatchProgress = useStore((s) => s.getWatchProgress)
 
   const [mounted, setMounted] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -44,6 +46,7 @@ export default function LearnPage() {
   const prev = course.lessons[index - 1]
   const next = course.lessons[index + 1]
   const completed = mounted && !!progressMap[lesson.id]
+  const watch = mounted ? getWatchProgress(lesson.id) : { seconds: 0, percent: 0 }
 
   const markComplete = () => toggleLesson(lesson.id, true)
   const goNext = () => {
@@ -132,7 +135,13 @@ export default function LearnPage() {
         </div>
 
         {/* Player */}
-        <VideoPlayer url={lesson.videoUrl} title={lesson.title} onEnded={markComplete} />
+        <VideoPlayer
+          url={lesson.videoUrl}
+          title={lesson.title}
+          onEnded={markComplete}
+          startSeconds={watch.seconds}
+          onProgress={(seconds, duration) => updateWatchProgress(lesson.id, seconds, duration)}
+        />
 
         {/* Lesson info */}
         <div className="flex-1 px-4 py-6 sm:px-8">
@@ -141,6 +150,9 @@ export default function LearnPage() {
               <div>
                 <p className="text-xs text-slate-400">レッスン {index + 1} / {course.lessons.length}</p>
                 <h1 className="mt-1 text-xl font-bold sm:text-2xl">{lesson.title}</h1>
+                {!completed && watch.percent > 0 && (
+                  <p className="mt-1.5 text-xs text-est-400">視聴済み {watch.percent}%（続きから再生します）</p>
+                )}
               </div>
               <button
                 onClick={() => toggleLesson(lesson.id)}

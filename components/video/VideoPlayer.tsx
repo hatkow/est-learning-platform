@@ -1,35 +1,125 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 // 設計書では React Player を使用。本デモでは依存を最小化するため
-// HTML5 <video> をラップした同等のプレーヤーを実装（YouTube/Vimeo URLは
-// iframe 埋め込みにフォールバック）。視聴完了で onEnded を発火。
+// HTML5 <video> をラップした同等のプレーヤーを実装。
+// YouTube URLは IFrame Player API 経由で埋め込み、再生位置の取得・続きからの再生に対応。
+// Vimeo など他の埋め込みURLは、素のiframeにフォールバック（進捗取得なし）。
+
+declare global {
+  interface Window {
+    YT?: any
+    onYouTubeIframeAPIReady?: () => void
+  }
+}
+
+let ytApiPromise: Promise<void> | null = null
+function loadYouTubeApi(): Promise<void> {
+  if (typeof window === 'undefined') return Promise.resolve()
+  if (window.YT?.Player) return Promise.resolve()
+  if (ytApiPromise) return ytApiPromise
+  ytApiPromise = new Promise((resolve) => {
+    const prev = window.onYouTubeIframeAPIReady
+    window.onYouTubeIframeAPIReady = () => {
+      prev?.()
+      resolve()
+    }
+    const tag = document.createElement('script')
+    tag.src = 'https://www.youtube.com/iframe_api'
+    document.head.appendChild(tag)
+  })
+  return ytApiPromise
+}
+
+function extractYouTubeId(url: string): string | null {
+  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([\w-]{6,})/)
+  return m ? m[1] : null
+}
+
 export default function VideoPlayer({
   url,
   title,
   onEnded,
+  onProgress,
+  startSeconds,
   poster,
 }: {
   url: string
   title?: string
   onEnded?: () => void
+  /** 数秒おきに呼ばれる（現在の再生位置秒, 動画の長さ秒） */
+  onProgress?: (seconds: number, duration: number) => void
+  /** 指定すると、YouTube埋め込み時にこの位置から再生を再開する */
+  startSeconds?: number
   poster?: string
 }) {
-  const ref = useRef<HTMLVideoElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const ytContainerRef = useRef<HTMLDivElement>(null)
+  const ytPlayerRef = useRef<any>(null)
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const [error, setError] = useState(false)
 
-  const isEmbed = /youtube\.com|youtu\.be|vimeo\.com/.test(url)
+  const youTubeId = extractYouTubeId(url)
+  const isVimeo = !youTubeId && /vimeo\.com/.test(url)
 
-  if (isEmbed) {
-    const src = url
-      .replace('watch?v=', 'embed/')
-      .replace('youtu.be/', 'youtube.com/embed/')
+  // YouTube: IFrame Player API で埋め込み（進捗取得・続きから再生に対応）
+  useEffect(() => {
+    if (!youTubeId || !ytContainerRef.current) return
+    let cancelled = false
+
+    loadYouTubeApi().then(() => {
+      if (cancelled || !ytContainerRef.current) return
+      ytPlayerRef.current = new window.YT!.Player(ytContainerRef.current, {
+        videoId: youTubeId,
+        playerVars: { playsinline: 1 },
+        events: {
+          onReady: (e: any) => {
+            if (startSeconds && startSeconds > 0) e.target.seekTo(startSeconds, true)
+          },
+          onStateChange: (e: any) => {
+            const YT = window.YT!
+            if (e.data === YT.PlayerState.ENDED) {
+              onEnded?.()
+              if (pollRef.current) clearInterval(pollRef.current)
+            }
+            if (e.data === YT.PlayerState.PLAYING && !pollRef.current) {
+              pollRef.current = setInterval(() => {
+                const p = ytPlayerRef.current
+                if (!p?.getCurrentTime) return
+                onProgress?.(p.getCurrentTime(), p.getDuration())
+              }, 5000)
+            }
+            if (e.data === YT.PlayerState.PAUSED && pollRef.current) {
+              clearInterval(pollRef.current)
+              pollRef.current = null
+              const p = ytPlayerRef.current
+              if (p?.getCurrentTime) onProgress?.(p.getCurrentTime(), p.getDuration())
+            }
+          },
+        },
+      })
+    })
+
+    return () => {
+      cancelled = true
+      if (pollRef.current) clearInterval(pollRef.current)
+      ytPlayerRef.current?.destroy?.()
+      ytPlayerRef.current = null
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [youTubeId])
+
+  if (youTubeId) {
+    return <div className="aspect-video w-full bg-black" ref={ytContainerRef} />
+  }
+
+  if (isVimeo) {
     return (
       <div className="aspect-video w-full bg-black">
         <iframe
           className="h-full w-full"
-          src={src}
+          src={url}
           title={title}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
@@ -47,7 +137,7 @@ export default function VideoPlayer({
         </div>
       ) : (
         <video
-          ref={ref}
+          ref={videoRef}
           key={url}
           className="h-full w-full"
           src={url}

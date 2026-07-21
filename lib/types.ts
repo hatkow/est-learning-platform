@@ -66,6 +66,15 @@ export interface Enrollment {
 // lessonId -> completed（モックではログイン中ユーザー単位で保持）
 export type ProgressMap = Record<string, boolean>
 
+export interface WatchState {
+  seconds: number // 最後に視聴していた再生位置（秒）
+  duration: number // 動画の長さ（秒）。取得できるまでは0
+  updatedAt: string
+}
+
+// lessonId -> 視聴位置（YouTube IFrame Player API 経由で取得。自サイト埋め込み視聴時のみ）
+export type WatchMap = Record<string, WatchState>
+
 export interface Order {
   id: string
   courseId: string
