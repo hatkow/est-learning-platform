@@ -35,6 +35,26 @@ function makeLessons(
   })
 }
 
+function makeYoutubeLessons(
+  courseId: string,
+  defs: [title: string, url: string, sec: number, free?: boolean][],
+  descBase: string,
+): Lesson[] {
+  return defs.map(([title, url, sec, free], i) => {
+    lessonSeq += 1
+    return {
+      id: `l-${courseId}-${i + 1}`,
+      title,
+      description: `${descBase}「${title}」では、実際の画面を操作しながら手順を解説します。`,
+      videoUrl: url,
+      duration: sec,
+      order: i + 1,
+      isFree: !!free,
+      courseId,
+    }
+  })
+}
+
 const review = (userName: string, rating: number, comment: string, d: string): Review => ({
   id: `r-${userName}-${d}`,
   userName,
@@ -72,62 +92,62 @@ const sampleCourses: Course[] = [
       'データソース（SharePoint / Excel）への接続',
       'よく使う関数と画面遷移の作り方',
     ],
-    lessons: makeLessons(
+    lessons: makeYoutubeLessons(
       'c-powerapps-basic',
       [
-        ['PowerApps とは？できることの全体像', 8, true],
-        ['キャンバスアプリを新規作成する', 12, true],
-        ['コントロールの配置とプロパティ', 14],
-        ['データソースに接続する', 16],
-        ['関数の基本（Navigate / Patch）', 18],
-        ['アプリの保存・公開・共有', 10],
+        ['Power Apps って何？', 'https://youtu.be/WVUESfBvkzc', 310, true],
+        ['ローコードアプリとは？', 'https://youtu.be/8KNxQa2urJw', 321, true],
+        ['どんな種類のアプリができる？', 'https://youtu.be/zwkNSbpT7E0', 244],
+        ['サインインしてみよう', 'https://youtu.be/LGv5LOMBfvI', 167],
+        ['実際のアプリを見てみよう', 'https://youtu.be/auBZbWnInSw', 236],
+        ['アプリ作成の流れを見てみよう', 'https://youtu.be/xxY0D5LK3yY', 459],
       ],
-      'PowerApps の操作を基礎から学ぶレッスンです。',
+      'PowerApps の全体像を基礎から学ぶレッスンです。',
     ),
     reviews: [
       review('受講者A', 5, 'ノーコードでこんなに作れるとは。説明が丁寧でつまずきませんでした。', '2026-05-10'),
-      review('受講者B', 4, '無料とは思えない内容。次の中級も受けたいです。', '2026-05-15'),
+      review('受講者B', 4, '無料とは思えない内容。次の基本操作編も受けたいです。', '2026-05-15'),
     ],
   },
   {
     id: 'c-powerapps-advanced',
-    title: 'PowerApps 実践 — 業務アプリを設計・運用する',
+    title: 'PowerApps 基本操作編 — データの表示・編集・検索を作ってみよう',
     slug: 'powerapps-advanced',
-    description: 'データ設計、コンポーネント化、権限管理まで実務レベルを習得。',
+    description: 'キャンバスアプリでデータの一覧表示・編集フォーム・検索までを実践形式で身につけます。',
     longDescription:
-      'PowerApps の基本を理解した方向けの実践コース。Dataverse を用いたデータ設計、再利用可能なコンポーネント、ギャラリーとフォームの高度な使い方、パフォーマンス最適化、ユーザー権限の考え方まで、運用を見据えた開発手法を解説します。',
+      '超入門編で学んだ基礎を踏まえ、実際にキャンバスアプリを操作しながらデータの追加・一覧表示（垂直ギャラリー）・詳細表示（編集フォーム）・デザイン調整、さらにレコードの新規作成／編集／削除、並び替え・検索・絞り込みまでを、画面操作を追いながら解説します。',
     thumbnail: '/images/movie-002.png',
     thumbnailColor: '#164684',
     price: 12800,
     isPublished: true,
     categoryId: 'cat-powerapps',
-    level: '中級',
+    level: '初級',
     instructor: '田中 健太',
     instructorTitle: 'Power Platform コンサルタント',
     createdAt: '2026-03-15',
     updatedAt: '2026-05-22',
     studentsCount: 640,
     whatYouWillLearn: [
-      'Dataverse を用いたデータモデリング',
-      '再利用可能なキャンバスコンポーネント設計',
-      'ギャラリー／フォームの実践テクニック',
-      'パフォーマンス最適化と委任の理解',
+      'キャンバス型アプリの操作画面の基本',
+      'データの追加とタイトル・一覧（ギャラリー）表示',
+      '編集フォームによるデータ詳細表示とデザイン調整',
+      'レコードの新規作成・編集・削除、並び替え・検索・絞り込み',
     ],
-    lessons: makeLessons(
+    lessons: makeYoutubeLessons(
       'c-powerapps-advanced',
       [
-        ['実務で使うアーキテクチャ概要', 10, true],
-        ['Dataverse のテーブル設計', 20],
-        ['コンポーネントで画面を共通化', 18],
-        ['委任問題とパフォーマンス対策', 22],
-        ['権限とセキュリティロール', 16],
-        ['ALM（環境とソリューション管理）', 19],
+        ['キャンバス型アプリの操作画面', 'https://youtu.be/jYJrJgPe-NY', 317, true],
+        ['データを追加し、タイトルを表示する', 'https://youtu.be/Tv5JSLU3PbI', 553],
+        ['データ一覧を表示する（垂直ギャラリー）', 'https://youtu.be/wOzXkquYDB0', 249],
+        ['データの詳細を表示する（編集フォーム）', 'https://youtu.be/dcI2aguVxVg', 228],
+        ['デザインを整える（ボタン・アイコン）', 'https://youtu.be/N_2PPLkW4Po', 406],
+        ['レコードの詳細を表示する', 'https://youtu.be/xiklv5Bqs-Q', 680],
+        ['レコードを新規作成、編集、削除する', 'https://youtu.be/o4GImsJlZBw', 700],
+        ['レコードを並び替え、検索、絞り込みする', 'https://youtu.be/d00ehRgpfUU', 626],
       ],
-      'PowerApps を業務で運用するための実践レッスンです。',
+      'キャンバスアプリを実際に操作しながら学ぶレッスンです。',
     ),
-    reviews: [
-      review('受講者C', 5, '委任の話が特に勉強になりました。現場で即使えます。', '2026-05-18'),
-    ],
+    reviews: [],
   },
   {
     id: 'c-automate-basic',
