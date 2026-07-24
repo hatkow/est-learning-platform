@@ -111,7 +111,14 @@ export default function VideoPlayer({
   }, [youTubeId])
 
   if (youTubeId) {
-    return <div className="aspect-video w-full bg-black" ref={ytContainerRef} />
+    // YouTube IFrame API はターゲット要素を直接iframeに置き換えるため、
+    // Reactが管理する要素をそのまま渡すとunmount時にDOM不整合（removeChildエラー）が起きる。
+    // 外側はReactが管理する安定した要素、内側はYouTubeに明け渡す使い捨て要素として分離する。
+    return (
+      <div className="aspect-video w-full bg-black">
+        <div key={youTubeId} ref={ytContainerRef} className="h-full w-full" />
+      </div>
+    )
   }
 
   if (isVimeo) {
