@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import {
-  ArrowRight, Award, Layers, LineChart, MessagesSquare, Sparkles, Workflow, ShieldCheck,
+  ArrowRight, Award, Layers, MessagesSquare, ShieldCheck,
 } from 'lucide-react'
 import PageHero from '@/components/layout/PageHero'
 import { siteUrl } from '@/lib/site'
@@ -19,56 +19,56 @@ export const metadata: Metadata = {
   },
 }
 
-// 実在メンバーの情報が未確定のため、掲載イメージを示すサンプルプロフィール
-// （実データが揃い次第、氏名は伏せたまま実際の経歴に差し替える）
+// 出典: イースト株式会社「イーストみんなのDX推進室」(https://dx.est.co.jp/) 所属コンサルタント紹介
+// お客様情報保護の観点から、氏名は同サイトの表記に合わせイニシャルとしています。
 const members = [
   {
-    icon: ShieldCheck,
-    role: 'DX推進統括コンサルタント',
-    label: 'K.K',
-    years: '15年',
-    tags: ['ITガバナンス設計', 'DX推進戦略', 'プロジェクトマネジメント'],
-    bio: '大手製造業・金融機関のDX推進責任者として、全社的な内製化ガバナンス設計を多数リード。経営層への提言から現場定着まで一気通貫で伴走します。',
-  },
-  {
     icon: Layers,
-    role: 'PowerAppsコンサルタント',
-    label: 'T.T',
-    years: '8年',
-    tags: ['業務アプリ内製化', 'Microsoft認定資格保有', '要件定義'],
-    bio: '製造・物流業界を中心に、現場の業務アプリ内製化を支援。要件整理から研修設計まで、現場担当者目線でのわかりやすさにこだわります。',
-  },
-  {
-    icon: Workflow,
-    role: 'Power Automate／RPAコンサルタント',
-    label: 'S.M',
-    years: '6年',
-    tags: ['業務自動化', 'ワークフロー設計', '金融機関支援実績'],
-    bio: '金融・士業向けに、承認フローや定型業務の自動化を多数支援。属人化していた業務を「誰でも回せる仕組み」に変える設計を得意とします。',
-  },
-  {
-    icon: LineChart,
-    role: 'Power BIコンサルタント',
-    label: 'Y.N',
-    years: '7年',
-    tags: ['データ分析基盤構築', '経営ダッシュボード設計', 'DAX'],
-    bio: '小売・サービス業の経営データ可視化を多数手がける。「作って終わり」ではなく、現場が使い続けられるダッシュボード設計を重視しています。',
-  },
-  {
-    icon: Sparkles,
-    role: '生成AI／Copilotコンサルタント',
-    label: 'R.Y',
-    years: '4年',
-    tags: ['生成AI活用研修', 'Microsoft Copilot導入', 'AIガバナンス'],
-    bio: '企業向け生成AI研修・Copilot導入支援を担当。安全な利用ルール整備と、現場が実際に使いこなせる教育の両立を得意としています。',
+    catchphrase: '確かな技術・適切な提案',
+    label: 'A.J',
+    strength: 'Powerplatform活用による業務改善提案とシステム開発',
+    achievements: [
+      'インフラ会社様　経理データ自動集計',
+      '住宅メーカー様　社内ポータル改修',
+      '食品メーカー様　受付業務効率化',
+      'その他　座席予約システム開発、Azureでのシステム開発',
+    ],
   },
   {
     icon: Award,
-    role: 'AIエージェント開発エンジニア',
-    label: 'H.A',
-    years: '5年',
-    tags: ['AIエージェント開発', 'システム連携', 'プロトタイピング'],
-    bio: '業務特化型AIエージェントの設計・開発を担当。PoCから本番導入まで、スピード感を持って形にします。',
+    catchphrase: '現場第一・実務経験豊富',
+    label: 'K.N',
+    strength: 'システム開発を軸に、人事給与や総務、マーケティング、講師講演など幅広い実務経験。起業経験も。',
+    achievements: [
+      '複数会社様　人事給与業務',
+      '複数学校様　講師業務',
+      '老舗百貨店様　お得意様向け文化業務（講演）',
+      'コンサル会社様　プロジェクト管理システム',
+      '輸出入会社様　輸出入業務標準化とシステム開発',
+      '運輸業様　大規模人事給与システムフルスクラッチ',
+      '運輸業様　コールセンター立上げ',
+      '官公庁様　CRM導入',
+      '販売会社様　お客様の声分析、販売管理システム',
+      '※音声認識で国内特許取得（2003年）',
+    ],
+  },
+  {
+    icon: ShieldCheck,
+    catchphrase: 'セキュリティ・リスクマネジメント経験豊富',
+    label: 'W.S',
+    strength: '「現場の自由」と「経営・監査の要請」を両立させる市民開発ガバナンス設計が得意。',
+    achievements: [
+      '省庁　システム監査',
+      'ゼネコン様　会計システム見積妥当性評価',
+      '重工業メーカー様　IT予算評価',
+      '石油元売り会社様　SAPベンチマーク',
+      'SIer様　市民開発ガバナンス方針策定支援',
+      '複数IT子会社様　業務役割別工数単価策定支援',
+      '製薬企業IT子会社様　情報セキュリティ教育支援',
+      'インフラ企業IT子会社様　優良パートナーとのベンダーマネジメント支援、調達部門のガバナンス強化支援',
+      'その他　kintoneを用いた社内システムの構築、JavaScript・Firebase・PHPを用いた個人開発',
+      '独立行政法人　CISO補佐業務',
+    ],
   },
 ]
 
@@ -98,7 +98,7 @@ export default function BusinessTeamPage() {
 
       <div className="container-x py-12">
         <p className="mx-auto max-w-3xl rounded-xl bg-est-50 p-4 text-center text-sm text-slate-600">
-          ※ 掲載情報はサンプルです。正式なプロフィールが整い次第、差し替えます。お客様情報保護の観点から、氏名はイニシャル表記としています。
+          ※ お客様情報保護の観点から、氏名はイニシャル表記としています。
         </p>
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -107,17 +107,15 @@ export default function BusinessTeamPage() {
               <span className="grid h-14 w-14 place-items-center rounded-full bg-est-50 text-est-600">
                 <m.icon size={26} />
               </span>
-              <p className="mt-4 text-xs font-bold tracking-wide text-est-600">{m.role}</p>
-              <div className="mt-1 flex items-baseline gap-2">
-                <h2 className="text-lg font-black">{m.label}</h2>
-                <span className="text-xs text-slate-500">経験{m.years}</span>
-              </div>
-              <p className="mt-3 text-sm leading-relaxed text-slate-600">{m.bio}</p>
-              <div className="mt-4 flex flex-wrap gap-1.5">
-                {m.tags.map((t) => (
-                  <span key={t} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-600">#{t}</span>
+              <p className="mt-4 text-xs font-bold tracking-wide text-est-600">{m.catchphrase}</p>
+              <h2 className="mt-1 text-lg font-black">{m.label}</h2>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600">{m.strength}</p>
+              <p className="mt-4 text-xs font-bold text-slate-500">主な実績</p>
+              <ul className="mt-1.5 space-y-1 text-xs leading-relaxed text-slate-600">
+                {m.achievements.map((a) => (
+                  <li key={a}>・{a}</li>
                 ))}
-              </div>
+              </ul>
             </div>
           ))}
         </div>
