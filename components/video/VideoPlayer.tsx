@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { extractYouTubeId } from '@/lib/youtube'
 
 // 設計書では React Player を使用。本デモでは依存を最小化するため
 // HTML5 <video> をラップした同等のプレーヤーを実装。
@@ -30,11 +31,6 @@ function loadYouTubeApi(): Promise<void> {
     document.head.appendChild(tag)
   })
   return ytApiPromise
-}
-
-function extractYouTubeId(url: string): string | null {
-  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([\w-]{6,})/)
-  return m ? m[1] : null
 }
 
 export default function VideoPlayer({

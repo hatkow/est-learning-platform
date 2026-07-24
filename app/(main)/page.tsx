@@ -8,9 +8,11 @@ import {
 } from 'lucide-react'
 import { categories, courses } from '@/lib/data'
 import { getAllPosts } from '@/lib/blog'
+import { extractYouTubeId } from '@/lib/youtube'
 import RecommendedCarousel from '@/components/home/RecommendedCarousel'
 import CategoryCourses from '@/components/home/CategoryCourses'
 import BlogCarousel from '@/components/home/BlogCarousel'
+import VideoGallery, { type VideoItem } from '@/components/home/VideoGallery'
 
 export const metadata: Metadata = {
   title: { absolute: 'AI・Powerplatformスクール | イースト株式会社 DX推進動画学習' },
@@ -29,6 +31,11 @@ export default async function HomePage() {
   const publishedCourses = courses.filter((c) => c.isPublished)
   const recommended = [...publishedCourses].sort((a, b) => b.studentsCount - a.studentsCount).slice(0, 15)
   const posts = (await getAllPosts()).slice(0, 8)
+  const videoItems: VideoItem[] = publishedCourses.flatMap((course) =>
+    course.lessons
+      .filter((lesson) => extractYouTubeId(lesson.videoUrl))
+      .map((lesson) => ({ lesson, course })),
+  )
 
   const seminarHighlights = [
     '生成AIの基本とMicrosoft Copilotの役割',
@@ -96,6 +103,8 @@ export default async function HomePage() {
         ))}
         </div>
       </section>
+
+      <VideoGallery items={videoItems} />
 
       <RecommendedCarousel courses={recommended} />
 
