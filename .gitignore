@@ -23,3 +23,6 @@ next-env.d.ts
 
 # ビルド時に microCMS から生成される講座キャッシュ（prebuild で再生成される）
 /lib/generated/
+
+.vercel
+.env*
