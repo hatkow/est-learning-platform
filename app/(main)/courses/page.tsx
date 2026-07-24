@@ -25,6 +25,7 @@ function CoursesInner() {
   const result = useMemo(() => {
     const term = q.trim().toLowerCase()
     let list = courses.filter((c) => {
+      if (!c.isPublished) return false
       const category = categories.find((x) => x.id === c.categoryId)
       const matchQ =
         !term ||

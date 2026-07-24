@@ -26,7 +26,8 @@ export const metadata: Metadata = {
 }
 
 export default async function HomePage() {
-  const recommended = [...courses].sort((a, b) => b.studentsCount - a.studentsCount).slice(0, 15)
+  const publishedCourses = courses.filter((c) => c.isPublished)
+  const recommended = [...publishedCourses].sort((a, b) => b.studentsCount - a.studentsCount).slice(0, 15)
   const posts = (await getAllPosts()).slice(0, 8)
 
   const seminarHighlights = [
@@ -238,7 +239,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <CategoryCourses categories={categories} courses={courses} />
+      <CategoryCourses categories={categories} courses={publishedCourses} />
     </>
   )
 }

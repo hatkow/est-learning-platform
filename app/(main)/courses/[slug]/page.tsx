@@ -26,7 +26,7 @@ export default function CourseDetailPage() {
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
 
-  if (!course) {
+  if (!course || !course.isPublished) {
     return (
       <div className="container-x py-24 text-center">
         <p className="text-lg font-bold">コースが見つかりませんでした。</p>
