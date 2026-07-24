@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
-import { GraduationCap, Search, Menu, X, LayoutDashboard, Shield, LogOut, User as UserIcon } from 'lucide-react'
+import { GraduationCap, Search, Menu, X, LayoutDashboard, Shield, LogOut } from 'lucide-react'
 import { useStore } from '@/lib/store'
 
 export default function Header() {
@@ -104,10 +104,7 @@ export default function Header() {
               </div>
             </>
           ) : (
-            <>
-              <Link href="/login" className="btn-ghost">ログイン</Link>
-              <Link href="/register" className="btn-primary">無料で会員登録</Link>
-            </>
+            <Link href="/register" className="btn-primary">無料で会員登録</Link>
           )}
         </nav>
 
@@ -143,12 +140,7 @@ export default function Header() {
                 </button>
               </>
             ) : (
-              <>
-                <Link href="/login" className="btn-outline justify-center" onClick={() => setMenuOpen(false)}>
-                  <UserIcon size={16} /> ログイン
-                </Link>
-                <Link href="/register" className="btn-primary justify-center" onClick={() => setMenuOpen(false)}>無料で会員登録</Link>
-              </>
+              <Link href="/register" className="btn-primary justify-center" onClick={() => setMenuOpen(false)}>無料で会員登録</Link>
             )}
           </div>
         </div>
