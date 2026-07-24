@@ -41,7 +41,7 @@ export default function LearnPage() {
   }
 
   const enrolled = mounted && isEnrolled(course.id)
-  const canWatch = lesson.isFree || enrolled
+  const canWatch = enrolled
   const index = course.lessons.findIndex((l) => l.id === lesson.id)
   const prev = course.lessons[index - 1]
   const next = course.lessons[index + 1]
@@ -55,7 +55,7 @@ export default function LearnPage() {
     else router.push(`/courses/${course.slug}`)
   }
 
-  // 視聴制御（設計書 9.2）: 無料プレビュー以外は受講登録が必要
+  // 視聴制御: すべての動画は受講登録（無料）が必要
   if (mounted && !canWatch) {
     return (
       <div className="grid min-h-screen place-items-center bg-slate-950 p-6 text-white">
@@ -67,7 +67,14 @@ export default function LearnPage() {
           </p>
           <div className="mt-6 flex flex-col gap-2">
             <Link href={`/courses/${course.slug}`} className="btn-primary">コース詳細へ</Link>
-            {!user && <Link href="/register" className="btn border border-white/40 text-white hover:bg-white/10">会員登録</Link>}
+            {!user && (
+              <Link
+                href={`/register?from=${encodeURIComponent(`/courses/${course.slug}`)}`}
+                className="btn border border-white/40 text-white hover:bg-white/10"
+              >
+                会員登録
+              </Link>
+            )}
           </div>
         </div>
       </div>
@@ -90,7 +97,7 @@ export default function LearnPage() {
         {course.lessons.map((l, i) => {
           const isCurrent = l.id === lesson.id
           const done = mounted && !!progressMap[l.id]
-          const locked = !(l.isFree || enrolled)
+          const locked = !enrolled
           return (
             <li key={l.id}>
               <button
@@ -107,7 +114,6 @@ export default function LearnPage() {
                   <span className="block text-sm font-medium leading-snug">{i + 1}. {l.title}</span>
                   <span className="mt-1 inline-flex items-center gap-1 text-xs text-slate-400">
                     <PlayCircle size={12} /> {formatDuration(l.duration)}
-                    {l.isFree && <span className="ml-1 rounded bg-emerald-500/20 px-1.5 text-emerald-300">無料</span>}
                   </span>
                 </span>
               </button>

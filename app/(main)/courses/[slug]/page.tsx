@@ -46,11 +46,11 @@ export default function CourseDetailPage() {
       return
     }
     if (course.price === 0) {
-      if (!user) { router.push('/register'); return }
+      if (!user) { router.push(`/register?from=${encodeURIComponent(`/courses/${course.slug}`)}`); return }
       enroll(course.id)
       router.push(`/learn/${course.id}/${firstLesson.id}`)
     } else {
-      if (!user) { router.push('/register'); return }
+      if (!user) { router.push(`/register?from=${encodeURIComponent(`/courses/${course.slug}`)}`); return }
       router.push(`/checkout/${course.id}`)
     }
   }
@@ -120,13 +120,12 @@ export default function CourseDetailPage() {
             </p>
             <ul className="overflow-hidden rounded-xl border border-slate-200">
               {course.lessons.map((lesson, i) => {
-                const canPreview = lesson.isFree || enrolled
+                const canPreview = enrolled
                 return (
                   <li key={lesson.id} className="flex items-center gap-3 border-b border-slate-100 bg-white px-4 py-3 last:border-b-0">
                     <span className="w-6 text-center text-sm font-bold text-slate-400">{i + 1}</span>
                     {canPreview ? <PlayCircle size={18} className="text-est-600" /> : <Lock size={16} className="text-slate-400" />}
                     <span className="flex-1 text-sm font-medium text-slate-800">{lesson.title}</span>
-                    {lesson.isFree && !enrolled && <span className="badge bg-emerald-50 text-emerald-700">無料プレビュー</span>}
                     <span className="text-xs text-slate-500">{formatDuration(lesson.duration)}</span>
                     {canPreview && (
                       <Link
@@ -203,12 +202,6 @@ export default function CourseDetailPage() {
               <button onClick={handlePrimary} className="btn-primary btn-lg w-full">
                 {enrolled ? '学習を続ける' : course.price === 0 ? '無料で受講する' : '購入する'}
               </button>
-
-              {!enrolled && course.price > 0 && firstLesson && (
-                <Link href={`/learn/${course.id}/${firstLesson.id}`} className="btn-outline mt-2 w-full">
-                  無料プレビューを見る
-                </Link>
-              )}
 
               <ul className="mt-6 space-y-3 text-sm text-slate-700">
                 <li className="flex items-center justify-between"><span className="text-slate-500">レッスン数</span><span className="font-bold">{course.lessons.length}本</span></li>
