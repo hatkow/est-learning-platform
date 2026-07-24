@@ -46,11 +46,11 @@ export default function CourseDetailPage() {
       return
     }
     if (course.price === 0) {
-      if (!user) { router.push('/login'); return }
+      if (!user) { router.push('/register'); return }
       enroll(course.id)
       router.push(`/learn/${course.id}/${firstLesson.id}`)
     } else {
-      if (!user) { router.push('/login'); return }
+      if (!user) { router.push('/register'); return }
       router.push(`/checkout/${course.id}`)
     }
   }

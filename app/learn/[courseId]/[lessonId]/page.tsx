@@ -63,11 +63,11 @@ export default function LearnPage() {
           <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-white/10"><Lock size={30} /></span>
           <h1 className="mt-5 text-xl font-bold">このレッスンは受講登録が必要です</h1>
           <p className="mt-2 text-sm text-slate-300">
-            {user ? 'コースに登録すると、すべてのレッスンを視聴できます。' : 'ログインのうえ、コースに登録してください。'}
+            {user ? 'コースに登録すると、すべてのレッスンを視聴できます。' : '会員登録のうえ、コースに登録してください。'}
           </p>
           <div className="mt-6 flex flex-col gap-2">
             <Link href={`/courses/${course.slug}`} className="btn-primary">コース詳細へ</Link>
-            {!user && <Link href="/login" className="btn border border-white/40 text-white hover:bg-white/10">ログイン</Link>}
+            {!user && <Link href="/register" className="btn border border-white/40 text-white hover:bg-white/10">会員登録</Link>}
           </div>
         </div>
       </div>

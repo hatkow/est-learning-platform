@@ -9,7 +9,7 @@ import { useStore } from '@/lib/store'
 export default function RequireAuth({
   children,
   role,
-  redirectTo = '/login',
+  redirectTo = '/register',
 }: {
   children: React.ReactNode
   role?: 'USER' | 'ADMIN'
