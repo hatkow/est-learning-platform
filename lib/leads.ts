@@ -16,6 +16,10 @@ export interface LeadInput {
   company: string
   name: string
   email: string
+  companySize: string
+  interest: string
+  department: string
+  phone: string
   marketingOptIn: boolean
 }
 
