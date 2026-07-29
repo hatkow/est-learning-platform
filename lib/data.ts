@@ -9,7 +9,7 @@ const SAMPLE_VIDEO =
 export const categories: Category[] = [
   { id: 'cat-basic', name: '基礎・共通', slug: 'basic' },
   { id: 'cat-copilot', name: 'Copilot(AI)', slug: 'copilot' },
-  { id: 'cat-powerapps', name: 'PowerApps', slug: 'powerapps' },
+  { id: 'cat-powerapps', name: 'Power Apps', slug: 'powerapps' },
   { id: 'cat-automate', name: 'Power Automate', slug: 'power-automate' },
   { id: 'cat-bi', name: 'Power BI', slug: 'power-bi' },
 ]
@@ -70,11 +70,11 @@ const cmsCourses: Course[] = (cmsCoursesRaw as MicroCMSCourse[]).map(convertCmsC
 const sampleCourses: Course[] = [
   {
     id: 'c-powerapps-basic',
-    title: 'PowerApps はじめの一歩 — ノーコードアプリ開発入門',
+    title: 'Power Apps はじめの一歩 — ノーコードアプリ開発入門',
     slug: 'powerapps-basic',
     description: 'ドラッグ＆ドロップで業務アプリを作る基本をゼロから学びます。',
     longDescription:
-      'PowerApps を初めて触る方向けの入門コースです。キャンバスアプリの作成、画面・コントロールの配置、データソース接続、簡単な関数の使い方までを、実際の業務シーンを例に解説します。プログラミング経験は不要です。',
+      'Power Apps を初めて触る方向けの入門コースです。キャンバスアプリの作成、画面・コントロールの配置、データソース接続、簡単な関数の使い方までを、実際の業務シーンを例に解説します。プログラミング経験は不要です。',
     thumbnail: '/images/movie-001.png',
     thumbnailColor: '#1a56a0',
     price: 0,
@@ -87,7 +87,7 @@ const sampleCourses: Course[] = [
     updatedAt: '2026-05-20',
     studentsCount: 1820,
     whatYouWillLearn: [
-      'PowerApps の基本概念と画面構成',
+      'Power Apps の基本概念と画面構成',
       'キャンバスアプリの新規作成と公開',
       'データソース（SharePoint / Excel）への接続',
       'よく使う関数と画面遷移の作り方',
@@ -102,7 +102,7 @@ const sampleCourses: Course[] = [
         ['実際のアプリを見てみよう', 'https://youtu.be/auBZbWnInSw', 236],
         ['アプリ作成の流れを見てみよう', 'https://youtu.be/xxY0D5LK3yY', 459],
       ],
-      'PowerApps の全体像を基礎から学ぶレッスンです。',
+      'Power Apps の全体像を基礎から学ぶレッスンです。',
     ),
     reviews: [
       review('受講者A', 5, 'ノーコードでこんなに作れるとは。説明が丁寧でつまずきませんでした。', '2026-05-10'),
@@ -111,7 +111,7 @@ const sampleCourses: Course[] = [
   },
   {
     id: 'c-powerapps-advanced',
-    title: 'PowerApps 基本操作編 — データの表示・編集・検索を作ってみよう',
+    title: 'Power Apps 基本操作編 — データの表示・編集・検索を作ってみよう',
     slug: 'powerapps-advanced',
     description: 'キャンバスアプリでデータの一覧表示・編集フォーム・検索までを実践形式で身につけます。',
     longDescription:
@@ -271,9 +271,9 @@ const sampleCourses: Course[] = [
     id: 'c-basic-dx',
     title: 'はじめての DX — Power Platform 全体像をつかむ',
     slug: 'intro-to-dx-power-platform',
-    description: 'PowerApps / Automate / BI の役割と連携を俯瞰する基礎講座。',
+    description: 'Power Apps / Automate / BI の役割と連携を俯瞰する基礎講座。',
     longDescription:
-      'これから Power Platform を学ぶすべての方へ。DX の考え方から、PowerApps・Power Automate・Power BI それぞれの役割、3つを組み合わせた業務改善の進め方までを、具体的な事例とともに俯瞰的に解説します。',
+      'これから Power Platform を学ぶすべての方へ。DX の考え方から、Power Apps・Power Automate・Power BI それぞれの役割、3つを組み合わせた業務改善の進め方までを、具体的な事例とともに俯瞰的に解説します。',
     thumbnail: '/images/movie-006.png',
     thumbnailColor: '#2a62a8',
     price: 0,
@@ -296,7 +296,7 @@ const sampleCourses: Course[] = [
       [
         ['DXとは何か／なぜ内製化か', 10, true],
         ['Power Platform の全体像', 12, true],
-        ['PowerApps の役割', 9],
+        ['Power Apps の役割', 9],
         ['Power Automate の役割', 9],
         ['Power BI の役割', 9],
         ['3製品の連携イメージ', 11],

@@ -27,7 +27,7 @@ export default function Footer() {
             <li><Link href="/courses?cat=copilot" className="hover:text-est-700">Copilot</Link></li>
             <li><Link href="/courses?cat=copilot-cowork" className="hover:text-est-700">Copilot Cowork</Link></li>
             <li><Link href="/courses?cat=copilot-agent" className="hover:text-est-700">Copilotエージェント</Link></li>
-            <li><Link href="/courses?cat=powerapps" className="hover:text-est-700">PowerApps</Link></li>
+            <li><Link href="/courses?cat=powerapps" className="hover:text-est-700">Power Apps</Link></li>
             <li><Link href="/courses?cat=power-automate" className="hover:text-est-700">Power Automate</Link></li>
             <li><Link href="/courses?cat=power-bi" className="hover:text-est-700">Power BI</Link></li>
           </ul>

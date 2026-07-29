@@ -8,15 +8,15 @@ import {
 import { siteUrl } from '@/lib/site'
 
 export const metadata: Metadata = {
-  title: '法人向け研修｜PowerApps・Power Platform のカスタム研修',
+  title: '法人向け研修｜Power Apps・Power Platform のカスタム研修',
   description:
-    'イースト株式会社による法人向け PowerApps / Power Platform 研修。複数名への集合研修から、自社業務に合わせたオリジナルカリキュラム制作まで対応。研修・制作とも 20,000円／時間〜。まずは無料相談を。',
+    'イースト株式会社による法人向け Power Apps / Power Platform 研修。複数名への集合研修から、自社業務に合わせたオリジナルカリキュラム制作まで対応。研修・制作とも 20,000円／時間〜。まずは無料相談を。',
   alternates: { canonical: '/business' },
   openGraph: {
     type: 'website',
-    title: '法人向け研修｜PowerApps・Power Platform のカスタム研修',
+    title: '法人向け研修｜Power Apps・Power Platform のカスタム研修',
     description:
-      '貴社の業務に合わせた PowerApps 研修・オリジナルカリキュラム制作。20,000円／時間〜。Power Platform 導入支援ベンダーが直接指導します。',
+      '貴社の業務に合わせた Power Apps 研修・オリジナルカリキュラム制作。20,000円／時間〜。Power Platform 導入支援ベンダーが直接指導します。',
     url: '/business',
   },
 }
@@ -73,7 +73,7 @@ const faqs = [
   { q: '何名から依頼できますか？', a: '少人数から対応可能です。人数に応じて最適な進め方をご提案します。まずはご相談ください。' },
   { q: 'オンラインでも受講できますか？', a: 'はい。オンライン研修・訪問研修のどちらにも対応しています。' },
   { q: '料金はどのように決まりますか？', a: '研修・制作とも 20,000円／時間〜です。人数・期間・内容・制作ボリュームにより変動するため、ヒアリングのうえお見積りします。' },
-  { q: 'PowerApps 以外も対応できますか？', a: 'Power Automate・Power BI を含む Power Platform 全般に対応しています。組み合わせた内製化支援も可能です。' },
+  { q: 'Power Apps 以外も対応できますか？', a: 'Power Automate・Power BI を含む Power Platform 全般に対応しています。組み合わせた内製化支援も可能です。' },
   { q: '自社の業務に合わせた内容にできますか？', a: 'はい。それが私たちの強みです。貴社の業務・データ・既存アプリに合わせてカリキュラムや教材を設計します。' },
 ]
 
@@ -83,11 +83,11 @@ const jsonLd = {
   '@graph': [
     {
       '@type': 'Service',
-      name: '法人向け PowerApps・Power Platform 研修／カリキュラム制作',
+      name: '法人向け Power Apps・Power Platform 研修／カリキュラム制作',
       provider: { '@type': 'Organization', name: 'イースト株式会社 AI・Powerplatformスクール' },
       areaServed: 'JP',
       description:
-        '企業向けの個別 PowerApps 研修と、自社業務に合わせたオリジナルカリキュラム制作。研修・制作とも 20,000円／時間〜。',
+        '企業向けの個別 Power Apps 研修と、自社業務に合わせたオリジナルカリキュラム制作。研修・制作とも 20,000円／時間〜。',
       offers: {
         '@type': 'Offer',
         price: '20000',
@@ -118,7 +118,7 @@ export default function BusinessPage() {
         <div className="container-x relative grid gap-10 py-16 md:grid-cols-2 md:items-center md:py-24">
           <div>
             <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-sm font-medium">
-              <Sparkles size={15} /> 法人向け PowerApps・Power Platform 研修
+              <Sparkles size={15} /> 法人向け Power Apps・Power Platform 研修
             </span>
             <h1 className="mt-5 text-4xl font-black leading-tight md:text-5xl">
               貴社の業務に合わせた、<br />AIの業務活用・Power Platform研修・DX内製化まで。
@@ -141,7 +141,7 @@ export default function BusinessPage() {
             <div className="overflow-hidden rounded-2xl bg-white shadow-2xl">
               <Image
                 src="/images/pic-003.png"
-                alt="講師がチームに PowerApps 研修を行うイメージ"
+                alt="講師がチームに Power Apps 研修を行うイメージ"
                 width={720}
                 height={405}
                 priority

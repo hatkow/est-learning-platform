@@ -17,12 +17,12 @@ import VideoGallery, { type VideoItem } from '@/components/home/VideoGallery'
 export const metadata: Metadata = {
   title: { absolute: 'AI・Powerplatformスクール | イースト株式会社 DX推進動画学習' },
   description:
-    'Copilot・AIエージェント・PowerApps・Power Automate・Power BIの利活用や操作を、記事・動画セミナーなどで学べるスクール。無料コースから今日、業務改善の第一歩を。',
+    'Copilot・AIエージェント・Power Apps・Power Automate・Power BIの利活用や操作を、記事・動画セミナーなどで学べるスクール。無料コースから今日、業務改善の第一歩を。',
   alternates: { canonical: '/' },
   openGraph: {
     title: 'AI・Powerplatformスクール | イースト株式会社 DX推進動画学習',
     description:
-      'Copilot・AIエージェント・PowerApps・Power Automate・Power BIの利活用や操作を、記事・動画セミナーなどで学べるスクール。',
+      'Copilot・AIエージェント・Power Apps・Power Automate・Power BIの利活用や操作を、記事・動画セミナーなどで学べるスクール。',
     url: '/',
   },
 }
@@ -73,7 +73,7 @@ export default async function HomePage() {
               AIを検索ツールで終わらせない。<br />組織として利用。
             </h1>
             <p className="mt-5 max-w-lg text-base text-est-50/90">
-              Copilot・Cowork・エージェント・PowerApps・Power Automate・PowerBI の利活用や操作を、
+              Copilot・Cowork・エージェント・Power Apps・Power Automate・Power BI の利活用や操作を、
               記事・動画セミナーなどで学べるスクール。業務改善の第一歩を、今日から始めましょう。
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -119,7 +119,7 @@ export default async function HomePage() {
               内製化やAIの業務活用を、<br />加速しませんか？
             </h2>
             <p className="mt-4 max-w-lg text-est-50/90">
-              個人での学習だけでなく、企業様向けに <strong className="text-white">Copilot(AI)・Power Automate・PowerApps のカスタム研修</strong> を提供しています。
+              個人での学習だけでなく、企業様向けに <strong className="text-white">Copilot(AI)・Power Automate・Power Apps のカスタム研修</strong> を提供しています。
               複数の社員へのまとめての研修から、自社業務に合わせたオリジナルカリキュラムの制作まで。
               実務や開発経験豊富な、Copilotや Power Platform 活用・導入支援のプロが、貴社の内製化・AI活用を伴走支援します。
             </p>
@@ -218,7 +218,7 @@ export default async function HomePage() {
                   <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-est-600" /> 短期集中型のコンサルティング・研修
                 </li>
                 <li className="flex items-start gap-2 text-sm text-slate-700">
-                  <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-est-600" /> Copilot・PowerApps・Power Automateの実務活用
+                  <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-est-600" /> Copilot・Power Apps・Power Automateの実務活用
                 </li>
                 <li className="flex items-start gap-2 text-sm text-slate-700">
                   <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-est-600" /> 貴社専属でAI活用・市民開発を集中支援

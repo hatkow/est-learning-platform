@@ -7,7 +7,7 @@ import PageHero from '@/components/layout/PageHero'
 export const metadata: Metadata = {
   title: '活用シーン｜法人向け研修の使い方',
   description:
-    '法人向け PowerApps・Power Platform 研修／カリキュラム制作の活用シーンをご紹介します。製造・小売・士業・自治体など、さまざまな現場での内製化の進め方の例です。',
+    '法人向け Power Apps・Power Platform 研修／カリキュラム制作の活用シーンをご紹介します。製造・小売・士業・自治体など、さまざまな現場での内製化の進め方の例です。',
   alternates: { canonical: '/business/cases' },
 }
 
@@ -17,7 +17,7 @@ const scenes = [
     industry: '製造業',
     title: '現場の点検記録をペーパーレス化',
     challenge: '紙の点検表を Excel に手入力していて二度手間・転記ミスが課題。',
-    solution: '現場社員5名に PowerApps の集合研修を実施。点検アプリを内製できる体制に。',
+    solution: '現場社員5名に Power Apps の集合研修を実施。点検アプリを内製できる体制に。',
     result: '点検記録のデジタル化を自社で実現。横展開も社内で進められるように。',
     image: '/images/pic-009.png',
   },
@@ -33,7 +33,7 @@ const scenes = [
     industry: '士業・コンサル',
     title: '紙業務からの脱却を内製で実現',
     challenge: '紙・Excel 中心の業務が多く、転記や管理に時間がかかっていた。',
-    solution: '自社の業務に合わせた PowerApps 管理アプリの作り方を個別研修。',
+    solution: '自社の業務に合わせた Power Apps 管理アプリの作り方を個別研修。',
     result: '紙業務をデジタルへ移行。改善も自分たちで回せる体制に。',
     image: '/images/pic-008.png',
   },
@@ -41,7 +41,7 @@ const scenes = [
     industry: '自治体・公共',
     title: '申請業務のデジタル化を内製化',
     challenge: '紙の申請書の処理に職員の工数が割かれていた。',
-    solution: '職員向けに PowerApps・Power Automate の基礎から実践までを段階研修。',
+    solution: '職員向けに Power Apps・Power Automate の基礎から実践までを段階研修。',
     result: '申請受付・回覧をデジタル化。外注に頼らず継続的に改善できる体制に。',
     image: '/images/pic-006.png',
   },

@@ -34,6 +34,7 @@ export interface MicroCMSCourse {
 
 // カテゴリ名 → 既存カテゴリID へのゆるいマッピング
 const CATEGORY_MAP: Record<string, string> = {
+  'Power Apps': 'cat-powerapps',
   PowerApps: 'cat-powerapps',
   'Power Automate': 'cat-automate',
   'Power BI': 'cat-bi',

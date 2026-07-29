@@ -37,7 +37,7 @@ const info: [string, React.ReactNode][] = [
     '事業内容',
     <>
       システム開発、教育支援サービス、デザインサービス、PDF関連ソリューション、フォント製品など。
-      Microsoft Power Platform（PowerApps / Power Automate / Power BI）の導入・開発支援、
+      Microsoft Power Platform（Power Apps / Power Automate / Power BI）の導入・開発支援、
       内製化支援、動画学習サービス「AI・Powerplatformスクール」の運営
     </>,
   ],

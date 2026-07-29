@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     template: '%s | AI・Powerplatformスクール',
   },
   description:
-    'イースト株式会社が運営するAI・Powerplatformスクール。Copilot・AIエージェント・Power Platform（PowerApps / Power Automate / Power BI）の操作を動画で学び、ノーコードでの内製化（市民開発）を支援します。',
+    'イースト株式会社が運営するAI・Powerplatformスクール。Copilot・AIエージェント・Power Platform（Power Apps / Power Automate / Power BI）の操作を動画で学び、ノーコードでの内製化（市民開発）を支援します。',
   openGraph: {
     type: 'website',
     locale: 'ja_JP',
