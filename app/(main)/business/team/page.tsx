@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
-  ArrowRight, Award, Layers, MessagesSquare, ShieldCheck,
+  ArrowRight, MessagesSquare,
 } from 'lucide-react'
 import PageHero from '@/components/layout/PageHero'
 import { siteUrl } from '@/lib/site'
@@ -23,10 +24,10 @@ export const metadata: Metadata = {
 // お客様情報保護の観点から、氏名は同サイトの表記に合わせイニシャルとしています。
 const members = [
   {
-    icon: Layers,
+    photo: '/images/consultant-aj.jpg',
     catchphrase: '確かな技術・適切な提案',
     label: 'A.J',
-    strength: 'Powerplatform活用による業務改善提案とシステム開発',
+    strength: 'Power Platform活用による業務改善提案とシステム開発',
     achievements: [
       'インフラ会社様　経理データ自動集計',
       '住宅メーカー様　社内ポータル改修',
@@ -35,7 +36,7 @@ const members = [
     ],
   },
   {
-    icon: Award,
+    photo: '/images/consultant-kn.jpg',
     catchphrase: '現場第一・実務経験豊富',
     label: 'K.N',
     strength: 'システム開発を軸に、人事給与や総務、マーケティング、講師講演など幅広い実務経験。起業経験も。',
@@ -53,7 +54,7 @@ const members = [
     ],
   },
   {
-    icon: ShieldCheck,
+    photo: '/images/consultant-ws.jpg',
     catchphrase: 'セキュリティ・リスクマネジメント経験豊富',
     label: 'W.S',
     strength: '「現場の自由」と「経営・監査の要請」を両立させる市民開発ガバナンス設計が得意。',
@@ -103,11 +104,12 @@ export default function BusinessTeamPage() {
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {members.map((m) => (
-            <div key={m.label} className="rounded-2xl border border-slate-200 bg-white p-6">
-              <span className="grid h-14 w-14 place-items-center rounded-full bg-est-50 text-est-600">
-                <m.icon size={26} />
-              </span>
-              <p className="mt-4 text-xs font-bold tracking-wide text-est-600">{m.catchphrase}</p>
+            <div key={m.label} className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+              <div className="relative aspect-[4/5] w-full bg-slate-100">
+                <Image src={m.photo} alt={m.label} fill className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
+              </div>
+              <div className="p-6">
+              <p className="text-xs font-bold tracking-wide text-est-600">{m.catchphrase}</p>
               <h2 className="mt-1 text-lg font-black">{m.label}</h2>
               <p className="mt-3 text-sm leading-relaxed text-slate-600">{m.strength}</p>
               <p className="mt-4 text-xs font-bold text-slate-500">主な実績</p>
@@ -116,6 +118,7 @@ export default function BusinessTeamPage() {
                   <li key={a}>・{a}</li>
                 ))}
               </ul>
+              </div>
             </div>
           ))}
         </div>
