@@ -27,7 +27,7 @@ export default async function BlogIndexPage({
         <p className="text-sm font-bold text-est-600">COLUMN</p>
         <h1 className="mt-1 text-3xl font-black">コラム</h1>
         <p className="mt-2 text-slate-600">
-          Power Platform の使い方や DX 内製化のヒントを、現場目線でわかりやすくお届けします。
+          AIの業務活用・Power Platform・DX内製化のヒントをお届け
         </p>
       </header>
 

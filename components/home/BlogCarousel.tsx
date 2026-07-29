@@ -20,7 +20,7 @@ export default function BlogCarousel({ posts }: { posts: PostMeta[] }) {
       <div className="mb-5 flex items-end justify-between">
         <div>
           <h2 className="text-2xl font-black">コラム</h2>
-          <p className="text-sm text-slate-600">Power Platform・DX内製化のヒントをお届け</p>
+          <p className="text-sm text-slate-600">AI活用・Power Platform・DX内製化のヒントをお届け</p>
         </div>
         <div className="hidden gap-2 sm:flex">
           <button onClick={() => scroll(-1)} className="grid h-9 w-9 place-items-center rounded-full border border-slate-300 hover:bg-slate-50" aria-label="前へ">

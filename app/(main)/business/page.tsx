@@ -22,6 +22,9 @@ export const metadata: Metadata = {
 }
 
 const problems = [
+  'AIの業務活用の仕方がわからない',
+  'AI活用時のセキュリティに不安がある',
+  '新入社員・中途入社者へのAI活用教育の仕方がわからない',
   '内製化を進めたいが、何から教育すればいいか分からない',
   '社員ごとにスキルがバラバラで、既製の講座では合わない',
   '自社の実際の業務・データを使って学ばせたい',
@@ -118,11 +121,10 @@ export default function BusinessPage() {
               <Sparkles size={15} /> 法人向け PowerApps・Power Platform 研修
             </span>
             <h1 className="mt-5 text-4xl font-black leading-tight md:text-5xl">
-              貴社の業務に合わせた、<br />PowerApps 研修を。
+              貴社の業務に合わせた、<br />AIの業務活用・Power Platform研修・DX内製化まで。
             </h1>
             <p className="mt-5 max-w-xl text-lg text-est-50/90">
-              複数の社員へのまとめての研修から、自社業務に合わせたオリジナルカリキュラムの制作まで。
-              Power Platform 導入支援のプロが、貴社の内製化を伴走支援します。
+              これら経験豊富なコンサルタントが、貴社の課題改善をご支援します。
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/business/contact" className="btn btn-lg bg-white text-est-700 hover:bg-est-50">

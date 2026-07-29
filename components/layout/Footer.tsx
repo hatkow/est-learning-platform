@@ -13,7 +13,8 @@ export default function Footer() {
             <span className="text-base font-extrabold text-est-700">AI・Powerplatformスクール</span>
           </div>
           <p className="mt-3 text-sm text-slate-600">
-            イースト株式会社が運営する、Power Platform 内製化（市民開発）のための動画学習スクール。
+            Copilot・Cowork・エージェント・Power Apps・Power Automate・Power BI の利活用や操作を、
+            記事・動画セミナーなどで学べるスクール。
           </p>
         </div>
 

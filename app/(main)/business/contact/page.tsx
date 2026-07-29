@@ -167,19 +167,18 @@ export default function BusinessContactPage() {
           <div className="card bg-est-50 p-6">
             <span className="grid h-10 w-10 place-items-center rounded-lg bg-est-600 text-white"><Building2 size={20} /></span>
             <h3 className="mt-3 font-bold">料金の目安</h3>
-            <p className="mt-2 text-sm text-slate-700">研修・カリキュラム制作とも</p>
-            <p className="text-2xl font-black text-est-700">20,000円／時間〜</p>
-            <p className="mt-1 text-xs text-slate-500">内容に応じて個別にお見積りします。</p>
+            <p className="text-2xl font-black text-est-700">無料</p>
+            <p className="mt-1 text-xs text-slate-500">※原則としてWeb会議形式、30分目安</p>
           </div>
           <div className="card p-6">
             <span className="grid h-10 w-10 place-items-center rounded-lg bg-est-50 text-est-600"><Mail size={20} /></span>
             <h3 className="mt-3 font-bold">メールでのご相談</h3>
-            <p className="mt-1 text-sm text-slate-600">support@est-learning.example</p>
+            <p className="mt-1 text-sm text-slate-600">ai@est.co.jp</p>
           </div>
           <div className="card p-6">
             <span className="grid h-10 w-10 place-items-center rounded-lg bg-est-50 text-est-600"><Clock size={20} /></span>
             <h3 className="mt-3 font-bold">対応時間</h3>
-            <p className="mt-1 text-sm text-slate-600">平日 10:00〜18:00<br />（土日祝・年末年始を除く）</p>
+            <p className="mt-1 text-sm text-slate-600">イースト株式会社営業日10:00-16:30<br />※12:00-13:00除く</p>
             <p className="mt-2 text-xs text-slate-400">通常2〜3営業日以内にご返信します。</p>
           </div>
           <div className="card bg-slate-50 p-6">

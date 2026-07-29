@@ -131,7 +131,7 @@ export default async function HomePage() {
                 無料で相談する
               </Link>
             </div>
-            <p className="mt-5 text-sm text-est-100">研修・カリキュラム制作とも <strong className="text-white">20,000円／時間〜</strong></p>
+            <p className="mt-5 text-sm text-est-100">AI活用、内製化支援・研修・カリキュラム制作とも <strong className="text-white">20,000円／時間〜</strong></p>
           </div>
 
           <div className="grid gap-4">
