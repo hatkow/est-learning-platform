@@ -34,7 +34,7 @@ export default function BusinessContactPage() {
 
   const update = (k: keyof typeof form, v: string | boolean) => setForm((f) => ({ ...f, [k]: v }))
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     if (!form.company || !form.name || !form.email) {
@@ -50,11 +50,19 @@ export default function BusinessContactPage() {
       return
     }
     setSending(true)
-    // 本番では POST /api/business-contact → Resend 等で営業担当へメール送信
-    setTimeout(() => {
-      setSending(false)
+    try {
+      const res = await fetch('/api/business-contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (!res.ok) throw new Error()
       setDone(true)
-    }, 900)
+    } catch {
+      setError('送信に失敗しました。時間をおいて再度お試しください。')
+    } finally {
+      setSending(false)
+    }
   }
 
   if (done) {
@@ -183,7 +191,7 @@ export default function BusinessContactPage() {
           </div>
           <div className="card bg-slate-50 p-6">
             <p className="text-xs text-slate-500">
-              ※ 本フォームはデモです。実際の送信は行われません（本番ではメール基盤 Resend 等に接続します）。
+              ※ お送りいただいた内容は、運営会社の窓口メールアドレスに転送されます。
             </p>
           </div>
         </aside>

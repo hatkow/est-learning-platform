@@ -15,7 +15,7 @@ export default function ContactPage() {
 
   const update = (k: keyof typeof form, v: string | boolean) => setForm((f) => ({ ...f, [k]: v }))
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     if (!form.name || !form.email || !form.message) {
@@ -31,11 +31,19 @@ export default function ContactPage() {
       return
     }
     setSending(true)
-    // 本番では POST /api/contact → Resend 等でメール送信（設計書のメール基盤）
-    setTimeout(() => {
-      setSending(false)
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (!res.ok) throw new Error()
       setDone(true)
-    }, 900)
+    } catch {
+      setError('送信に失敗しました。時間をおいて再度お試しください。')
+    } finally {
+      setSending(false)
+    }
   }
 
   if (done) {
@@ -111,17 +119,17 @@ export default function ContactPage() {
           <div className="card p-6">
             <span className="grid h-10 w-10 place-items-center rounded-lg bg-est-50 text-est-600"><Mail size={20} /></span>
             <h3 className="mt-3 font-bold">メールでのお問い合わせ</h3>
-            <p className="mt-1 text-sm text-slate-600">support@est-learning.example</p>
+            <p className="mt-1 text-sm text-slate-600">ai@est.co.jp</p>
           </div>
           <div className="card p-6">
             <span className="grid h-10 w-10 place-items-center rounded-lg bg-est-50 text-est-600"><Clock size={20} /></span>
             <h3 className="mt-3 font-bold">対応時間</h3>
-            <p className="mt-1 text-sm text-slate-600">平日 10:00〜18:00<br />（土日祝・年末年始を除く）</p>
+            <p className="mt-1 text-sm text-slate-600">イースト株式会社営業日10:00-16:30<br />※12:00-13:00除く</p>
             <p className="mt-2 text-xs text-slate-400">通常2〜3営業日以内にご返信します。</p>
           </div>
           <div className="card bg-slate-50 p-6">
             <p className="text-xs text-slate-500">
-              ※ 本フォームはデモです。実際の送信は行われません（本番では設計書のメール基盤 Resend 等に接続します）。
+              ※ お送りいただいた内容は、運営会社の窓口メールアドレスに転送されます。
             </p>
           </div>
         </aside>
