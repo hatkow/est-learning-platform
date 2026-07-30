@@ -59,7 +59,7 @@ export const useStore = create<AppState>()(
       },
       logout: () => set({ user: null }),
 
-      isEnrolled: (courseId) => get().enrollments.some((e) => e.courseId === courseId),
+      isEnrolled: (courseId) => !!get().user && get().enrollments.some((e) => e.courseId === courseId),
 
       enroll: (courseId) => {
         if (get().isEnrolled(courseId)) return
