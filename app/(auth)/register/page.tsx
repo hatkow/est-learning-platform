@@ -16,6 +16,8 @@ function RegisterInner() {
   const params = useSearchParams()
   const registerUser = useStore((s) => s.register)
 
+  const [mode, setMode] = useState<'new' | 'returning'>('new')
+
   const [company, setCompany] = useState('')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -28,6 +30,11 @@ function RegisterInner() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
+
+  const [returningEmail, setReturningEmail] = useState('')
+  const [returningName, setReturningName] = useState('')
+  const [returningError, setReturningError] = useState('')
+  const [returningDone, setReturningDone] = useState(false)
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -54,8 +61,18 @@ function RegisterInner() {
     }
   }
 
+  const resume = (e: React.FormEvent) => {
+    e.preventDefault()
+    setReturningError('')
+    if (!returningEmail) { setReturningError('メールアドレスを入力してください。'); return }
+    // 既存登録者の「再開」。新規リード送信は行わず、ローカルのセッションのみ復元する。
+    registerUser(returningEmail, returningName)
+    setReturningDone(true)
+  }
+
+  const back = params.get('from')
+
   if (done) {
-    const back = params.get('from')
     return (
       <div className="text-center">
         <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-emerald-100 text-emerald-600">
@@ -73,9 +90,76 @@ function RegisterInner() {
     )
   }
 
+  if (returningDone) {
+    return (
+      <div className="text-center">
+        <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-emerald-100 text-emerald-600">
+          <CheckCircle2 size={30} />
+        </span>
+        <h1 className="mt-5 text-xl font-black">おかえりなさい</h1>
+        <p className="mt-2 text-sm text-slate-600">
+          視聴を再開できます。
+        </p>
+        <Link href={back || '/courses'} className="btn-primary mt-6 w-full">
+          {back ? '視聴を続ける' : 'コース一覧を見る'}
+        </Link>
+      </div>
+    )
+  }
+
   return (
     <div>
       <Link href="/" className="mb-8 inline-block text-lg font-extrabold text-est-700 lg:hidden">AI・Powerplatformスクール</Link>
+
+      <div className="mb-6 grid grid-cols-2 gap-1 rounded-lg bg-slate-100 p-1">
+        <button
+          type="button"
+          onClick={() => setMode('new')}
+          className={`rounded-md py-2 text-sm font-bold transition ${mode === 'new' ? 'bg-white text-est-700 shadow-sm' : 'text-slate-500'}`}
+        >
+          初めての方
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode('returning')}
+          className={`rounded-md py-2 text-sm font-bold transition ${mode === 'returning' ? 'bg-white text-est-700 shadow-sm' : 'text-slate-500'}`}
+        >
+          登録済みの方
+        </button>
+      </div>
+
+      {mode === 'returning' ? (
+        <div>
+          <h1 className="text-2xl font-black">視聴を再開</h1>
+          <p className="mt-1 text-sm text-slate-500">
+            登録済みのメールアドレスを入力すると、この端末で視聴を再開できます。
+          </p>
+
+          {returningError && <p className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{returningError}</p>}
+
+          <form onSubmit={resume} className="mt-6 space-y-4">
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-bold text-slate-700">メールアドレス</span>
+              <div className="relative">
+                <Mail className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <input type="email" value={returningEmail} onChange={(e) => setReturningEmail(e.target.value)} className="input pl-10" placeholder="you@example.com" autoComplete="email" />
+              </div>
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-bold text-slate-700">お名前（任意）</span>
+              <div className="relative">
+                <UserIcon className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <input value={returningName} onChange={(e) => setReturningName(e.target.value)} className="input pl-10" placeholder="山田 太郎" />
+              </div>
+            </label>
+            <button type="submit" className="btn-primary w-full">視聴を再開する</button>
+          </form>
+          <p className="mt-4 text-xs text-slate-400">
+            ※ パスワードは不要です。本人確認は行わないため、共有端末ではご注意ください。
+          </p>
+        </div>
+      ) : (
+      <div>
       <h1 className="text-2xl font-black">会員登録</h1>
       <p className="mt-1 text-sm text-slate-500">
         無料でご登録いただくと、すべての動画コースをご視聴いただけます。
@@ -153,8 +237,14 @@ function RegisterInner() {
       </form>
 
       <p className="mt-6 text-center text-sm text-slate-600">
-        すでに登録済みの方は <Link href="/courses" className="font-bold text-est-600 hover:underline">コース一覧</Link> から視聴を再開できます
+        すでに登録済みの方は{' '}
+        <button type="button" onClick={() => setMode('returning')} className="font-bold text-est-600 hover:underline">
+          こちら
+        </button>
+        {' '}から視聴を再開できます
       </p>
+      </div>
+      )}
     </div>
   )
 }
