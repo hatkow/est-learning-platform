@@ -104,11 +104,15 @@ function fromMicroCMS(item: MicroCMSBlog): Post {
   }
 }
 
+// Next.js の fetch キャッシュを無効化し、常に最新のCMSデータを取得する
+const NO_STORE = { cache: 'no-store' as const }
+
 async function cmsGetAll(): Promise<Post[]> {
   if (!cmsClient) return []
   const res = await cmsClient.getList<MicroCMSBlog>({
     endpoint: MICROCMS_BLOG_ENDPOINT,
     queries: { limit: 100, orders: '-date' },
+    customRequestInit: NO_STORE,
   })
   return res.contents
     .map(fromMicroCMS)
@@ -121,12 +125,14 @@ async function cmsGetBySlug(slug: string): Promise<Post | null> {
   const res = await cmsClient.getList<MicroCMSBlog>({
     endpoint: MICROCMS_BLOG_ENDPOINT,
     queries: { filters: `slug[equals]${slug}`, limit: 1 },
+    customRequestInit: NO_STORE,
   })
   if (res.contents[0]) return fromMicroCMS(res.contents[0])
   try {
     const byId = await cmsClient.get<MicroCMSBlog>({
       endpoint: MICROCMS_BLOG_ENDPOINT,
       contentId: slug,
+      customRequestInit: NO_STORE,
     })
     return fromMicroCMS(byId)
   } catch {
