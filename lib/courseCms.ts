@@ -25,7 +25,7 @@ export interface MicroCMSCourse {
   price?: number
   thumbnailColor?: string
   eyecatch?: { url?: string } | null
-  whatYouWillLearn?: string[]
+  whatYouWillLearn?: string[] | string
   lessons?: MicroCMSLesson[]
   publishedAt?: string
   createdAt?: string
@@ -47,6 +47,27 @@ const CATEGORY_MAP: Record<string, string> = {
 function toCategoryId(name?: string): string {
   if (!name) return 'cat-basic'
   return CATEGORY_MAP[name] ?? 'cat-basic'
+}
+
+// リッチエディタ／テキストエリアどちらで入力されても、HTMLタグを除いたプレーンテキストにする
+function stripHtml(html: string): string {
+  return html
+    .replace(/<\/(p|div|li|h[1-6])>/gi, '\n')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+}
+
+// 「繰り返しフィールド」（配列）でも「テキストエリアに改行区切り」（文字列）でも動くようにする
+function toStringList(value: string[] | string | undefined): string[] {
+  if (Array.isArray(value)) return value.map((v) => v.trim()).filter(Boolean)
+  if (typeof value === 'string') return value.split('\n').map((v) => v.trim()).filter(Boolean)
+  return []
 }
 
 function toLevel(level: MicroCMSCourse['level']): Course['level'] {
@@ -73,7 +94,7 @@ export function convertCmsCourse(item: MicroCMSCourse): Course {
     courseId,
   }))
 
-  const description = item.description ?? ''
+  const description = stripHtml(item.description ?? '')
 
   return {
     id: courseId,
@@ -94,6 +115,6 @@ export function convertCmsCourse(item: MicroCMSCourse): Course {
     lessons,
     reviews: [],
     studentsCount: 0,
-    whatYouWillLearn: item.whatYouWillLearn ?? [],
+    whatYouWillLearn: toStringList(item.whatYouWillLearn),
   }
 }
