@@ -11,7 +11,7 @@ const serviceTypes = [
   '両方・どちらか相談したい',
   'まだ決まっていない／まず相談',
 ]
-const products = ['Power Apps', 'Power Automate', 'Power BI', 'Power Platform 全般', '未定・相談したい']
+const products = ['Copilot(AI)', 'Power Apps', 'Power Automate', 'Power BI', 'Power Platform 全般', '未定・相談したい']
 const headcounts = ['1〜5名', '6〜10名', '11〜30名', '31名以上', '未定']
 const timings = ['できるだけ早く', '1〜3か月以内', '3〜6か月以内', '時期は未定']
 
