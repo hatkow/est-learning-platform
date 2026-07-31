@@ -25,6 +25,7 @@ export interface MicroCMSCourse {
   price?: number
   thumbnailColor?: string
   eyecatch?: { url?: string } | null
+  whatYouWillLearn?: string[]
   lessons?: MicroCMSLesson[]
   publishedAt?: string
   createdAt?: string
@@ -93,6 +94,6 @@ export function convertCmsCourse(item: MicroCMSCourse): Course {
     lessons,
     reviews: [],
     studentsCount: 0,
-    whatYouWillLearn: [],
+    whatYouWillLearn: item.whatYouWillLearn ?? [],
   }
 }
