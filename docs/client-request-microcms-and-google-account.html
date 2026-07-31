@@ -1,0 +1,309 @@
+<!doctype html>
+<title>ご協力のお願い（サイト運用設定）</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root {
+    --est-600: #0b5fff;
+    --est-700: #0a1d39;
+    --ink: #0f172a;
+    --sub: #475569;
+    --line: #e2e8f0;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --warn: #b45309;
+    --warn-bg: #fffbeb;
+    --good: #059669;
+    --good-bg: #ecfdf5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.75;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 96px; }
+
+  header.hero {
+    background: linear-gradient(135deg, var(--est-600), var(--est-700));
+    color: #fff;
+    padding: 44px 28px;
+    border-radius: 20px;
+    margin-bottom: 40px;
+  }
+  header.hero p.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-size: 12px;
+    color: #bcd3ff;
+    font-weight: 700;
+    margin: 0 0 10px;
+  }
+  header.hero h1 { font-size: 24px; margin: 0 0 12px; font-weight: 900; }
+  header.hero p.lead { margin: 0; color: #dbe6ff; font-size: 14.5px; max-width: 62ch; }
+
+  .intro { font-size: 14.5px; color: var(--ink); margin-bottom: 8px; }
+  .intro p { margin: 0 0 12px; }
+
+  h2.section-title {
+    font-size: 19px;
+    font-weight: 900;
+    margin: 52px 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2.section-title .num {
+    display: inline-grid;
+    place-items: center;
+    width: 28px; height: 28px;
+    border-radius: 999px;
+    background: var(--est-600);
+    color: #fff;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  p.section-desc { color: var(--sub); font-size: 13.5px; margin: 0 0 20px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+  .card h3 { margin: 0 0 10px; font-size: 14.5px; }
+  .card ol, .card ul { margin: 0; padding-left: 20px; font-size: 13.5px; color: var(--ink); }
+  .card ol li, .card ul li { margin-bottom: 8px; }
+  .card ol li:last-child, .card ul li:last-child { margin-bottom: 0; }
+
+  .why {
+    font-size: 13px;
+    color: var(--sub);
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+  }
+  .why strong { color: var(--ink); }
+
+  pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-radius: 10px;
+    padding: 16px 18px;
+    font-size: 12.5px;
+    overflow-x: auto;
+    margin: 10px 0;
+    line-height: 1.6;
+  }
+  code { font-family: "SFMono-Regular", Consolas, "Courier New", monospace; }
+
+  .callout {
+    border-radius: 14px;
+    padding: 18px 20px;
+    font-size: 13.5px;
+    margin: 20px 0;
+  }
+  .callout.info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e3a8a; }
+  .callout.warn { background: var(--warn-bg); border: 1px solid #fde68a; color: #78350f; }
+  .callout.good { background: var(--good-bg); border: 1px solid #a7f3d0; color: #065f46; }
+  .callout p { margin: 0; }
+  .callout p + p { margin-top: 8px; }
+  .callout .callout-title { font-weight: 800; display: block; margin-bottom: 6px; }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .badge.time { background: #f1f5f9; color: var(--sub); }
+
+  footer.closing {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--sub);
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">AI・Powerplatformスクール</p>
+    <h1>ご協力のお願い（サイト運用に関する設定作業）</h1>
+    <p class="lead">
+      サイトの実装はほぼ完了しております。残り2点、貴社のGoogleアカウントを使った設定作業のみ、
+      恐れ入りますが貴社側でご対応をお願いできますでしょうか。弊社では代行できない箇所となります。
+    </p>
+  </header>
+
+  <div class="intro">
+    <p>いつもお世話になっております。サイトの実装状況についてご連絡です。</p>
+    <p>
+      現在、下記の2点が残っております。いずれも「貴社ご自身のアカウントで作業していただく必要がある」ため、
+      恐縮ですがご協力をお願いいたします。手順はできる限り詳しく記載しておりますので、
+      途中でご不明な点があればいつでもご連絡ください。
+    </p>
+  </div>
+
+  <!-- 1. microCMS -->
+  <h2 class="section-title"><span class="num">1</span> コース管理画面（microCMS）のご登録</h2>
+  <p class="section-desc">目安時間：15〜20分</p>
+
+  <div class="why">
+    <strong>なぜ必要か：</strong>
+    現在、講座（コース）情報はサンプルデータで動いています。今後、貴社ご自身で講座の追加・編集
+    （タイトル・説明文・サムネイル画像・動画URLなど）を、開発会社を介さずに行えるようにするための管理画面です。
+  </div>
+
+  <div class="card">
+    <h3>手順</h3>
+    <ol>
+      <li><a href="https://microcms.io/" target="_blank" rel="noopener noreferrer">microcms.io</a> にアクセスし、無料登録</li>
+      <li>「サービス」を新規作成（サービスIDは任意。例：<code>est-learning</code>）</li>
+      <li>「APIを作成」→「自分で決める」で、API名「コース」・エンドポイント「<code>course</code>」・型「リスト形式」を選択</li>
+      <li>下記の項目（フィールド）を追加</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>コースAPIの項目（フィールドIDは英字のままご入力ください）</h3>
+    <ul>
+      <li><code>title</code>（テキスト・必須）… コース名</li>
+      <li><code>slug</code>（テキスト・必須）… URLに使う英数字（例：<code>powerapps-basic</code>）</li>
+      <li><code>subtitle</code>（テキスト）… 一覧カードに出る短い説明</li>
+      <li><code>description</code>（リッチエディタ）… コース詳細の本文</li>
+      <li><strong><code>eyecatch</code>（画像）</strong> … サムネイル画像（推奨サイズ：横1280×縦720程度）</li>
+      <li><code>category</code>（テキスト）… <code>Power Apps</code> / <code>Power Automate</code> / <code>Power BI</code> / <code>基礎・共通</code> のいずれか</li>
+      <li><code>level</code>（テキスト）… <code>入門</code> / <code>初級</code> / <code>中級</code> / <code>上級</code></li>
+      <li><code>price</code>（数値）… 円。0で無料</li>
+      <li><code>instructor</code> / <code>instructorTitle</code>（テキスト）… 講師名・肩書き</li>
+      <li><code>lessons</code>（リピーター）… 子フィールド：<code>lessonTitle</code> / <code>lessonDescription</code> / <code>videoUrl</code>（YouTube限定公開URL）/ <code>durationMinutes</code> / <code>isFree</code></li>
+    </ul>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-title">完了したら、以下を弊社にお知らせください</span>
+    <p>①サービスID　②APIキー（サービス設定 → APIキー）</p>
+    <p>受け取り次第、こちらでサイトに接続し、コース一覧が実データに切り替わったことを確認いたします。</p>
+  </div>
+
+  <!-- 2. Google Apps Script -->
+  <h2 class="section-title"><span class="num">2</span> 自動送信の仕組みを、貴社のGoogleアカウントに移行</h2>
+  <p class="section-desc">目安時間：各10分（2つ）</p>
+
+  <div class="why">
+    <strong>なぜ必要か：</strong>
+    現在、会員登録データの転送・お問い合わせメールの送信は、テスト用に弊社側のGoogleアカウントで動かしております。
+    本番運用にあたっては、データの所有権・継続性の観点から、<strong>貴社（イースト株式会社）ご自身のGoogleアカウント</strong>で
+    動かすことを推奨します。手順は以下のとおりです（今回渡すコードをそのまま使えます）。
+  </div>
+
+  <div class="card">
+    <h3>2-A. 会員登録データ → スプレッドシート転送</h3>
+    <ol>
+      <li>貴社のGoogleアカウントで <a href="https://sheets.new" target="_blank" rel="noopener noreferrer">sheets.new</a> を開き、新しいスプレッドシートを作成</li>
+      <li>「拡張機能」→「Apps Script」を開き、以下のコードを貼り付け</li>
+    </ol>
+    <pre><code>function doPost(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const data = JSON.parse(e.postData.contents);
+
+  const headers = [
+    '受信日時', '会社名', 'お名前', 'メールアドレス',
+    '従業員規模', '興味のある分野', '部署・役職', '電話番号', 'メルマガ希望',
+  ];
+
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(headers);
+  }
+
+  sheet.appendRow([
+    data.receivedAt || new Date().toISOString(),
+    data.company || '',
+    data.name || '',
+    data.email || '',
+    data.companySize || '',
+    data.interest || '',
+    data.department || '',
+    data.phone || '',
+    data.marketingOptIn ? '希望する' : '希望しない',
+  ]);
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ ok: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}</code></pre>
+    <ol start="3">
+      <li>右上「デプロイ」→「新しいデプロイ」→ 種類「ウェブアプリ」</li>
+      <li>「次のユーザーとして実行」を<strong>「自分」</strong>、「アクセスできるユーザー」を<strong>「全員」</strong>に設定</li>
+      <li>「デプロイ」をクリックし、発行された「ウェブアプリのURL」をコピー</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>2-B. お問い合わせフォーム → メール送信</h3>
+    <ol>
+      <li><a href="https://script.google.com/create" target="_blank" rel="noopener noreferrer">script.google.com/create</a> で新しいスタンドアロンのApps Scriptプロジェクトを作成（スプレッドシートは不要）</li>
+      <li>以下のコードを貼り付け</li>
+    </ol>
+    <pre><code>const RECIPIENT = 'ai@est.co.jp';
+
+function doPost(e) {
+  const data = JSON.parse(e.postData.contents);
+  const fields = data.fields || {};
+
+  const lines = Object.entries(fields).map(([label, value]) => `${label}：${value || '（未入力）'}`).join('\n');
+  const body =
+    `AI・Powerplatformスクールのサイトからお問い合わせがありました。\n\n${lines}\n\n` +
+    `受信日時：${data.receivedAt || new Date().toISOString()}`;
+
+  MailApp.sendEmail({
+    to: RECIPIENT,
+    replyTo: fields['メールアドレス'] || undefined,
+    subject: data.subject || 'サイトからのお問い合わせ',
+    body,
+  });
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ ok: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}</code></pre>
+    <ol start="3">
+      <li>同じく「デプロイ」→「新しいデプロイ」→ 種類「ウェブアプリ」</li>
+      <li>「次のユーザーとして実行」を<strong>「自分」</strong>、「アクセスできるユーザー」を<strong>「全員」</strong>に設定</li>
+      <li>「デプロイ」をクリックし、発行されたURLをコピー</li>
+    </ol>
+    <p style="margin-top:10px; font-size:12.5px; color:var(--sub);">
+      ※ 宛先はすでに <code>ai@est.co.jp</code> に設定済みです。変更の必要はありません。
+    </p>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-title">完了したら、以下を弊社にお知らせください</span>
+    <p>2-A・2-B それぞれで発行された「ウェブアプリのURL」（2つ）</p>
+    <p>受け取り次第、こちらでVercelの環境変数を新しいURLに差し替え、動作確認まで行います。</p>
+  </div>
+
+  <div class="callout warn">
+    <span class="callout-title">現在テスト中の仕組みについて</span>
+    <p>
+      現在、上記2つは弊社側のテスト用Googleアカウントで暫定運用しております。
+      貴社アカウントでの作成が完了し、こちらで切り替えが終わりましたら、
+      弊社側のテスト用スクリプトは削除いたします。
+    </p>
+  </div>
+
+  <footer class="closing">
+    <p>ご不明な点、手順の途中で詰まった箇所などございましたら、いつでもご連絡ください。個別に画面共有等でもサポートいたします。</p>
+    <p>よろしくお願いいたします。</p>
+  </footer>
+
+</div>
