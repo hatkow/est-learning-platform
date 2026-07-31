@@ -86,6 +86,9 @@ function RegisterInner() {
         <Link href={back || '/courses'} className="btn-primary mt-6 w-full">
           {back ? '視聴を続ける' : 'コース一覧を見る'}
         </Link>
+        <p className="mt-4 text-xs text-slate-400">
+          ※ パスワードは不要です。次回は「登録済みの方」からメールアドレスだけで再開できます。
+        </p>
       </div>
     )
   }

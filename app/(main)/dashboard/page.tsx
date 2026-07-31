@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { BookOpen, CheckCircle2, Clock, GraduationCap, PlayCircle } from 'lucide-react'
+import { BookOpen, CheckCircle2, Clock, GraduationCap, Info, PlayCircle } from 'lucide-react'
 import RequireAuth from '@/components/auth/RequireAuth'
 import { useStore } from '@/lib/store'
 import { courses, formatDuration, courseDuration, getCourseById } from '@/lib/data'
@@ -53,6 +53,21 @@ function DashboardInner() {
           </div>
         ))}
       </div>
+
+      {/* ご利用にあたって */}
+      <section className="mb-10 rounded-xl border border-est-100 bg-est-50 p-5">
+        <h2 className="flex items-center gap-2 text-sm font-bold text-est-700">
+          <Info size={16} /> ご利用にあたって
+        </h2>
+        <ul className="mt-3 space-y-1.5 text-sm text-slate-700">
+          <li>・パスワードは不要です。次回は「登録済みの方」からメールアドレスだけで視聴を再開できます。</li>
+          <li>・動画は前回の続きから自動で再生されます（視聴位置はブラウザに保存されます）。</li>
+          <li>・動画は個人の学習目的でご視聴ください。第三者への共有・再配布はご遠慮ください。</li>
+        </ul>
+        <p className="mt-3 text-xs text-slate-500">
+          詳しい利用条件は<Link href="/terms" className="font-bold text-est-600 hover:underline">利用規約</Link>をご確認ください。
+        </p>
+      </section>
 
       {/* Enrolled courses */}
       <section className="mb-12">
