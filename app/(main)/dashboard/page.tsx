@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { BookOpen, CheckCircle2, Clock, GraduationCap, Info, PlayCircle } from 'lucide-react'
 import RequireAuth from '@/components/auth/RequireAuth'
 import { useStore } from '@/lib/store'
@@ -89,10 +90,22 @@ function DashboardInner() {
               return (
                 <div key={c.id} className="card flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
                   <div
-                    className="grid aspect-video w-full shrink-0 place-items-center rounded-lg text-white sm:w-40"
+                    className="relative grid aspect-video w-full shrink-0 place-items-center overflow-hidden rounded-lg text-white sm:w-40"
                     style={{ background: `linear-gradient(135deg, ${c.thumbnailColor}, #0b1d39)` }}
                   >
-                    <PlayCircle size={32} className="opacity-80" />
+                    {c.thumbnail && (
+                      <>
+                        <Image
+                          src={c.thumbnail}
+                          alt=""
+                          fill
+                          className="object-cover"
+                          sizes="160px"
+                        />
+                        <div className="absolute inset-0 bg-black/20" />
+                      </>
+                    )}
+                    <PlayCircle size={32} className="relative opacity-80" />
                   </div>
                   <div className="flex-1">
                     <Link href={`/courses/${c.slug}`} className="font-bold hover:text-est-700">{c.title}</Link>
