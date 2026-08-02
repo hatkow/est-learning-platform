@@ -5,6 +5,7 @@
   "description": "イースト株式会社 DX推進動画学習プラットフォーム (EST Learning Platform)",
   "scripts": {
     "fetch-courses": "node scripts/fetch-courses.mjs",
+    "publish-blog-draft": "node scripts/publish-blog-draft.mjs",
     "predev": "node scripts/fetch-courses.mjs",
     "dev": "next dev",
     "prebuild": "node scripts/fetch-courses.mjs",
