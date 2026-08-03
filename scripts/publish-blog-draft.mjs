@@ -102,7 +102,9 @@ async function main() {
   }
 
   const json = await res.json()
-  const editUrl = `https://${DOMAIN}.microcms.io/apis/${ENDPOINT}/contents/${json.id}`
+  // 管理画面（コンソール）は app.microcms.io 側。{DOMAIN}.microcms.io はAPI配信専用ドメインで、
+  // 管理画面のURLではないので注意（このURLでアクセスすると404になる）。
+  const editUrl = `https://app.microcms.io/${DOMAIN}/apis/${ENDPOINT}/contents/${json.id}`
   console.log(`[publish-blog-draft] 下書きを作成しました: ${editUrl}`)
 
   await notifyReviewer(data.title, editUrl)
