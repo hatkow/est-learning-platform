@@ -1,0 +1,232 @@
+<!doctype html>
+<title>ご協力のお願い（メール送信の仕組みを貴社アカウントへ）</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root {
+    --est-600: #0b5fff;
+    --est-700: #0a1d39;
+    --ink: #0f172a;
+    --sub: #475569;
+    --line: #e2e8f0;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --warn: #b45309;
+    --warn-bg: #fffbeb;
+    --good: #059669;
+    --good-bg: #ecfdf5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.75;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 96px; }
+
+  header.hero {
+    background: linear-gradient(135deg, var(--est-600), var(--est-700));
+    color: #fff;
+    padding: 44px 28px;
+    border-radius: 20px;
+    margin-bottom: 40px;
+  }
+  header.hero p.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-size: 12px;
+    color: #bcd3ff;
+    font-weight: 700;
+    margin: 0 0 10px;
+  }
+  header.hero h1 { font-size: 24px; margin: 0 0 12px; font-weight: 900; }
+  header.hero p.lead { margin: 0; color: #dbe6ff; font-size: 14.5px; max-width: 62ch; }
+
+  .intro { font-size: 14.5px; color: var(--ink); margin-bottom: 8px; }
+  .intro p { margin: 0 0 12px; }
+
+  h2.section-title {
+    font-size: 19px;
+    font-weight: 900;
+    margin: 52px 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2.section-title .num {
+    display: inline-grid;
+    place-items: center;
+    width: 28px; height: 28px;
+    border-radius: 999px;
+    background: var(--est-600);
+    color: #fff;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  p.section-desc { color: var(--sub); font-size: 13.5px; margin: 0 0 20px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+  .card h3 { margin: 0 0 10px; font-size: 14.5px; }
+  .card ol, .card ul { margin: 0; padding-left: 20px; font-size: 13.5px; color: var(--ink); }
+  .card ol li, .card ul li { margin-bottom: 8px; }
+  .card ol li:last-child, .card ul li:last-child { margin-bottom: 0; }
+
+  .why {
+    font-size: 13px;
+    color: var(--sub);
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+  }
+  .why strong { color: var(--ink); }
+
+  pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-radius: 10px;
+    padding: 16px 18px;
+    font-size: 12.5px;
+    overflow-x: auto;
+    margin: 10px 0;
+    line-height: 1.6;
+  }
+  code { font-family: "SFMono-Regular", Consolas, "Courier New", monospace; }
+
+  .callout {
+    border-radius: 14px;
+    padding: 18px 20px;
+    font-size: 13.5px;
+    margin: 20px 0;
+  }
+  .callout.info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e3a8a; }
+  .callout.warn { background: var(--warn-bg); border: 1px solid #fde68a; color: #78350f; }
+  .callout.good { background: var(--good-bg); border: 1px solid #a7f3d0; color: #065f46; }
+  .callout p { margin: 0; }
+  .callout p + p { margin-top: 8px; }
+  .callout .callout-title { font-weight: 800; display: block; margin-bottom: 6px; }
+
+  footer.closing {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--sub);
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">AI・Powerplatformスクール</p>
+    <h1>ご協力のお願い（メール送信の仕組みを貴社アカウントへ）</h1>
+    <p class="lead">
+      お問い合わせ・会員登録メールの送信元が、開発側の個人アカウントになってしまっている件のご連絡です。
+      貴社のGoogleアカウントで作業いただく必要があるため、恐れ入りますがご協力をお願いいたします。
+      以前ご案内した手順とは別に、今回改めて手順一式をまとめましたので、最初からこのページの通りに進めていただければ大丈夫です。
+    </p>
+  </header>
+
+  <div class="intro">
+    <p>いつもお世話になっております。</p>
+    <p>
+      現在、サイトのお問い合わせフォーム・会員登録の通知メールは、開発側（弊社）のテスト用Googleアカウントで暫定的に動かしております。
+      そのため、メールの送信元が弊社担当者個人のアドレスになってしまっており、貴社からのご指摘の通り、本来あるべき状態ではありません。
+      あわせて、会員登録者ご本人へのサンキューメール（登録完了のお知らせ）も、今回まとめて追加いたしました。
+    </p>
+    <p>下記の手順で、<strong>貴社（イースト株式会社）のGoogleアカウント</strong>にこの仕組みを移していただけますでしょうか。</p>
+  </div>
+
+  <h2 class="section-title"><span class="num">1</span> Google Apps Script を新規作成</h2>
+  <p class="section-desc">目安時間：10分</p>
+
+  <div class="card">
+    <h3>手順</h3>
+    <ol>
+      <li>貴社のGoogleアカウントでログインした状態で、<a href="https://script.google.com/create" target="_blank" rel="noopener noreferrer">script.google.com/create</a> にアクセス（新しいスタンドアロンのApps Scriptプロジェクトが開きます。スプレッドシートは不要です）</li>
+      <li>デフォルトで入っているコードをすべて削除し、下記のコードを貼り付け</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>貼り付けるコード</h3>
+    <pre><code>const RECIPIENT = 'ai@est.co.jp';
+
+function doPost(e) {
+  const data = JSON.parse(e.postData.contents);
+  const fields = data.fields || {};
+
+  // 社内向け：通知メール
+  const lines = Object.entries(fields).map(([label, value]) => `${label}：${value || '（未入力）'}`).join('\n');
+  const body =
+    `AI・Powerplatformスクールのサイトからお問い合わせ・登録がありました。\n\n${lines}\n\n` +
+    `受信日時：${data.receivedAt || new Date().toISOString()}`;
+
+  MailApp.sendEmail({
+    to: RECIPIENT,
+    replyTo: fields['メールアドレス'] || undefined,
+    subject: data.subject || 'サイトからのお問い合わせ',
+    body,
+  });
+
+  // 送信者本人向け：サンキューメール（会員登録時のみ、指定がある場合に送信）
+  if (data.confirmTo) {
+    MailApp.sendEmail({
+      to: data.confirmTo,
+      subject: data.confirmSubject || 'AI・Powerplatformスクールからのお知らせ',
+      body: data.confirmBody || '',
+    });
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ ok: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}</code></pre>
+    <p style="margin-top:10px; font-size:12.5px; color:var(--sub);">
+      ※ 宛先は <code>ai@est.co.jp</code> に設定済みです。変更の必要はありません。
+    </p>
+  </div>
+
+  <h2 class="section-title"><span class="num">2</span> Webアプリとして公開</h2>
+  <p class="section-desc">目安時間：5分</p>
+
+  <div class="card">
+    <ol>
+      <li>右上「デプロイ」→「新しいデプロイ」</li>
+      <li>種類の選択（歯車アイコン）→「ウェブアプリ」</li>
+      <li>「次のユーザーとして実行」を <strong>「自分」</strong>、「アクセスできるユーザー」を <strong>「全員」</strong> に設定
+        <br><span style="color:var(--warn); font-size:12.5px;">※「Googleアカウントを持つ全員」を選ぶとサイトからのアクセスがブロックされてしまうため、必ず「全員」を選んでください</span>
+      </li>
+      <li>「デプロイ」をクリック → 初回はご自身のGoogleアカウントでの権限承認が必要です（画面の指示通りに許可してください）</li>
+      <li>発行された「ウェブアプリのURL」（<code>https://script.google.com/macros/s/xxxxx/exec</code>）をコピー</li>
+    </ol>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-title">完了したら、以下を弊社にお知らせください</span>
+    <p>発行された「ウェブアプリのURL」</p>
+    <p>受け取り次第、こちらでVercelの環境変数を差し替え、送信元が正しく表示されるか・サンキューメールが届くかを動作確認いたします。</p>
+  </div>
+
+  <div class="callout warn">
+    <span class="callout-title">現在テスト中の仕組みについて</span>
+    <p>
+      切り替えが完了しましたら、弊社側のテスト用スクリプトは削除いたします。
+      それまでの間は、これまで通り一時的に弊社アカウントでの送信が続きます。
+    </p>
+  </div>
+
+  <footer class="closing">
+    <p>ご不明な点、手順の途中で詰まった箇所などございましたら、いつでもご連絡ください。個別に画面共有等でもサポートいたします。</p>
+    <p>よろしくお願いいたします。</p>
+  </footer>
+
+</div>

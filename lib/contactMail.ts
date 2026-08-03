@@ -15,6 +15,10 @@ const LOCAL_CONTACT_FILE = path.join(process.cwd(), 'data', 'contact-messages.js
 export interface ContactMailInput {
   subject: string
   fields: Record<string, string>
+  // 送信者本人への自動返信（サンキューメール等）。指定した場合のみ、通知メールとは別に送信される。
+  confirmTo?: string
+  confirmSubject?: string
+  confirmBody?: string
 }
 
 async function saveLocally(message: ContactMailInput & { receivedAt: string }) {

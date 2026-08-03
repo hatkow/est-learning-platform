@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { saveLead } from '@/lib/leads'
 import { sendContactMail } from '@/lib/contactMail'
+import { siteUrl } from '@/lib/site'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -40,6 +41,21 @@ export async function POST(req: Request) {
         '電話番号': phone,
         'メルマガ希望': marketingOptIn ? '希望する' : '希望しない',
       },
+      confirmTo: email,
+      confirmSubject: 'AI・Powerplatformスクール ご登録ありがとうございます',
+      confirmBody:
+        `${name} 様\n\n` +
+        'このたびは「AI・Powerplatformスクール」にご登録いただき、誠にありがとうございます。\n' +
+        'すべての無料コースを、パスワード不要ですぐにご視聴いただけます。\n\n' +
+        `▼ コース一覧\n${siteUrl}/courses\n\n` +
+        'ご登録内容は以下の通りです。\n' +
+        `会社名：${company}\n` +
+        `お名前：${name}\n` +
+        `メールアドレス：${email}\n\n` +
+        '今後、学習コンテンツや研修に関するご案内をお送りする場合がございます。\n\n' +
+        '――――――――――――\n' +
+        'AI・Powerplatformスクール\n' +
+        'イースト株式会社',
     })
   } catch {
     // 通知メールの失敗は無視（リード情報はすでにsaveLeadで保存済み）
