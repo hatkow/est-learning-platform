@@ -5,6 +5,9 @@ import { siteUrl } from '@/lib/site'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
+// Google Apps Script の応答が遅い場合があるため、サーバー関数のタイムアウトに余裕を持たせる
+export const maxDuration = 30
+
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null)
 
@@ -21,15 +24,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: '入力内容をご確認ください。' }, { status: 400 })
   }
 
-  try {
-    await saveLead({ company, name, email, companySize, interest, department, phone, marketingOptIn })
-  } catch {
-    return NextResponse.json({ error: '送信に失敗しました。時間をおいて再度お試しください。' }, { status: 500 })
-  }
-
-  // 通知メール送信は失敗しても登録自体は成功として扱う（リード保存が主目的のため）
-  try {
-    await sendContactMail({
+  // スプレッドシート転記とメール送信は、どちらも Google Apps Script 宛の別々の外部通信。
+  // 直列にawaitすると合計時間がサーバー関数のタイムアウトを超えることがあるため、並行実行する。
+  const [leadResult] = await Promise.allSettled([
+    saveLead({ company, name, email, companySize, interest, department, phone, marketingOptIn }),
+    sendContactMail({
       subject: `【新規会員登録】${company} ${name}様`,
       fields: {
         '会社名': company,
@@ -56,9 +55,12 @@ export async function POST(req: Request) {
         '――――――――――――\n' +
         'AI・Powerplatformスクール\n' +
         'イースト株式会社',
-    })
-  } catch {
-    // 通知メールの失敗は無視（リード情報はすでにsaveLeadで保存済み）
+    }),
+  ])
+
+  // 通知メールの失敗は無視する（リード保存が主目的のため）。リード保存の失敗のみ登録失敗として扱う。
+  if (leadResult.status === 'rejected') {
+    return NextResponse.json({ error: '送信に失敗しました。時間をおいて再度お試しください。' }, { status: 500 })
   }
 
   return NextResponse.json({ ok: true })
