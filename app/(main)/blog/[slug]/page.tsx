@@ -2,8 +2,9 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
-import { ArrowLeft, CalendarDays, ChevronRight, Clock, Tag, User } from 'lucide-react'
-import { getPostBySlug, getPostSlugs, getRelatedPosts } from '@/lib/blog'
+import { ArrowLeft, CalendarDays, ChevronRight, Clock, RefreshCw, Tag, User } from 'lucide-react'
+import { extractFaq, getPostBySlug, getPostSlugs, getRelatedPosts } from '@/lib/blog'
+import { getAuthorProfile } from '@/lib/authors'
 import { siteUrl } from '@/lib/site'
 import BlogCard from '@/components/blog/BlogCard'
 import BusinessBanner from '@/components/business/BusinessBanner'
@@ -46,6 +47,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
   const related = await getRelatedPosts(post.slug)
 
+  // AIO: 本文の「よくある質問」から FAQPage 構造化データを生成する（docs/blog-style-guide.md「AIO」章）
+  const faq = extractFaq(post.html)
+  // 監修者プロフィール。未登録なら null＝プロフィールブロックも著者schemaも出力しない
+  const authorProfile = getAuthorProfile(post.author)
+
   // 構造化データ（JSON-LD）— Google に記事として正しく認識させる
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -56,7 +62,21 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         description: post.description,
         datePublished: post.date,
         dateModified: post.updated ?? post.date,
-        author: { '@type': 'Person', name: post.author },
+        author: authorProfile
+          ? {
+              '@type': 'Person',
+              name: authorProfile.name,
+              ...(authorProfile.jobTitle ? { jobTitle: authorProfile.jobTitle } : {}),
+              ...(authorProfile.bio ? { description: authorProfile.bio } : {}),
+              ...(authorProfile.url ? { url: authorProfile.url } : {}),
+              ...(authorProfile.affiliation
+                ? { worksFor: { '@type': 'Organization', name: authorProfile.affiliation } }
+                : {}),
+              ...(authorProfile.credentials?.length
+                ? { hasCredential: authorProfile.credentials }
+                : {}),
+            }
+          : { '@type': 'Person', name: post.author },
         publisher: {
           '@type': 'Organization',
           name: 'イースト株式会社 AI・Powerplatformスクール',
@@ -72,6 +92,19 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           { '@type': 'ListItem', position: 3, name: post.title, item: `${siteUrl}/blog/${post.slug}` },
         ],
       },
+      // AIO: 「よくある質問」がある記事だけ FAQPage を出す
+      ...(faq.length > 0
+        ? [
+            {
+              '@type': 'FAQPage',
+              mainEntity: faq.map((item) => ({
+                '@type': 'Question',
+                name: item.question,
+                acceptedAnswer: { '@type': 'Answer', text: item.answer },
+              })),
+            },
+          ]
+        : []),
     ],
   }
 
@@ -110,6 +143,9 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           <div className="mt-5 flex flex-wrap items-center gap-4 text-sm text-white/90">
             <span className="inline-flex items-center gap-1.5"><User size={15} />{post.author}</span>
             <span className="inline-flex items-center gap-1.5"><CalendarDays size={15} />{post.date}</span>
+            {post.updated && post.updated !== post.date && (
+              <span className="inline-flex items-center gap-1.5"><RefreshCw size={15} />最終更新 {post.updated}</span>
+            )}
             <span className="inline-flex items-center gap-1.5"><Clock size={15} />約{post.readingMinutes}分で読めます</span>
           </div>
         </div>
@@ -130,6 +166,29 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
               {post.tags.map((t) => (
                 <span key={t} className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600">#{t}</span>
               ))}
+            </div>
+          )}
+
+          {/* 監修者プロフィール（lib/authors.ts に登録がある場合のみ表示。E-E-A-Tシグナル） */}
+          {authorProfile && (
+            <div className="mt-10 rounded-xl border border-slate-200 bg-slate-50 p-6">
+              <p className="text-xs font-bold text-slate-500">この記事の監修者</p>
+              <p className="mt-2 text-lg font-black text-slate-900">{authorProfile.name}</p>
+              {(authorProfile.jobTitle || authorProfile.affiliation) && (
+                <p className="mt-1 text-sm text-slate-600">
+                  {[authorProfile.affiliation, authorProfile.jobTitle].filter(Boolean).join(' ')}
+                </p>
+              )}
+              {authorProfile.bio && (
+                <p className="mt-3 text-sm leading-relaxed text-slate-700">{authorProfile.bio}</p>
+              )}
+              {authorProfile.credentials && authorProfile.credentials.length > 0 && (
+                <ul className="mt-3 space-y-1 text-sm text-slate-600">
+                  {authorProfile.credentials.map((c) => (
+                    <li key={c}>・{c}</li>
+                  ))}
+                </ul>
+              )}
             </div>
           )}
 

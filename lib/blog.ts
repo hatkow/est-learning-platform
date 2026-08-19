@@ -141,6 +141,23 @@ async function cmsGetBySlug(slug: string): Promise<Post | null> {
 }
 
 // ===== Markdown ファイル用（フォールバック） =====
+
+/**
+ * フロントマターの日付を YYYY-MM-DD に正規化する。
+ *
+ * gray-matter は YAML の `date: 2026-05-19` を Date オブジェクトとして返すため、
+ * String() すると "Tue May 19 2026 09:00:00 GMT+0900..." になり、
+ * slice(0,10) では "Tue May 19" という壊れた値になる。
+ * 表示だけでなく構造化データの datePublished も無効になるので、Date は必ずISO化する。
+ */
+function toDateString(value: unknown): string | undefined {
+  if (!value) return undefined
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? undefined : value.toISOString().slice(0, 10)
+  }
+  return String(value).slice(0, 10)
+}
+
 function parseFile(fileName: string): Post {
   const slug = fileName.replace(/\.md$/, '')
   const raw = fs.readFileSync(path.join(BLOG_DIR, fileName), 'utf-8')
@@ -150,8 +167,8 @@ function parseFile(fileName: string): Post {
     slug,
     title: data.title ?? slug,
     description: data.description ?? '',
-    date: data.date ? String(data.date).slice(0, 10) : '1970-01-01',
-    updated: data.updated ? String(data.updated).slice(0, 10) : undefined,
+    date: toDateString(data.date) ?? '1970-01-01',
+    updated: toDateString(data.updated),
     category: data.category ?? '未分類',
     tags: Array.isArray(data.tags) ? data.tags : [],
     author: data.author ?? 'EST編集部',
@@ -221,4 +238,84 @@ export async function getRelatedPosts(slug: string, limit = 3): Promise<Post[]> 
   const sameCat = others.filter((p) => p.category === current.category)
   const rest = others.filter((p) => p.category !== current.category)
   return [...sameCat, ...rest].slice(0, limit)
+}
+
+// ===== AIO（AI回答エンジン対策）: FAQ の抽出 =====
+
+export interface FaqItem {
+  question: string
+  answer: string
+}
+
+function stripTags(html: string): string {
+  return html
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+/**
+ * 記事HTMLから「よくある質問」セクションを抽出する。FAQPage 構造化データの生成元。
+ *
+ * docs/blog-style-guide.md「AIO」章の2形式に対応する：
+ *   A. 見出し形式 … 「よくある質問」見出しの下位見出しが質問、次の要素が回答
+ *   B. Q/A形式   … 「<strong>Q. 質問</strong> A. 回答」を含む段落
+ *
+ * microCMS（リッチエディタのHTML）でもローカルMarkdown（marked変換後）でも
+ * 最終的にこのHTMLに集約されるため、CMS側のフィールド追加なしで動く。
+ */
+export function extractFaq(html: string): FaqItem[] {
+  // 見出しと段落を出現順に並べたトークン列にする
+  const tokens = [...html.matchAll(/<(h([1-6]))[^>]*>([\s\S]*?)<\/\1>|<p[^>]*>([\s\S]*?)<\/p>/gi)].map((m) => ({
+    kind: m[2] ? ('heading' as const) : ('paragraph' as const),
+    level: m[2] ? Number(m[2]) : 0,
+    raw: m[2] ? m[3] : m[4],
+  }))
+
+  const startIdx = tokens.findIndex(
+    (t) => t.kind === 'heading' && /よくある(?:ご)?質問|FAQ/i.test(stripTags(t.raw))
+  )
+  if (startIdx === -1) return []
+
+  const faqLevel = tokens[startIdx].level
+  const items: FaqItem[] = []
+  let pending: FaqItem | null = null
+
+  for (let i = startIdx + 1; i < tokens.length; i++) {
+    const t = tokens[i]
+
+    // 同階層以上の見出しが来たらFAQセクション終了
+    if (t.kind === 'heading' && t.level <= faqLevel) break
+
+    if (t.kind === 'heading') {
+      // 形式A: 下位見出し = 質問
+      if (pending && pending.answer) items.push(pending)
+      pending = { question: stripTags(t.raw), answer: '' }
+      continue
+    }
+
+    const text = stripTags(t.raw)
+    if (!text) continue
+
+    // 形式B: <strong>Q. 質問</strong> に続いて A. 回答
+    const qa = /^Q[.．:：]?\s*(.+?)\s*(?:A[.．:：]\s*)(.+)$/s.exec(text)
+    if (qa) {
+      if (pending && pending.answer) items.push(pending)
+      pending = null
+      items.push({ question: qa[1].trim(), answer: qa[2].trim() })
+      continue
+    }
+
+    // 形式A の回答（見出し直後の最初の段落のみ）
+    if (pending && !pending.answer) pending.answer = text
+  }
+  if (pending && pending.answer) items.push(pending)
+
+  return items.filter((f) => f.question && f.answer)
 }
