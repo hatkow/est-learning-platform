@@ -7,6 +7,8 @@
     "fetch-courses": "node scripts/fetch-courses.mjs",
     "lint-blog-draft": "node --env-file-if-exists=.env.local scripts/lint-blog-draft.mjs",
     "publish-blog-draft": "node --env-file-if-exists=.env.local scripts/publish-blog-draft.mjs",
+    "approve-blog-draft": "node --env-file-if-exists=.env.local scripts/approve-blog-draft.mjs",
+    "preflight-blog-draft": "node --env-file-if-exists=.env.local scripts/preflight-blog-draft.mjs",
     "predev": "node scripts/fetch-courses.mjs",
     "dev": "next dev",
     "prebuild": "node scripts/fetch-courses.mjs",
