@@ -1,9 +1,13 @@
 // SEOコラム記事の下書きを microCMS に登録するCLIスクリプト。
 // .claude/skills/seo-blog/ から呼び出される想定（単体でも実行可能）。
 //
-// 使い方: node scripts/publish-blog-draft.mjs <記事.md>
+// 使い方: node scripts/publish-blog-draft.mjs <記事.md> [--skip-lint]
 //   記事.md は content/blog/*.md と同じ形式（YAMLフロントマター + 本文Markdown）。
 //   必須フロントマター: title / slug / description
+//
+//   登録前に scripts/lib/blog-lint.mjs のチェックを必ず通す。「要修正」が1件でもあれば
+//   microCMS へは登録せず終了する。どうしても登録が必要なときだけ --skip-lint を付ける
+//   （ブランド表記・外部リンク・本文中CTAの事故がそのまま下書きに入るので、原則使わない）。
 //
 // 必要な環境変数（.env.local または Vercel）:
 //   MICROCMS_SERVICE_DOMAIN / MICROCMS_API_KEY / MICROCMS_BLOG_ENDPOINT（既定: blog）
@@ -14,6 +18,9 @@
 import fs from 'node:fs'
 import matter from 'gray-matter'
 import { marked } from 'marked'
+import { lintDraft, formatReport } from './lib/blog-lint.mjs'
+import { collectExistingPosts } from './lib/blog-corpus.mjs'
+import { collectCourseSlugs } from './lib/course-catalog.mjs'
 
 const DOMAIN = process.env.MICROCMS_SERVICE_DOMAIN
 const API_KEY = process.env.MICROCMS_API_KEY
@@ -45,9 +52,11 @@ async function notifyReviewer(title, editUrl) {
 }
 
 async function main() {
-  const filePath = process.argv[2]
+  const args = process.argv.slice(2)
+  const skipLint = args.includes('--skip-lint')
+  const filePath = args.find((a) => !a.startsWith('--'))
   if (!filePath) {
-    console.error('使い方: node scripts/publish-blog-draft.mjs <記事.md>')
+    console.error('使い方: node scripts/publish-blog-draft.mjs <記事.md> [--skip-lint]')
     process.exit(1)
   }
   if (!DOMAIN || !API_KEY) {
@@ -62,9 +71,22 @@ async function main() {
   const raw = fs.readFileSync(filePath, 'utf-8')
   const { data, content } = matter(raw)
 
-  for (const key of ['title', 'slug', 'description']) {
-    if (!data[key]) {
-      console.error(`[publish-blog-draft] フロントマターに ${key} がありません。`)
+  // 品質チェック（必須フロントマター・ブランド表記・外部リンク・本文中CTA等）。
+  if (skipLint) {
+    console.warn('[publish-blog-draft] --skip-lint が指定されました。品質チェックを行わずに登録します。')
+  } else {
+    const corpus = await collectExistingPosts({ excludeFile: filePath })
+    const result = lintDraft({
+      raw,
+      filePath,
+      existingSlugs: corpus.slugs,
+      existingCategories: corpus.categories,
+      courseSlugs: collectCourseSlugs().courseSlugs,
+    })
+    console.log(formatReport(result))
+    console.log('')
+    if (result.errors.length > 0) {
+      console.error('[publish-blog-draft] 要修正の指摘があるため、microCMS には登録しませんでした。修正して再実行してください。')
       process.exit(1)
     }
   }
@@ -106,6 +128,8 @@ async function main() {
   // 管理画面のURLではないので注意（このURLでアクセスすると404になる）。
   const editUrl = `https://app.microcms.io/${DOMAIN}/apis/${ENDPOINT}/contents/${json.id}`
   console.log(`[publish-blog-draft] 下書きを作成しました: ${editUrl}`)
+  // 呼び出し側（ダッシュボード等）が拾えるよう、機械可読な行も出す
+  console.log(`[publish-blog-draft] contentId=${json.id}`)
 
   await notifyReviewer(data.title, editUrl)
 }
