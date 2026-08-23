@@ -19,9 +19,12 @@ import { marked } from 'marked'
 import { lintDraft, formatReport } from './lib/blog-lint.mjs'
 import { collectExistingPosts } from './lib/blog-corpus.mjs'
 import { collectCourseSlugs } from './lib/course-catalog.mjs'
+import { loadKeywordCatalog } from './lib/keyword-catalog.mjs'
+import { startGeneration, listJobs, claudeAvailable, tokenConfigured } from './lib/job-runner.mjs'
 import {
   DRAFTS_DIR,
   STATUS,
+  KIND,
   ensureDraftsDir,
   isValidId,
   listDrafts,
@@ -113,6 +116,14 @@ const STYLES = `
   .chip-draft { background:var(--est-50); color:var(--est-700); }
   .chip-registered { background:var(--ok-bg); color:var(--ok); }
   .chip-rejected { background:#eef1f5; color:#63748c; }
+  .chip-outline { background:#efe9fb; color:#5b3fa8; }
+  .chip-theme { background:#f1f5fa; color:#4b5c73; font-weight:500; }
+  .genrow-2 { margin-top:.55rem; }
+  .toggle { display:inline-flex; align-items:center; gap:.35rem; font-size:.82rem; color:var(--muted); cursor:pointer; }
+  #theme-select { width:100%; min-width:0; padding:.3rem; }
+  #theme-select option { padding:.25rem .4rem; }
+  #theme-select option[data-done] { color:#8fa0b6; }
+  #theme-select optgroup { font-size:.78rem; color:var(--muted); }
   .stats { font-size:.78rem; color:var(--muted); font-variant-numeric: tabular-nums; margin-bottom:.7rem; }
   .verdict { font-size:.82rem; font-weight:700; margin-bottom:.5rem; }
   .v-ok { color:var(--ok); } .v-warn { color:var(--warn); } .v-bad { color:var(--bad); }
@@ -135,6 +146,34 @@ const STYLES = `
   button:focus-visible, a:focus-visible { outline:2px solid var(--est-600); outline-offset:2px; }
   .empty { background:var(--surface); border:1px dashed var(--line); border-radius:12px; padding:2rem; text-align:center; color:var(--muted); }
   .note { background:var(--warn-bg); color:var(--warn); border-radius:8px; padding:.6rem .85rem; font-size:.8rem; margin-bottom:1rem; }
+  .panel { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:1.1rem 1.25rem; margin-bottom:1.25rem; }
+  .panel h2 { margin:0 0 .2rem; font-size:.95rem; font-weight:800; }
+  .panel .hint { margin:0 0 .8rem; font-size:.78rem; color:var(--muted); }
+  .genrow { display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; }
+  select, input[type=text] {
+    font:inherit; font-size:.85rem; padding:.45rem .6rem; border-radius:8px;
+    border:1px solid var(--line); background:#fff; color:var(--ink); min-width:min(360px, 100%);
+  }
+  select:focus-visible, input:focus-visible { outline:2px solid var(--est-600); outline-offset:1px; }
+  .jobs { margin-top:.9rem; border-top:1px solid var(--line); padding-top:.8rem; }
+  .job { display:flex; flex-wrap:wrap; gap:.4rem .8rem; align-items:baseline; font-size:.8rem; padding:.35rem 0; }
+  .job + .job { border-top:1px dashed var(--line); }
+  .job-theme { font-weight:700; }
+  .job-err { color:var(--bad); font-size:.76rem; width:100%; }
+  .spin { display:inline-block; width:.65rem; height:.65rem; border:2px solid var(--est-100); border-top-color:var(--est-600); border-radius:50%; }
+  @media (prefers-reduced-motion: no-preference) { .spin { animation: sp .8s linear infinite; } }
+  @keyframes sp { to { transform: rotate(360deg); } }
+  #confirm-back {
+    position:fixed; inset:0; background:rgba(11,29,57,.45);
+    display:none; align-items:center; justify-content:center; padding:1rem; z-index:100;
+  }
+  #confirm-back[data-open] { display:flex; }
+  #confirm-box {
+    background:var(--surface); border-radius:12px; padding:1.25rem 1.4rem;
+    max-width:460px; width:100%; box-shadow:0 12px 40px rgba(11,29,57,.25);
+  }
+  #confirm-box p { margin:0 0 1rem; font-size:.9rem; line-height:1.7; }
+  #confirm-box .actions { justify-content:flex-end; }
   #toast {
     position:fixed; left:50%; bottom:1.25rem; transform:translateX(-50%);
     background:var(--est-950); color:#fff; padding:.6rem 1.1rem; border-radius:8px;
@@ -153,12 +192,89 @@ function statusChip(status) {
   return `<span class="chip ${cls}">${label}</span>`
 }
 
-function renderList(drafts, lints, envReady) {
+function renderGenPanel(catalog, jobs, cliReady, drafts) {
+  // どのテーマから生成済みかを示す。生成時に sourceTheme を刻んでいる。
+  const generated = new Map()
+  for (const d of drafts) {
+    const t = d.data.sourceTheme
+    if (!t) continue
+    const cur = generated.get(t) ?? { article: 0, outline: 0 }
+    if (d.data.kind === KIND.OUTLINE) cur.outline++
+    else cur.article++
+    generated.set(t, cur)
+  }
+  // 選択肢はクライアント側で組み立てる。83件あるので、検索と絞り込みが要る。
+  const themeData = catalog.groups.flatMap((g) =>
+    g.items.map((i) => ({
+      group: g.name,
+      kw: i.kw,
+      meta: [i.volume && `Vol ${i.volume}`, i.difficulty && `難易度 ${i.difficulty}`].filter(Boolean).join(' / '),
+      done: generated.get(i.kw) ?? null,
+    }))
+  )
+  const doneCount = themeData.filter((t) => t.done).length
+
+  const jobRows = jobs
+    .map((j) => {
+      const icon =
+        j.status === 'running' ? '<span class="spin"></span>' : j.status === 'done' ? '✓' : '✕'
+      const cost = j.costUsd != null ? ` ・ $${Number(j.costUsd).toFixed(2)}` : ''
+      return `<div class="job">
+        <span>${icon}</span>
+        <span class="job-theme">${esc(j.theme)}</span>
+        <span>${esc(j.status === 'running' ? '生成中…' : j.status === 'done' ? '完了' : '失敗')}</span>
+        <span>${esc(String(j.startedAt).slice(11, 16))}${cost}</span>
+        ${j.error ? `<span class="job-err">${esc(j.error)}</span>` : ''}
+      </div>`
+    })
+    .join('')
+
+  return `<section class="panel">
+    <h2>記事を生成する</h2>
+    <p class="hint">キーワード表からテーマを選ぶか、自由入力してください。生成には数分かかり、1回につきClaudeのセッションが1本走ります（上限 $${esc(process.env.BLOG_JOB_MAX_USD || '3')}）。生成された記事は下の一覧に「未アップ」で追加されます。</p>
+    ${
+      catalog.available
+        ? ''
+        : '<p class="note">キーワード表（data/seo/keywords.csv）が見つかりません。自由入力のみ使えます。</p>'
+    }
+    ${cliReady ? '' : '<p class="note">claude CLI が見つかりません。生成は実行できません。</p>'}
+    ${
+      tokenConfigured()
+        ? ''
+        : '<p class="note">Claude の認証情報が未設定です。ターミナルで <code>claude auth login</code> を実行し、表示されたトークンを <code>.env.local</code> に <code>CLAUDE_CODE_OAUTH_TOKEN=&lt;トークン&gt;</code> の形で保存してから、ダッシュボードを再起動してください。トークンは他人に見せないでください。</p>'
+    }
+    ${
+      catalog.available
+        ? `<div class="genrow">
+      <input type="text" id="theme-search" placeholder="テーマを検索（例: 内製化、Copilot）">
+      <label class="toggle"><input type="checkbox" id="hide-done" checked> 生成済みを隠す</label>
+      <span class="stats" style="margin:0" id="theme-count"></span>
+    </div>
+    <div class="genrow">
+      <select id="theme-select" size="8"></select>
+    </div>`
+        : ''
+    }
+    <div class="genrow">
+      <input type="text" id="theme-free" placeholder="${catalog.available ? '上の一覧に無いテーマはこちらに入力' : 'テーマを入力'}">
+    </div>
+    <div class="genrow genrow-2">
+      <button class="primary" id="gen-btn" ${cliReady ? '' : 'disabled'}>本文まで生成</button>
+      <button class="ghost" id="gen-outline-btn" ${cliReady ? '' : 'disabled'}>構成案だけ生成</button>
+      <span class="stats" style="margin:0">全${themeData.length}件中 ${doneCount}件が生成済み</span>
+    </div>
+    <script id="theme-data" type="application/json">${JSON.stringify(themeData).replace(/</g, '\u003c')}</script>
+    ${jobs.length ? `<div class="jobs">${jobRows}</div>` : ''}
+  </section>`
+}
+
+function renderList(drafts, lints, envReady, catalog, jobs, cliReady) {
   const cards = drafts
     .map((d) => {
       const l = lints.get(d.id)
       const status = d.data.reviewStatus ?? STATUS.DRAFT
-      const errs = l.errors.length
+      const isOutline = d.data.kind === KIND.OUTLINE
+      const errs = isOutline ? 0 : l.errors.length
       const warns = l.warnings.length
       const verdict =
         errs > 0
@@ -171,20 +287,25 @@ function renderList(drafts, lints, envReady) {
       return `
       <article class="card">
         <div class="meta">
+          ${isOutline ? '<span class="chip chip-outline">構成案</span>' : ''}
           ${statusChip(status)}
           <span>${esc(d.data.category ?? '未分類')}</span>
           <span>${esc(String(d.data.generatedAt ?? '').slice(0, 10))}</span>
           <span>${esc(d.id)}</span>
+          ${d.data.sourceTheme ? `<span class="chip chip-theme">テーマ: ${esc(d.data.sourceTheme)}</span>` : ''}
         </div>
         <h2>${esc(d.data.title ?? d.id)}</h2>
-        <p class="stats">
+        ${
+          isOutline
+            ? '<p class="stats">構成案（本文の品質チェックは行いません）</p>'
+            : `<p class="stats">
           本文${(s.bodyChars ?? 0).toLocaleString()}字 ・ H3 ${s.h3 ?? 0} ・ FAQ ${s.faqCount ?? 0}問 ・
           リード${s.leadLength ?? 0}字 ・ パッセージ逸脱${s.passageDeviations ?? 0} ・
           時点表記${s.hasAsOfDate ? 'あり' : 'なし'}
-        </p>
-        ${verdict}
+        </p>${verdict}`
+        }
         ${
-          errs + warns > 0
+          !isOutline && errs + warns > 0
             ? `<details><summary>チェック結果を見る</summary><pre>${esc(formatReport(l))}</pre></details>`
             : ''
         }
@@ -196,10 +317,13 @@ function renderList(drafts, lints, envReady) {
             : ''
         }
         <div class="actions">
-          <a class="btn ghost" href="/draft/${esc(d.id)}" target="_blank" rel="noopener">本文を読む</a>
-          <button class="primary" data-act="publish" data-id="${esc(d.id)}" ${canPublish ? '' : 'disabled'}>
-            microCMSへアップ
-          </button>
+          <a class="btn ghost" href="/draft/${esc(d.id)}" target="_blank" rel="noopener">${isOutline ? '構成案を読む' : '本文を読む'}</a>
+          ${
+            isOutline
+              ? `<button class="primary" data-act="write" data-id="${esc(d.id)}" ${cliReady ? '' : 'disabled'}>この構成案から本文を書く</button>
+                 <button class="ghost" data-act="publish" data-id="${esc(d.id)}" ${canPublish ? '' : 'disabled'}>構成案をCMSへアップ</button>`
+              : `<button class="primary" data-act="publish" data-id="${esc(d.id)}" ${canPublish ? '' : 'disabled'}>microCMSへアップ</button>`
+          }
           ${
             status === STATUS.REJECTED
               ? `<button class="ghost" data-act="restore" data-id="${esc(d.id)}">見送りを取消</button>`
@@ -224,25 +348,182 @@ function renderList(drafts, lints, envReady) {
       ? ''
       : `<p class="note">microCMS の環境変数（MICROCMS_SERVICE_DOMAIN / MICROCMS_API_KEY）が未設定のため、アップは実行できません。.env.local に設定してから再起動してください。</p>`
   }
+  ${renderGenPanel(catalog, jobs, cliReady, drafts)}
   <div class="bar">
     <span>${drafts.length}件</span>
     <span>アップ後も microCMS 側は「下書き」です。一般公開は <code>npm run approve-blog-draft</code> が必要です。</span>
   </div>
   ${drafts.length ? cards : `<div class="empty">下書きはまだありません。<br>seo-blog Skill で記事を生成すると、ここに溜まります。</div>`}
 </main>
+<div id="confirm-back" role="dialog" aria-modal="true" aria-labelledby="confirm-msg">
+  <div id="confirm-box">
+    <p id="confirm-msg"></p>
+    <div class="actions">
+      <button class="ghost" id="confirm-no">やめる</button>
+      <button class="primary" id="confirm-yes">実行する</button>
+    </div>
+  </div>
+</div>
 <div id="toast" role="status" aria-live="polite"></div>
 <script>
+// ネイティブの confirm() はダイアログを抑止するブラウザだと常に false を返し、
+// 「押しても何も起きない」状態になる。画面内の確認UIに置き換える。
+const askConfirm = (msg) => new Promise((resolve) => {
+  const back = document.getElementById('confirm-back');
+  document.getElementById('confirm-msg').textContent = msg;
+  const yes = document.getElementById('confirm-yes');
+  const no = document.getElementById('confirm-no');
+  const close = (v) => {
+    back.removeAttribute('data-open');
+    yes.removeEventListener('click', onYes);
+    no.removeEventListener('click', onNo);
+    document.removeEventListener('keydown', onKey);
+    resolve(v);
+  };
+  const onYes = () => close(true);
+  const onNo = () => close(false);
+  const onKey = (e) => { if (e.key === 'Escape') close(false); };
+  yes.addEventListener('click', onYes);
+  no.addEventListener('click', onNo);
+  document.addEventListener('keydown', onKey);
+  back.setAttribute('data-open', '');
+  yes.focus();
+});
+
 const toast = (msg) => {
   const t = document.getElementById('toast');
   t.textContent = msg; t.style.display = 'block';
   clearTimeout(t._h); t._h = setTimeout(() => { t.style.display = 'none'; }, 6000);
 };
+async function requestGeneration(body, label) {
+  toast(label + 'を開始しました。完了までこのページを開いたままにしてください。');
+  try {
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const json = await res.json();
+    toast(json.message || (json.ok ? '開始しました' : '開始に失敗しました'));
+    if (json.ok) startPolling();
+    return json.ok;
+  } catch (err) {
+    toast('通信に失敗しました: ' + err.message);
+    return false;
+  }
+}
+
+// テーマ一覧は83件あるため、検索と「生成済みを隠す」で絞り込めるようにする。
+// ✓印を名前の前に付ける方式は、名前の開始位置がずれて読みにくかったのでやめた。
+const themeData = (() => {
+  const el = document.getElementById('theme-data');
+  try { return el ? JSON.parse(el.textContent) : []; } catch { return []; }
+})();
+
+function doneLabel(done) {
+  if (!done) return '';
+  const parts = [];
+  if (done.outline) parts.push('構成案' + done.outline);
+  if (done.article) parts.push('本文' + done.article);
+  return '  ［生成済み: ' + parts.join('・') + '］';
+}
+
+function renderThemeOptions() {
+  const sel = document.getElementById('theme-select');
+  if (!sel) return;
+  const q = (document.getElementById('theme-search').value || '').trim().toLowerCase();
+  const hideDone = document.getElementById('hide-done').checked;
+  const shown = themeData.filter((t) => {
+    if (hideDone && t.done) return false;
+    if (!q) return true;
+    return (t.kw + ' ' + t.group).toLowerCase().includes(q);
+  });
+
+  const groups = [];
+  for (const t of shown) {
+    const last = groups[groups.length - 1];
+    if (last && last.name === t.group) last.items.push(t);
+    else groups.push({ name: t.group, items: [t] });
+  }
+
+  const prev = sel.value;
+  sel.innerHTML = groups
+    .map(
+      (g) =>
+        '<optgroup label="' + g.name + '">' +
+        g.items
+          .map((t) => {
+            const meta = t.meta ? '（' + t.meta + '）' : '';
+            return '<option value="' + t.kw.replace(/"/g, '&quot;') + '"' + (t.done ? ' data-done="1"' : '') +
+              '>' + t.kw + meta + doneLabel(t.done) + '</option>';
+          })
+          .join('') +
+        '</optgroup>'
+    )
+    .join('');
+  if (prev && shown.some((t) => t.kw === prev)) sel.value = prev;
+
+  document.getElementById('theme-count').textContent = shown.length + '件を表示';
+}
+
+if (document.getElementById('theme-select')) {
+  renderThemeOptions();
+  document.getElementById('theme-search').addEventListener('input', renderThemeOptions);
+  document.getElementById('hide-done').addEventListener('change', renderThemeOptions);
+}
+
+function selectedTheme() {
+  const sel = document.getElementById('theme-select');
+  const free = document.getElementById('theme-free');
+  return (free.value || (sel ? sel.value : '')).trim();
+}
+
+for (const [btnId, mode, label] of [['gen-btn', 'article', '本文まで生成'], ['gen-outline-btn', 'outline', '構成案の生成']]) {
+  const btn = document.getElementById(btnId);
+  if (!btn) continue;
+  btn.addEventListener('click', async () => {
+    const theme = selectedTheme();
+    if (!theme) { toast('テーマを選ぶか入力してください'); return; }
+    const msg = mode === 'outline'
+      ? '「' + theme + '」の構成案を生成します。数分かかり、Claudeの利用分が消費されます。'
+      : '「' + theme + '」で本文まで生成します。数分かかり、Claudeの利用分が消費されます。';
+    if (!(await askConfirm(msg))) return;
+    btn.disabled = true;
+    await requestGeneration({ theme, mode }, label);
+    btn.disabled = false;
+  });
+}
+
+let pollTimer = null;
+function startPolling() {
+  if (pollTimer) return;
+  pollTimer = setInterval(async () => {
+    try {
+      const res = await fetch('/api/jobs');
+      const { jobs } = await res.json();
+      if (!jobs.some((j) => j.status === 'running')) {
+        clearInterval(pollTimer); pollTimer = null;
+        toast('生成が終了しました。一覧を更新します。');
+        setTimeout(() => location.reload(), 800);
+      }
+    } catch { /* 次の周期で再試行 */ }
+  }, 5000);
+}
+if (document.querySelector('.spin')) startPolling();
+
 document.addEventListener('click', async (e) => {
   const btn = e.target.closest('button[data-act]');
   if (!btn) return;
   const { act, id } = btn.dataset;
-  if (act === 'delete' && !confirm('この下書きを削除します。元に戻せません。よろしいですか？')) return;
-  if (act === 'publish' && !confirm('microCMS に下書きとして登録します。よろしいですか？（一般公開はされません）')) return;
+  if (act === 'write') {
+    if (!(await askConfirm('この構成案をもとに本文を書きます。数分かかり、Claudeの利用分が消費されます。'))) return;
+    btn.disabled = true;
+    await requestGeneration({ fromOutlineId: id }, '本文の執筆');
+    btn.disabled = false;
+    return;
+  }
+  if (act === 'delete' && !(await askConfirm('この下書きを削除します。元に戻せません。'))) return;
+  if (act === 'publish' && !(await askConfirm('microCMS に下書きとして登録します（一般公開はされません）。'))) return;
   btn.disabled = true;
   toast('実行中…');
   try {
@@ -311,7 +592,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'GET' && url.pathname === '/') {
       const drafts = listDrafts()
       const lints = await lintAll(drafts)
-      return html(res, 200, renderList(drafts, lints, envReady))
+      return html(res, 200, renderList(drafts, lints, envReady, loadKeywordCatalog(), listJobs(), claudeAvailable()))
     }
 
     const preview = /^\/draft\/([^/]+)$/.exec(url.pathname)
@@ -322,6 +603,44 @@ const server = http.createServer(async (req, res) => {
       const d = readDraft(id)
       if (!d) return html(res, 404, '<p>下書きが見つかりません</p>')
       return html(res, 200, renderPreview(d))
+    }
+
+    if (req.method === 'GET' && url.pathname === '/api/jobs') {
+      return json(res, 200, {
+        jobs: listJobs().map(({ id, theme, mode, fromOutlineId, status, startedAt, error, costUsd }) => ({
+          id, theme, mode, fromOutlineId, status, startedAt, error, costUsd,
+        })),
+      })
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/generate') {
+      let body = ''
+      for await (const chunk of req) body += chunk
+      let payload = {}
+      try { payload = JSON.parse(body || '{}') } catch { /* 下で弾く */ }
+      const fromOutlineId = payload.fromOutlineId ? String(payload.fromOutlineId) : null
+      const mode = payload.mode === 'outline' ? 'outline' : 'article'
+      let theme = String(payload.theme ?? '').trim()
+
+      if (fromOutlineId) {
+        if (!isValidId(fromOutlineId)) return json(res, 400, { ok: false, message: '不正なIDです' })
+        const outline = readDraft(fromOutlineId)
+        if (!outline) return json(res, 404, { ok: false, message: '構成案が見つかりません' })
+        theme = theme || String(outline.data.sourceTheme ?? outline.data.title ?? fromOutlineId)
+      }
+
+      if (!theme) return json(res, 400, { ok: false, message: 'テーマが指定されていません' })
+      if (theme.length > 120) return json(res, 400, { ok: false, message: 'テーマが長すぎます' })
+      if (!claudeAvailable()) return json(res, 400, { ok: false, message: 'claude CLI が見つかりません' })
+      if (listJobs().some((j) => j.status === 'running')) {
+        return json(res, 409, { ok: false, message: '別の生成が実行中です。終わってからお試しください。' })
+      }
+      const { id } = startGeneration(theme, { mode, fromOutlineId })
+      return json(res, 200, {
+        ok: true,
+        id,
+        message: `${fromOutlineId ? '本文の執筆' : mode === 'outline' ? '構成案の生成' : '生成'}を開始しました（数分かかります）`,
+      })
     }
 
     const api = /^\/api\/(publish|reject|restore|delete)\/([^/]+)$/.exec(url.pathname)
@@ -372,6 +691,17 @@ const server = http.createServer(async (req, res) => {
 })
 
 ensureDraftsDir()
+// ポートが埋まっていると原因が分かりにくいので、明示的に案内する
+server.on('error', (e) => {
+  if (e.code === 'EADDRINUSE') {
+    console.error(`[blog-dashboard] ポート ${PORT} は既に使われています。`)
+    console.error('[blog-dashboard] 既に起動しているダッシュボードを閉じるか、')
+    console.error('[blog-dashboard] BLOG_DASHBOARD_PORT=3201 npm run blog-dashboard のように別のポートを指定してください。')
+    process.exit(1)
+  }
+  throw e
+})
+
 server.listen(PORT, HOST, () => {
   console.log(`[blog-dashboard] http://${HOST}:${PORT}`)
   console.log(`[blog-dashboard] 下書き置き場: ${DRAFTS_DIR}`)
