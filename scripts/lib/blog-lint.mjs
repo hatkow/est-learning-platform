@@ -199,6 +199,11 @@ export function lintDraft({ raw, filePath = '', existingSlugs = [], existingCate
   const allHeadings = lines.filter((l) => /^#{1,6}\s/.test(l))
   const bodyChars = countBodyChars(body)
 
+  // 構成案（kind: outline）は本文ではないので、本文向けの検査は当てない。
+  // ブランド表記・外部リンク・CTA・講座リンクといった「載せてはいけないもの」の
+  // 検査だけは、構成案でも同じように効かせる。
+  const isOutline = data.kind === 'outline'
+
   // ---- フロントマター ----
   for (const key of ['title', 'slug', 'description']) {
     if (data[key]) continue
@@ -319,7 +324,9 @@ export function lintDraft({ raw, filePath = '', existingSlugs = [], existingCate
   }
 
   // ---- 本文：分量・構成 ----
-  if (bodyChars < 1200) {
+  if (isOutline) {
+    // 構成案には分量の目安を当てない
+  } else if (bodyChars < 1200) {
     errors.push(`本文が${bodyChars.toLocaleString()}字しかありません（記事として薄すぎます。目安2,000〜2,800字）`)
   } else if (bodyChars > 6000) {
     warnings.push(`本文が${bodyChars.toLocaleString()}字と長いです（目安2,000〜2,800字。分割を検討）`)
@@ -331,7 +338,9 @@ export function lintDraft({ raw, filePath = '', existingSlugs = [], existingCate
     warnings.push(`本文に H1（\`# \`）が${h1.length}個あります。タイトルは frontmatter の \`title\` が担うため、本文の見出しは H2/H3 を使います`)
   }
 
-  if (h3.length < 6) {
+  if (isOutline) {
+    // 構成案には見出し数・締め方の目安を当てない
+  } else if (h3.length < 6) {
     warnings.push(`H3セクションが${h3.length}個です（目安7〜10個）`)
   } else if (h3.length > 12) {
     warnings.push(`H3セクションが${h3.length}個と多いです（目安7〜10個）`)
@@ -342,13 +351,13 @@ export function lintDraft({ raw, filePath = '', existingSlugs = [], existingCate
   const faqHeadingIdx = allHeadings.findIndex((l) => /よくある(?:ご)?質問|FAQ/i.test(l))
   const headingsBeforeFaq = faqHeadingIdx === -1 ? allHeadings : allHeadings.slice(0, faqHeadingIdx)
   const lastHeading = headingsBeforeFaq.length > 0 ? headingsBeforeFaq[headingsBeforeFaq.length - 1].replace(/^#+\s*/, '') : ''
-  if (!/まとめ|おわりに|終わりに/.test(lastHeading)) {
+  if (!isOutline && !/まとめ|おわりに|終わりに/.test(lastHeading)) {
     warnings.push(`最後の見出しが「まとめ」「おわりに」で締められていません（現在: ${lastHeading || 'なし'}）`)
   }
 
   // 冒頭の検索意図ブロック。`## 本記事で解決できるお悩み` でも `**本記事で分かること**` でも可。
   const hasIntentBlock = /(?:^|\n)\s*(?:#{2,3}\s*|\*\*)本記事で(?:解決できる|分かる|わかる)/.test(body)
-  if (!hasIntentBlock) {
+  if (!isOutline && !hasIntentBlock) {
     warnings.push('冒頭に「本記事で解決できるお悩み」ブロックがありません（検索意図の明示。実務系ハウツーでは推奨）')
   }
 
@@ -357,13 +366,13 @@ export function lintDraft({ raw, filePath = '', existingSlugs = [], existingCate
   const nonEmpty = bodyLines.filter((l) => l.trim()).length
   const bullets = bodyLines.filter((l) => /^\s*(?:[-*+]\s|\d+\.\s)/.test(l)).length
   const bulletRatio = nonEmpty > 0 ? bullets / nonEmpty : 0
-  if (bulletRatio > 0.4) {
+  if (!isOutline && bulletRatio > 0.4) {
     warnings.push(`箇条書きが本文行の${Math.round(bulletRatio * 100)}%を占めています。プローズ（地の文）中心に書きます（docs/blog-style-guide.md）`)
   }
 
   const boldCount = (body.match(/\*\*[^*\n]+\*\*/g) || []).length
   const sections = Math.max(h2.length + h3.length, 1)
-  if (boldCount / sections > 3) {
+  if (!isOutline && boldCount / sections > 3) {
     warnings.push(`太字が${boldCount}箇所（セクションあたり約${(boldCount / sections).toFixed(1)}箇所）あります。目安は1セクション1〜2箇所です`)
   }
 
@@ -381,6 +390,9 @@ export function lintDraft({ raw, filePath = '', existingSlugs = [], existingCate
   // （既存記事はAIO以前の書き方なので、エラーにすると保存が止まってしまうため）。
   const docSections = parseSections(lines)
   const aio = {}
+
+  // 構成案には本文が無いので、AIO（パッセージ・FAQ・リード等）の検査は当てない
+  if (!isOutline) {
 
   // 1. リード：最初の見出しより前の地の文。100字以内で直接回答する。
   const firstHeadingIdx = lines.findIndex((l) => /^#{1,6}\s/.test(l))
@@ -537,6 +549,7 @@ export function lintDraft({ raw, filePath = '', existingSlugs = [], existingCate
   if (data.author && String(data.author) === 'EST編集部') {
     warnings.push('[AIO] author が「EST編集部」のままです。lib/authors.ts に登録した監修者を指定すると、経歴・保有資格が構造化データと記事末尾に出力され、AI回答での引用率に効きます（実在の人物は本人の許諾を得てから）')
   }
+  } // ← 構成案では AIO 検査をまるごと飛ばす
 
   return {
     errors,
@@ -565,9 +578,14 @@ export function formatReport({ errors, warnings, stats }) {
   out.push(
     `本文${stats.bodyChars?.toLocaleString?.() ?? stats.bodyChars}字 / 読了目安${stats.readingMinutes}分 / H2 ${stats.h2}・H3 ${stats.h3} / 太字${stats.boldCount}箇所 / 箇条書き${stats.bulletRatio}% / description ${stats.descriptionLength}字`
   )
-  out.push(
-    `AIO: リード${stats.leadLength}字 / FAQ ${stats.faqCount}問 / パッセージ逸脱${stats.passageDeviations}件 / 長文${stats.longSentences}件 / 時点表記${stats.hasAsOfDate ? 'あり' : 'なし'} / 数値${stats.hasMetrics ? 'あり' : 'なし'}`
-  )
+  // 構成案では AIO 検査を行わないので、その行自体を出さない
+  if (stats.leadLength !== undefined) {
+    out.push(
+      `AIO: リード${stats.leadLength}字 / FAQ ${stats.faqCount}問 / パッセージ逸脱${stats.passageDeviations}件 / 長文${stats.longSentences}件 / 時点表記${stats.hasAsOfDate ? 'あり' : 'なし'} / 数値${stats.hasMetrics ? 'あり' : 'なし'}`
+    )
+  } else {
+    out.push('種別: 構成案（本文向けの検査は行いません）')
+  }
   out.push('')
   if (errors.length === 0 && warnings.length === 0) {
     out.push('✓ 指摘なし。')

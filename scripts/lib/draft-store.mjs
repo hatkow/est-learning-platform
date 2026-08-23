@@ -8,9 +8,11 @@
 // そのまま scripts/publish-blog-draft.mjs に渡せる。ワークフロー用の項目だけを
 // フロントマターに足している（publish 側は送信する項目を限定しているので影響しない）。
 //
+//   kind         : article（本文） / outline（構成案）
 //   reviewStatus : draft（未アップ） / registered（microCMSに下書き登録済み） / rejected（見送り）
 //   microcmsId   : 登録後に付与される microCMS のコンテンツID
 //   generatedAt  : 生成日時（ISO文字列）
+//   sourceTheme  : 生成のきっかけになったテーマ（キーワード表のどれかを判別するため）
 
 import fs from 'node:fs'
 import path from 'node:path'
@@ -22,6 +24,11 @@ export const STATUS = {
   DRAFT: 'draft',
   REGISTERED: 'registered',
   REJECTED: 'rejected',
+}
+
+export const KIND = {
+  ARTICLE: 'article',
+  OUTLINE: 'outline',
 }
 
 /** 保管庫のディレクトリを用意する */
@@ -39,14 +46,24 @@ function draftPath(id) {
   return path.join(DRAFTS_DIR, `${id}.md`)
 }
 
-/** 記事Markdownを保管庫に保存する。id は slug を使う。 */
-export function saveDraft(id, raw) {
+/**
+ * 記事Markdownを保管庫に保存する。id は slug を使う。
+ * @param {object} [meta] kind / sourceTheme などのワークフロー用の項目
+ */
+export function saveDraft(id, raw, meta = {}) {
   ensureDraftsDir()
   const file = draftPath(id)
   const { data, content } = matter(raw)
+  // 生成側が書いたフロントマターをそのまま信用しない。ワークフロー用の項目は
+  // 決まった値しか取らないため、想定外の値は既定に落とす
+  // （実際に `reviewStatus: outline` のような混同が起きた）。
+  const validStatus = Object.values(STATUS)
+  const validKind = Object.values(KIND)
   const next = {
     ...data,
-    reviewStatus: data.reviewStatus ?? STATUS.DRAFT,
+    ...meta,
+    kind: validKind.includes(meta.kind) ? meta.kind : validKind.includes(data.kind) ? data.kind : KIND.ARTICLE,
+    reviewStatus: validStatus.includes(data.reviewStatus) ? data.reviewStatus : STATUS.DRAFT,
     generatedAt: data.generatedAt ?? new Date().toISOString(),
   }
   fs.writeFileSync(file, matter.stringify(content, next), 'utf-8')

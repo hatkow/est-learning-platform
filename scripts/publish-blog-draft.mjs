@@ -93,8 +93,15 @@ async function main() {
 
   const html = marked.parse(content, { async: false })
 
+  // 構成案は記事ではない。同じ blog エンドポイントに入るため、タイトルに印を付けて
+  // 記事と取り違えて公開されるのを防ぐ（登録自体は常に status=draft）。
+  const isOutline = data.kind === 'outline'
+  const title = isOutline && !String(data.title).startsWith('【構成案】')
+    ? `【構成案】${data.title}`
+    : data.title
+
   const body = {
-    title: data.title,
+    title,
     slug: data.slug,
     description: data.description,
     content: html,
@@ -127,11 +134,14 @@ async function main() {
   // 管理画面（コンソール）は app.microcms.io 側。{DOMAIN}.microcms.io はAPI配信専用ドメインで、
   // 管理画面のURLではないので注意（このURLでアクセスすると404になる）。
   const editUrl = `https://app.microcms.io/${DOMAIN}/apis/${ENDPOINT}/contents/${json.id}`
-  console.log(`[publish-blog-draft] 下書きを作成しました: ${editUrl}`)
+  console.log(`[publish-blog-draft] ${isOutline ? '構成案' : '記事'}の下書きを作成しました: ${editUrl}`)
+  if (isOutline) {
+    console.log('[publish-blog-draft] 構成案はタイトルに【構成案】を付けて登録しました。記事として公開しないでください。')
+  }
   // 呼び出し側（ダッシュボード等）が拾えるよう、機械可読な行も出す
   console.log(`[publish-blog-draft] contentId=${json.id}`)
 
-  await notifyReviewer(data.title, editUrl)
+  await notifyReviewer(title, editUrl)
 }
 
 main()
