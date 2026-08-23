@@ -3,8 +3,14 @@
 // 使い方: npm run preflight-blog-draft -- "今回のテーマ"
 //   テーマを渡すと、既存記事との重複候補も出す（省略可）。
 //
-// 記事を2,000字書いた後に「環境変数が無くて下書き登録できない」となるのを防ぐのが目的。
-// 終了コード: 下書き登録まで到達できる見込みなら 0、できないなら 1。
+// 記事を書き始める前に、テーマの重複や執筆上の制約をまとめて確認するのが目的。
+//
+// 終了コード:
+//   0 … 記事を書いて data/drafts/ に保存できる（既定。microCMS未設定でも0）
+//   1 … 保存先が使えない等、書いても無駄になる場合
+//
+// microCMS の設定は「生成」には不要で、ダッシュボードから「microCMSへアップ」する
+// 段階で初めて要る。--require-cms を付けたときだけ、未設定を失敗として扱う。
 
 import fs from 'node:fs'
 import path from 'node:path'
@@ -83,7 +89,9 @@ async function listPosts() {
 }
 
 async function main() {
-  const theme = process.argv.slice(2).filter((a) => !a.startsWith('--')).join(' ')
+  const args = process.argv.slice(2)
+  const requireCms = args.includes('--require-cms')
+  const theme = args.filter((a) => !a.startsWith('--')).join(' ')
 
   console.log('──────── ワンショット事前チェック ────────')
   if (theme) console.log(`テーマ: ${theme}`)
@@ -133,15 +141,26 @@ async function main() {
   console.log(`  監修者: ${hasSupervisor ? 'lib/authors.ts に登録あり' : '未登録 → author は EST編集部 のまま。架空の監修者を書かないこと'}`)
   console.log('')
 
-  // 4. 判定
+  // 4. 保存先
+  const draftsDir = path.join(process.cwd(), 'data', 'drafts')
+  console.log('■ 保存先')
+  console.log(`  ${draftsDir}（生成した記事はここに保存される）`)
+  console.log('')
+
+  // 5. 判定
   if (!canRegister) {
-    console.error('■ 判定: 下書きを登録できません')
-    console.error('  MICROCMS_SERVICE_DOMAIN / MICROCMS_API_KEY が未設定です。')
-    console.error('  .env.local に設定してください（npm run 経由なら --env-file-if-exists で読み込まれます）。')
-    console.error('  記事を書いても最後に登録できないため、先に設定を確認してください。')
-    process.exit(1)
+    if (requireCms) {
+      console.error('■ 判定: microCMS へ登録できません')
+      console.error('  MICROCMS_SERVICE_DOMAIN / MICROCMS_API_KEY が未設定です。')
+      console.error('  .env.local に設定してください（npm run 経由なら --env-file-if-exists で読み込まれます）。')
+      process.exit(1)
+    }
+    console.log('■ 判定: 記事を書いて保管庫に保存できます')
+    console.log('  ※ microCMS が未設定のため、保存後の「microCMSへアップ」はまだ実行できません。')
+    console.log('    生成そのものには影響しません（アップは人がダッシュボードで行う後工程です）。')
+    return
   }
-  console.log('■ 判定: 下書き登録まで到達できます')
+  console.log('■ 判定: 記事を書いて保管庫に保存でき、microCMSへのアップも可能です')
 }
 
 main()
