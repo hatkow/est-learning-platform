@@ -59,7 +59,11 @@ async function main() {
   const skipLint = args.includes('--skip-lint')
   const updateFlag = args.indexOf('--update')
   const updateId = updateFlag !== -1 ? args[updateFlag + 1] : null
-  const filePath = args.find((a, i) => !a.startsWith('--') && i !== updateFlag + 1)
+  // --update の値（contentId）はファイルパスと取り違えないよう除外する。
+  // updateFlag が -1 のときに `updateFlag + 1` を使うと 0 になり、
+  // 本来のファイルパス（引数の1つ目）を弾いてしまうので条件を分ける。
+  const updateValueAt = updateFlag === -1 ? -1 : updateFlag + 1
+  const filePath = args.find((a, i) => !a.startsWith('--') && i !== updateValueAt)
   if (!filePath) {
     console.error('使い方: node scripts/publish-blog-draft.mjs <記事.md> [--skip-lint]')
     process.exit(1)
@@ -174,6 +178,27 @@ async function main() {
   }
   // 呼び出し側（ダッシュボード等）が拾えるよう、機械可読な行も出す
   console.log(`[publish-blog-draft] contentId=${json.id}`)
+
+  // 本当に下書きとして入ったかを確かめる。
+  // 下書きなら draftKey 無しの取得は 404 になるはず。200 が返る場合は
+  // 公開状態＝サイトに出てしまうため、黙って成功扱いにしない。
+  // （?status=draft が効かない環境が実在した。API キーの権限やプランに依存する）
+  try {
+    const check = await fetch(`https://${DOMAIN}.microcms.io/api/v1/${ENDPOINT}/${json.id}`, {
+      headers: { 'X-MICROCMS-API-KEY': API_KEY },
+    })
+    if (check.ok) {
+      console.warn('')
+      console.warn('[publish-blog-draft] ⚠ 下書きではなく「公開」状態で登録されました。')
+      console.warn('  このままではサイトに表示されます。microCMSの管理画面で「下書き」に戻すか、削除してください。')
+      console.warn(`  ${editUrl}`)
+      console.warn('  ?status=draft が効いていません。APIキーの権限とプランを確認してください。')
+    } else {
+      console.log('[publish-blog-draft] 下書き状態であることを確認しました（一般公開されていません）。')
+    }
+  } catch {
+    console.warn('[publish-blog-draft] 下書き状態の確認ができませんでした。管理画面で公開状態を確認してください。')
+  }
 
   await notifyReviewer(title, editUrl)
 }
