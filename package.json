@@ -8,6 +8,7 @@
     "lint-blog-draft": "node --env-file-if-exists=.env.local scripts/lint-blog-draft.mjs",
     "publish-blog-draft": "node --env-file-if-exists=.env.local scripts/publish-blog-draft.mjs",
     "approve-blog-draft": "node --env-file-if-exists=.env.local scripts/approve-blog-draft.mjs",
+    "check-microcms": "node --env-file-if-exists=.env.local scripts/check-microcms.mjs",
     "preflight-blog-draft": "node --env-file-if-exists=.env.local scripts/preflight-blog-draft.mjs",
     "save-blog-draft": "node --env-file-if-exists=.env.local scripts/save-blog-draft.mjs",
     "blog-dashboard": "node --env-file-if-exists=.env.local scripts/blog-dashboard.mjs",
