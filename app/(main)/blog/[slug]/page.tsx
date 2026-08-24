@@ -3,7 +3,9 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import { ArrowLeft, CalendarDays, ChevronRight, Clock, RefreshCw, Tag, User } from 'lucide-react'
+import { draftMode, cookies } from 'next/headers'
 import { extractFaq, getPostBySlug, getPostSlugs, getRelatedPosts } from '@/lib/blog'
+import { DRAFT_KEY_COOKIE } from '@/lib/preview'
 import { getAuthorProfile } from '@/lib/authors'
 import { siteUrl } from '@/lib/site'
 import BlogCard from '@/components/blog/BlogCard'
@@ -42,7 +44,12 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = await getPostBySlug(params.slug)
+  // microCMS の画面プレビューから来た場合だけ下書きを取りに行く。
+  // Draft Mode が無効なときは通常どおり公開記事を表示する。
+  const { isEnabled: isPreview } = draftMode()
+  const draftKey = isPreview ? cookies().get(DRAFT_KEY_COOKIE)?.value : undefined
+
+  const post = await getPostBySlug(params.slug, draftKey)
   if (!post) notFound()
 
   const related = await getRelatedPosts(post.slug)
@@ -110,6 +117,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
   return (
     <>
+      {isPreview && (
+        <div className="bg-amber-500 px-4 py-2 text-center text-sm font-bold text-white">
+          下書きのプレビューを表示しています（この内容はまだ公開されていません）
+        </div>
+      )}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

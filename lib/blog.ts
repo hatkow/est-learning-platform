@@ -119,6 +119,26 @@ async function cmsGetAll(): Promise<Post[]> {
     .sort((a, b) => (a.date < b.date ? 1 : -1))
 }
 
+/**
+ * 下書きを contentId + draftKey で取得する（microCMS の画面プレビュー用）。
+ * 下書きは一覧APIに出てこないため、必ず contentId 指定で取りに行く。
+ */
+async function cmsGetDraft(contentId: string, draftKey: string): Promise<Post | null> {
+  if (!cmsClient) return null
+  try {
+    const item = await cmsClient.get<MicroCMSBlog>({
+      endpoint: MICROCMS_BLOG_ENDPOINT,
+      contentId,
+      queries: { draftKey },
+      customRequestInit: NO_STORE,
+    })
+    return fromMicroCMS(item)
+  } catch (e) {
+    console.error('[blog] 下書きの取得に失敗:', e)
+    return null
+  }
+}
+
 async function cmsGetBySlug(slug: string): Promise<Post | null> {
   if (!cmsClient) return null
   // slug フィールドで検索。無ければ id 直接取得にフォールバック。
@@ -209,9 +229,15 @@ export async function getPostSlugs(): Promise<string[]> {
   return (await getAllPosts()).map((p) => p.slug)
 }
 
-export async function getPostBySlug(slug: string): Promise<Post | null> {
+/**
+ * @param slug 記事のslug。プレビュー時は microCMS の contentId が渡る
+ * @param draftKey microCMS の画面プレビューから渡される下書きキー。
+ *   指定されたときだけ下書きを取得する（通常の閲覧では使わない）。
+ */
+export async function getPostBySlug(slug: string, draftKey?: string): Promise<Post | null> {
   if (useMicroCMS) {
     try {
+      if (draftKey) return await cmsGetDraft(slug, draftKey)
       return await cmsGetBySlug(slug)
     } catch (e) {
       console.error('[blog] microCMS 記事取得に失敗:', e)
