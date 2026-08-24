@@ -1,7 +1,9 @@
 // SEOコラム記事の下書きを microCMS に登録するCLIスクリプト。
 // .claude/skills/seo-blog/ から呼び出される想定（単体でも実行可能）。
 //
-// 使い方: node scripts/publish-blog-draft.mjs <記事.md> [--skip-lint]
+// 使い方: node scripts/publish-blog-draft.mjs <記事.md> [--skip-lint] [--update <contentId>]
+//   --update を付けると、新規作成ではなく既存の下書きを差し替える（PATCH）。
+//   画像の作り直しや本文の修正を、同じコンテンツに反映するときに使う。
 //   記事.md は content/blog/*.md と同じ形式（YAMLフロントマター + 本文Markdown）。
 //   必須フロントマター: title / slug / description
 //
@@ -55,7 +57,9 @@ async function notifyReviewer(title, editUrl) {
 async function main() {
   const args = process.argv.slice(2)
   const skipLint = args.includes('--skip-lint')
-  const filePath = args.find((a) => !a.startsWith('--'))
+  const updateFlag = args.indexOf('--update')
+  const updateId = updateFlag !== -1 ? args[updateFlag + 1] : null
+  const filePath = args.find((a, i) => !a.startsWith('--') && i !== updateFlag + 1)
   if (!filePath) {
     console.error('使い方: node scripts/publish-blog-draft.mjs <記事.md> [--skip-lint]')
     process.exit(1)
@@ -80,7 +84,8 @@ async function main() {
     const result = lintDraft({
       raw,
       filePath,
-      existingSlugs: corpus.slugs,
+      // 差し替えのときは、自分自身の slug が既存として出てくるので突き合わせない
+      existingSlugs: updateId ? [] : corpus.slugs,
       existingCategories: corpus.categories,
       courseSlugs: collectCourseSlugs().courseSlugs,
     })
@@ -139,9 +144,11 @@ async function main() {
     ...(data.date ? { date: new Date(data.date).toISOString() } : {}),
   }
 
-  const url = `https://${DOMAIN}.microcms.io/api/v1/${ENDPOINT}?status=draft`
+  const url = updateId
+    ? `https://${DOMAIN}.microcms.io/api/v1/${ENDPOINT}/${updateId}`
+    : `https://${DOMAIN}.microcms.io/api/v1/${ENDPOINT}?status=draft`
   const res = await fetch(url, {
-    method: 'POST',
+    method: updateId ? 'PATCH' : 'POST',
     headers: {
       'X-MICROCMS-API-KEY': API_KEY,
       'Content-Type': 'application/json',
@@ -151,7 +158,7 @@ async function main() {
 
   if (!res.ok) {
     const text = await res.text()
-    console.error(`[publish-blog-draft] 登録に失敗しました (HTTP ${res.status}): ${text}`)
+    console.error(`[publish-blog-draft] ${updateId ? '差し替え' : '登録'}に失敗しました (HTTP ${res.status}): ${text}`)
     process.exit(1)
   }
 
@@ -159,7 +166,9 @@ async function main() {
   // 管理画面（コンソール）は app.microcms.io 側。{DOMAIN}.microcms.io はAPI配信専用ドメインで、
   // 管理画面のURLではないので注意（このURLでアクセスすると404になる）。
   const editUrl = `https://app.microcms.io/${DOMAIN}/apis/${ENDPOINT}/contents/${json.id}`
-  console.log(`[publish-blog-draft] ${isOutline ? '構成案' : '記事'}の下書きを作成しました: ${editUrl}`)
+  console.log(
+    `[publish-blog-draft] ${isOutline ? '構成案' : '記事'}の下書きを${updateId ? '差し替えました' : '作成しました'}: ${editUrl}`
+  )
   if (isOutline) {
     console.log('[publish-blog-draft] 構成案はタイトルに【構成案】を付けて登録しました。記事として公開しないでください。')
   }
