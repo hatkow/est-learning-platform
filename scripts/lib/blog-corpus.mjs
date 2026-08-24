@@ -64,11 +64,14 @@ async function fromMicroCMS() {
  * @param {string} [opts.excludeFile] このファイル由来の slug を除外する。
  *   検査対象のファイルが content/blog 配下にある場合、自分自身とのslug衝突を
  *   誤検知しないために渡す。
+ * @param {boolean} [opts.localOnly] microCMS を見ずローカルだけで集める。
+ *   content/blog/*.md はmicroCMSへ移行済みの同じ記事なので、一括自己チェックで
+ *   CMS側と突き合わせると全件が「重複」になってしまう。それを避けるために使う。
  * @returns {Promise<{slugs: string[], categories: string[], cmsAvailable: boolean}>}
  */
-export async function collectExistingPosts({ excludeFile } = {}) {
+export async function collectExistingPosts({ excludeFile, localOnly = false } = {}) {
   const local = fromLocalFiles()
-  const cms = await fromMicroCMS()
+  const cms = localOnly ? { slugs: [], categories: [], available: false } : await fromMicroCMS()
   const excluded = excludeFile ? path.resolve(excludeFile) : null
   const localSlugs = local.entries
     .filter((e) => !excluded || path.resolve(e.file) !== excluded)

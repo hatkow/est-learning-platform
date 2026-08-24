@@ -43,7 +43,10 @@ async function main() {
     }
     const raw = fs.readFileSync(file, 'utf-8')
     // 検査対象のファイル自身は「既存記事」から除く（自分自身とのslug衝突を誤検知しない）
-    const corpus = await collectExistingPosts({ excludeFile: file })
+    // 一括自己チェック（引数なし）では microCMS を見ない。
+    // content/blog/*.md はmicroCMSへ移行済みの同じ記事なので、突き合わせると
+    // 全件が自分自身と重複していると判定されてしまう。
+    const corpus = await collectExistingPosts({ excludeFile: file, localOnly: selfCheck })
 
     const result = lintDraft({
       raw,
@@ -60,7 +63,9 @@ async function main() {
     if (result.errors.length > 0) failed++
   }
 
-  if (!lastCorpus.cmsAvailable) {
+  if (selfCheck) {
+    console.log('※ 一括自己チェックのため、slug重複は content/blog/*.md の範囲のみで見ています（microCMSとは突き合わせません）。')
+  } else if (!lastCorpus.cmsAvailable) {
     console.log('※ microCMS の環境変数が未設定のため、slug重複チェックは content/blog/*.md の範囲のみです。')
   }
 
