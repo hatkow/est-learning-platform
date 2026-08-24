@@ -21,6 +21,7 @@ import { marked } from 'marked'
 import { lintDraft, formatReport } from './lib/blog-lint.mjs'
 import { collectExistingPosts } from './lib/blog-corpus.mjs'
 import { collectCourseSlugs } from './lib/course-catalog.mjs'
+import { uploadMedia, insertImageAfterHeading } from './lib/media-uploader.mjs'
 
 const DOMAIN = process.env.MICROCMS_SERVICE_DOMAIN
 const API_KEY = process.env.MICROCMS_API_KEY
@@ -91,7 +92,30 @@ async function main() {
     }
   }
 
-  const html = marked.parse(content, { async: false })
+  let html = marked.parse(content, { async: false })
+
+  // 画像：フロントマターの images をmicroCMSへアップロードし、
+  // 1枚をアイキャッチ、残りを本文の該当見出しの直後へ差し込む。
+  // microCMSの画像フィールドは自社にアップ済みのURLしか受け付けないため、
+  // 必ず「アップロード→URL取得→紐付け」の順で行う。
+  let eyecatchUrl = null
+  const images = Array.isArray(data.images) ? data.images : []
+  if (images.length > 0) {
+    console.log(`[publish-blog-draft] 画像を ${images.length} 枚アップロードします…`)
+    for (const img of images) {
+      // 変数名は imgPath。filePath は記事ファイルのパスなので隠さない
+      const imgPath = img.path ?? img.file
+      if (!imgPath) continue
+      const url = await uploadMedia(imgPath)
+      if (img.role === 'eyecatch' && !eyecatchUrl) {
+        eyecatchUrl = url
+        console.log(`  アイキャッチ: ${url}`)
+      } else {
+        html = insertImageAfterHeading(html, img.afterHeading, url, img.alt ?? '')
+        console.log(`  本文（${img.afterHeading ?? '末尾'}）: ${url}`)
+      }
+    }
+  }
 
   // 構成案は記事ではない。同じ blog エンドポイントに入るため、タイトルに印を付けて
   // 記事と取り違えて公開されるのを防ぐ（登録自体は常に status=draft）。
@@ -111,6 +135,7 @@ async function main() {
     tags: Array.isArray(data.tags) ? data.tags.join(', ') : (data.tags ?? ''),
     author: data.author ?? 'EST編集部',
     coverColor: data.coverColor ?? '#1a56a0',
+    ...(eyecatchUrl ? { eyecatch: eyecatchUrl } : {}),
     ...(data.date ? { date: new Date(data.date).toISOString() } : {}),
   }
 

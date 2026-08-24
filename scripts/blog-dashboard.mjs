@@ -14,12 +14,19 @@
 // 品質チェックのゲートを二重に実装せず、CLIと完全に同じ経路を通すため。
 
 import http from 'node:http'
+import fs from 'node:fs'
+import path from 'node:path'
 import { spawn } from 'node:child_process'
 import { marked } from 'marked'
 import { lintDraft, formatReport } from './lib/blog-lint.mjs'
 import { collectExistingPosts } from './lib/blog-corpus.mjs'
 import { collectCourseSlugs } from './lib/course-catalog.mjs'
 import { loadKeywordCatalog } from './lib/keyword-catalog.mjs'
+import {
+  generateImagesForDraft,
+  listImages,
+  tokenConfigured as openaiConfigured,
+} from './lib/image-generator.mjs'
 import { startGeneration, listJobs, claudeAvailable, tokenConfigured } from './lib/job-runner.mjs'
 import {
   DRAFTS_DIR,
@@ -119,6 +126,13 @@ const STYLES = `
   .chip-outline { background:#efe9fb; color:#5b3fa8; }
   .chip-theme { background:#f1f5fa; color:#4b5c73; font-weight:500; }
   .genrow-2 { margin-top:.55rem; }
+  .thumbs { display:flex; flex-wrap:wrap; gap:.5rem; margin:.2rem 0 .7rem; }
+  .thumb { position:relative; }
+  .thumb img { width:132px; height:74px; object-fit:cover; border-radius:6px; border:1px solid var(--line); display:block; }
+  .thumb span {
+    position:absolute; left:.25rem; bottom:.25rem; background:rgba(11,29,57,.8); color:#fff;
+    font-size:.62rem; padding:.05rem .35rem; border-radius:4px;
+  }
   .toggle { display:inline-flex; align-items:center; gap:.35rem; font-size:.82rem; color:var(--muted); cursor:pointer; }
   #theme-select { width:100%; min-width:0; padding:.3rem; }
   #theme-select option { padding:.25rem .4rem; }
@@ -192,7 +206,7 @@ function statusChip(status) {
   return `<span class="chip ${cls}">${label}</span>`
 }
 
-function renderGenPanel(catalog, jobs, cliReady, drafts) {
+function renderGenPanel(catalog, jobs, cliReady, drafts, openaiReady) {
   // どのテーマから生成済みかを示す。生成時に sourceTheme を刻んでいる。
   const generated = new Map()
   for (const d of drafts) {
@@ -255,6 +269,11 @@ function renderGenPanel(catalog, jobs, cliReady, drafts) {
     </div>`
         : ''
     }
+    ${
+      openaiReady
+        ? ''
+        : '<p class="note">OPENAI_API_KEY が未設定のため、画像生成は使えません。.env.local に追加してダッシュボードを再起動してください。</p>'
+    }
     <div class="genrow">
       <input type="text" id="theme-free" placeholder="${catalog.available ? '上の一覧に無いテーマはこちらに入力' : 'テーマを入力'}">
     </div>
@@ -268,7 +287,7 @@ function renderGenPanel(catalog, jobs, cliReady, drafts) {
   </section>`
 }
 
-function renderList(drafts, lints, envReady, catalog, jobs, cliReady) {
+function renderList(drafts, lints, envReady, catalog, jobs, cliReady, openaiReady) {
   const cards = drafts
     .map((d) => {
       const l = lints.get(d.id)
@@ -316,8 +335,25 @@ function renderList(drafts, lints, envReady, catalog, jobs, cliReady) {
               }</p>`
             : ''
         }
+        ${
+          !isOutline && d.images.length > 0
+            ? `<div class="thumbs">${d.images
+                .map(
+                  (im, i) =>
+                    `<div class="thumb"><img src="/image/${esc(d.id)}/${esc(im.file)}" alt=""><span>${i === 0 ? 'アイキャッチ' : '本文' + i}</span></div>`
+                )
+                .join('')}</div>`
+            : ''
+        }
         <div class="actions">
           <a class="btn ghost" href="/draft/${esc(d.id)}" target="_blank" rel="noopener">${isOutline ? '構成案を読む' : '本文を読む'}</a>
+          ${
+            !isOutline
+              ? `<button class="ghost" data-act="images" data-id="${esc(d.id)}" ${openaiReady ? '' : 'disabled'}>${
+                  d.images.length > 0 ? '画像を作り直す' : '画像を生成（4枚）'
+                }</button>`
+              : ''
+          }
           ${
             isOutline
               ? `<button class="primary" data-act="write" data-id="${esc(d.id)}" ${cliReady ? '' : 'disabled'}>この構成案から本文を書く</button>
@@ -348,7 +384,7 @@ function renderList(drafts, lints, envReady, catalog, jobs, cliReady) {
       ? ''
       : `<p class="note">microCMS の環境変数（MICROCMS_SERVICE_DOMAIN / MICROCMS_API_KEY）が未設定のため、アップは実行できません。.env.local に設定してから再起動してください。</p>`
   }
-  ${renderGenPanel(catalog, jobs, cliReady, drafts)}
+  ${renderGenPanel(catalog, jobs, cliReady, drafts, openaiReady)}
   <div class="bar">
     <span>${drafts.length}件</span>
     <span>アップ後も microCMS 側は「下書き」です。一般公開は <code>npm run approve-blog-draft</code> が必要です。</span>
@@ -515,6 +551,22 @@ document.addEventListener('click', async (e) => {
   const btn = e.target.closest('button[data-act]');
   if (!btn) return;
   const { act, id } = btn.dataset;
+  if (act === 'images') {
+    if (!(await askConfirm('この記事の画像を4枚生成します（アイキャッチ1枚＋本文3枚）。OpenAIの利用分が消費されます。'))) return;
+    btn.disabled = true;
+    toast('画像を生成中です。1〜2分かかります…');
+    try {
+      const res = await fetch('/api/images/' + id, { method: 'POST' });
+      const json = await res.json();
+      toast(json.message);
+      if (json.ok) setTimeout(() => location.reload(), 900);
+      else btn.disabled = false;
+    } catch (err) {
+      toast('通信に失敗しました: ' + err.message);
+      btn.disabled = false;
+    }
+    return;
+  }
   if (act === 'write') {
     if (!(await askConfirm('この構成案をもとに本文を書きます。数分かかり、Claudeの利用分が消費されます。'))) return;
     btn.disabled = true;
@@ -590,9 +642,9 @@ const server = http.createServer(async (req, res) => {
 
   try {
     if (req.method === 'GET' && url.pathname === '/') {
-      const drafts = listDrafts()
+      const drafts = listDrafts().map((d) => ({ ...d, images: listImages(d.id) }))
       const lints = await lintAll(drafts)
-      return html(res, 200, renderList(drafts, lints, envReady, loadKeywordCatalog(), listJobs(), claudeAvailable()))
+      return html(res, 200, renderList(drafts, lints, envReady, loadKeywordCatalog(), listJobs(), claudeAvailable(), openaiConfigured()))
     }
 
     const preview = /^\/draft\/([^/]+)$/.exec(url.pathname)
@@ -641,6 +693,51 @@ const server = http.createServer(async (req, res) => {
         id,
         message: `${fromOutlineId ? '本文の執筆' : mode === 'outline' ? '構成案の生成' : '生成'}を開始しました（数分かかります）`,
       })
+    }
+
+    // 生成した画像をサムネイル表示するために配信する（data/images 配下のみ）
+    const imageRoute = /^\/image\/([^/]+)\/([^/]+)$/.exec(url.pathname)
+    if (req.method === 'GET' && imageRoute) {
+      const id = decodeURIComponent(imageRoute[1])
+      const file = decodeURIComponent(imageRoute[2])
+      if (!isValidId(id) || !/^[\w.-]+\.(png|jpe?g|webp)$/i.test(file)) {
+        return html(res, 404, '<p>Not Found</p>')
+      }
+      const abs = path.join(process.cwd(), 'data', 'images', id, file)
+      if (!fs.existsSync(abs)) return html(res, 404, '<p>Not Found</p>')
+      const type = /\.png$/i.test(file) ? 'image/png' : /\.webp$/i.test(file) ? 'image/webp' : 'image/jpeg'
+      res.writeHead(200, { 'Content-Type': type, 'Cache-Control': 'no-store' })
+      return res.end(fs.readFileSync(abs))
+    }
+
+    if (req.method === 'POST' && /^\/api\/images\/[^/]+$/.test(url.pathname)) {
+      const id = decodeURIComponent(url.pathname.split('/').pop())
+      if (!isValidId(id)) return json(res, 400, { ok: false, message: '不正なIDです' })
+      const d = readDraft(id)
+      if (!d) return json(res, 404, { ok: false, message: '下書きが見つかりません' })
+      if (d.data.kind === KIND.OUTLINE) {
+        return json(res, 400, { ok: false, message: '構成案には画像を生成しません' })
+      }
+      if (!openaiConfigured()) {
+        return json(res, 400, { ok: false, message: 'OPENAI_API_KEY が未設定です' })
+      }
+      try {
+        const images = await generateImagesForDraft(id, d.raw)
+        // 生成結果をフロントマターに記録する。アップロード時にこれを見て
+        // アイキャッチ設定と本文への差し込みを行う。
+        updateDraftMeta(id, {
+          images: images.map((im) => ({
+            file: im.file,
+            path: im.path,
+            role: im.role,
+            alt: im.alt,
+            ...(im.afterHeading ? { afterHeading: im.afterHeading } : {}),
+          })),
+        })
+        return json(res, 200, { ok: true, message: `画像を${images.length}枚生成しました` })
+      } catch (e) {
+        return json(res, 200, { ok: false, message: String(e?.message ?? e).slice(0, 300) })
+      }
     }
 
     const api = /^\/api\/(publish|reject|restore|delete)\/([^/]+)$/.exec(url.pathname)
