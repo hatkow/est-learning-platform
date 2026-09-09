@@ -1,4 +1,11 @@
-// SEOコラム記事の下書きを microCMS に登録するCLIスクリプト。
+// SEOコラム記事を microCMS に「入稿」するCLIスクリプト。
+//
+// 【用語】曖昧だと事故につながるので、この3語を使い分ける。
+//   生成 … 記事を作り data/drafts/ に保存する（ローカルのみ。CMSには送らない）
+//   入稿 … microCMS にコンテンツを作る（下書き状態）。このスクリプトの仕事
+//   公開 … サイトに出す。人が管理画面で「公開」を押す。エージェントは行わない
+//
+// 「アップ」という語は入稿と公開のどちらとも取れるため使わない。
 // .claude/skills/seo-blog/ から呼び出される想定（単体でも実行可能）。
 //
 // 使い方: node scripts/publish-blog-draft.mjs <記事.md> [--skip-lint] [--update <contentId>]
@@ -167,9 +174,10 @@ async function main() {
   }
 
   const json = await res.json()
-  // 管理画面（コンソール）は app.microcms.io 側。{DOMAIN}.microcms.io はAPI配信専用ドメインで、
-  // 管理画面のURLではないので注意（このURLでアクセスすると404になる）。
-  const editUrl = `https://app.microcms.io/${DOMAIN}/apis/${ENDPOINT}/contents/${json.id}`
+  // 管理画面のURL。実際に管理画面を開いて確認した形式（一覧は
+  // https://{DOMAIN}.microcms.io/apis/{ENDPOINT}）。
+  // 以前 app.microcms.io/{DOMAIN}/... へ「修正」したことがあるが、それでは404になる。
+  const editUrl = `https://${DOMAIN}.microcms.io/apis/${ENDPOINT}/${json.id}`
   console.log(
     `[publish-blog-draft] ${isOutline ? '構成案' : '記事'}の下書きを${updateId ? '差し替えました' : '作成しました'}: ${editUrl}`
   )
@@ -179,26 +187,12 @@ async function main() {
   // 呼び出し側（ダッシュボード等）が拾えるよう、機械可読な行も出す
   console.log(`[publish-blog-draft] contentId=${json.id}`)
 
-  // 本当に下書きとして入ったかを確かめる。
-  // 下書きなら draftKey 無しの取得は 404 になるはず。200 が返る場合は
-  // 公開状態＝サイトに出てしまうため、黙って成功扱いにしない。
-  // （?status=draft が効かない環境が実在した。API キーの権限やプランに依存する）
-  try {
-    const check = await fetch(`https://${DOMAIN}.microcms.io/api/v1/${ENDPOINT}/${json.id}`, {
-      headers: { 'X-MICROCMS-API-KEY': API_KEY },
-    })
-    if (check.ok) {
-      console.warn('')
-      console.warn('[publish-blog-draft] ⚠ 下書きではなく「公開」状態で登録されました。')
-      console.warn('  このままではサイトに表示されます。microCMSの管理画面で「下書き」に戻すか、削除してください。')
-      console.warn(`  ${editUrl}`)
-      console.warn('  ?status=draft が効いていません。APIキーの権限とプランを確認してください。')
-    } else {
-      console.log('[publish-blog-draft] 下書き状態であることを確認しました（一般公開されていません）。')
-    }
-  } catch {
-    console.warn('[publish-blog-draft] 下書き状態の確認ができませんでした。管理画面で公開状態を確認してください。')
-  }
+  // 【この確認は行わない】
+  // 以前「draftKey 無しで取得できたら公開されている」という判定を入れていたが、
+  // APIキーに「下書き全取得」権限があると下書きでも取得できてしまうため、
+  // 常に「公開されている」と誤検知していた。実際には ?status=draft は正しく効いており、
+  // 管理画面上のステータスは「下書き中」だった。症状だけを見た誤った判定なので撤去した。
+  // 公開状態の確認は、管理画面のステータス表示で行うこと。
 
   await notifyReviewer(title, editUrl)
 }

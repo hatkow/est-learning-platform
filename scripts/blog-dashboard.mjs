@@ -3,7 +3,7 @@
 // 使い方: npm run blog-dashboard   → http://127.0.0.1:3200
 //
 // data/drafts/*.md に溜まった生成済み記事を一覧し、品質チェックの結果を見ながら
-// 「microCMSへアップ（下書き登録）」までを行う。
+// 「microCMSへ入稿（下書き登録）」までを行う。
 //
 // 【ローカル専用】127.0.0.1 にだけバインドしている。
 // 公開サイト（Vercel）側には意図的に載せていない。理由は2つ：
@@ -81,7 +81,8 @@ function runPublish(file) {
     child.stderr.on('data', (c) => (out += c))
     child.on('close', (code) => {
       const contentId = /contentId=([A-Za-z0-9_-]+)/.exec(out)?.[1] ?? null
-      const editUrl = /(https:\/\/app\.microcms\.io\/\S+)/.exec(out)?.[1] ?? null
+      // 管理画面URLは {サービスID}.microcms.io/apis/... 形式（publish-blog-draft.mjs と揃える）
+      const editUrl = /(https:\/\/[a-z0-9-]+\.microcms\.io\/apis\/\S+)/.exec(out)?.[1] ?? null
       resolve({ ok: code === 0, code, output: out, contentId, editUrl })
     })
   })
@@ -198,8 +199,8 @@ const STYLES = `
 
 function statusChip(status) {
   const map = {
-    [STATUS.DRAFT]: ['chip-draft', '未アップ'],
-    [STATUS.REGISTERED]: ['chip-registered', 'microCMS登録済み'],
+    [STATUS.DRAFT]: ['chip-draft', '未入稿'],
+    [STATUS.REGISTERED]: ['chip-registered', 'microCMS入稿済み'],
     [STATUS.REJECTED]: ['chip-rejected', '見送り'],
   }
   const [cls, label] = map[status] ?? map[STATUS.DRAFT]
@@ -245,7 +246,7 @@ function renderGenPanel(catalog, jobs, cliReady, drafts, openaiReady) {
 
   return `<section class="panel">
     <h2>記事を生成する</h2>
-    <p class="hint">キーワード表からテーマを選ぶか、自由入力してください。生成には数分かかり、1回につきClaudeのセッションが1本走ります（上限 $${esc(process.env.BLOG_JOB_MAX_USD || '3')}）。生成された記事は下の一覧に「未アップ」で追加されます。</p>
+    <p class="hint">キーワード表からテーマを選ぶか、自由入力してください。生成には数分かかり、1回につきClaudeのセッションが1本走ります（上限 $${esc(process.env.BLOG_JOB_MAX_USD || '3')}）。生成された記事は下の一覧に「未入稿」で追加されます。</p>
     ${
       catalog.available
         ? ''
@@ -297,7 +298,7 @@ function renderList(drafts, lints, envReady, catalog, jobs, cliReady, openaiRead
       const warns = l.warnings.length
       const verdict =
         errs > 0
-          ? `<p class="verdict v-bad">要修正 ${errs}件 — 直すまでアップできません</p>`
+          ? `<p class="verdict v-bad">要修正 ${errs}件 — 直すまで入稿できません</p>`
           : warns > 0
             ? `<p class="verdict v-warn">要修正なし（確認 ${warns}件）</p>`
             : `<p class="verdict v-ok">指摘なし</p>`
@@ -357,8 +358,8 @@ function renderList(drafts, lints, envReady, catalog, jobs, cliReady, openaiRead
           ${
             isOutline
               ? `<button class="primary" data-act="write" data-id="${esc(d.id)}" ${cliReady ? '' : 'disabled'}>この構成案から本文を書く</button>
-                 <button class="ghost" data-act="publish" data-id="${esc(d.id)}" ${canPublish ? '' : 'disabled'}>構成案をCMSへアップ</button>`
-              : `<button class="primary" data-act="publish" data-id="${esc(d.id)}" ${canPublish ? '' : 'disabled'}>microCMSへアップ</button>`
+                 <button class="ghost" data-act="publish" data-id="${esc(d.id)}" ${canPublish ? '' : 'disabled'}>構成案をCMSへ入稿</button>`
+              : `<button class="primary" data-act="publish" data-id="${esc(d.id)}" ${canPublish ? '' : 'disabled'}>microCMSへ入稿</button>`
           }
           ${
             status === STATUS.REJECTED
@@ -382,12 +383,12 @@ function renderList(drafts, lints, envReady, catalog, jobs, cliReady, openaiRead
   ${
     envReady
       ? ''
-      : `<p class="note">microCMS の環境変数（MICROCMS_SERVICE_DOMAIN / MICROCMS_API_KEY）が未設定のため、アップは実行できません。.env.local に設定してから再起動してください。</p>`
+      : `<p class="note">microCMS の環境変数（MICROCMS_SERVICE_DOMAIN / MICROCMS_API_KEY）が未設定のため、入稿は実行できません。.env.local に設定してから再起動してください。</p>`
   }
   ${renderGenPanel(catalog, jobs, cliReady, drafts, openaiReady)}
   <div class="bar">
     <span>${drafts.length}件</span>
-    <span>アップ後も microCMS 側は「下書き」です。一般公開は <code>npm run approve-blog-draft</code> が必要です。</span>
+    <span>入稿しても microCMS 側は「下書き」のままです。サイトに出すには、管理画面で「公開」を押してください。</span>
   </div>
   ${drafts.length ? cards : `<div class="empty">下書きはまだありません。<br>seo-blog Skill で記事を生成すると、ここに溜まります。</div>`}
 </main>
@@ -575,7 +576,7 @@ document.addEventListener('click', async (e) => {
     return;
   }
   if (act === 'delete' && !(await askConfirm('この下書きを削除します。元に戻せません。'))) return;
-  if (act === 'publish' && !(await askConfirm('microCMS に下書きとして登録します（一般公開はされません）。'))) return;
+  if (act === 'publish' && !(await askConfirm('microCMS に下書きとして入稿します（サイトには出ません。公開は管理画面で行います）。'))) return;
   btn.disabled = true;
   toast('実行中…');
   try {
@@ -723,7 +724,7 @@ const server = http.createServer(async (req, res) => {
       }
       try {
         const images = await generateImagesForDraft(id, d.raw)
-        // 生成結果をフロントマターに記録する。アップロード時にこれを見て
+        // 生成結果をフロントマターに記録する。入稿時にこれを見て
         // アイキャッチ設定と本文への差し込みを行う。
         updateDraftMeta(id, {
           images: images.map((im) => ({
@@ -754,7 +755,7 @@ const server = http.createServer(async (req, res) => {
       }
       if (action === 'restore') {
         updateDraftMeta(id, { reviewStatus: STATUS.DRAFT })
-        return json(res, 200, { ok: true, message: '未アップに戻しました' })
+        return json(res, 200, { ok: true, message: '未入稿に戻しました' })
       }
       if (action === 'delete') {
         deleteDraft(id)
@@ -763,14 +764,14 @@ const server = http.createServer(async (req, res) => {
 
       // publish
       if (!envReady) {
-        return json(res, 400, { ok: false, message: 'microCMS の環境変数が未設定のため実行できません' })
+        return json(res, 400, { ok: false, message: 'microCMS の環境変数が未設定のため入稿できません' })
       }
       if (d.data.reviewStatus === STATUS.REGISTERED) {
-        return json(res, 400, { ok: false, message: 'すでに登録済みです' })
+        return json(res, 400, { ok: false, message: 'すでに入稿済みです' })
       }
       const result = await runPublish(d.file)
       if (!result.ok) {
-        return json(res, 200, { ok: false, message: `アップに失敗しました。${result.output.split('\n').filter(Boolean).pop() ?? ''}` })
+        return json(res, 200, { ok: false, message: `入稿に失敗しました。${result.output.split('\n').filter(Boolean).pop() ?? ''}` })
       }
       updateDraftMeta(id, {
         reviewStatus: STATUS.REGISTERED,
@@ -778,7 +779,7 @@ const server = http.createServer(async (req, res) => {
         editUrl: result.editUrl ?? undefined,
         registeredAt: new Date().toISOString(),
       })
-      return json(res, 200, { ok: true, message: 'microCMS に下書きとして登録しました（一般公開はされていません）' })
+      return json(res, 200, { ok: true, message: 'microCMS に下書きとして入稿しました（サイトには出ません。公開は管理画面で行ってください）' })
     }
 
     return html(res, 404, '<p>Not Found</p>')
