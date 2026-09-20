@@ -39,23 +39,44 @@ export async function GET(req: NextRequest) {
   if (secret !== expected) {
     return new NextResponse('合言葉が違います。', { status: 401 })
   }
-  if (!contentId || !draftKey) {
-    return new NextResponse('contentId と draftKey が必要です。', { status: 400 })
+  // プレースホルダが置換されずに来た場合（URLの記述ミス）も空扱いにする
+  const clean = (v: string | null) => (v && !v.startsWith('{') ? v : '')
+  const id = clean(contentId)
+  const key = clean(draftKey)
+
+  if (!id) {
+    // どちらが欠けたか分かるように書く。切り分けに時間を使わないため
+    return new NextResponse(
+      `contentId が届いていません（受信値: "${contentId ?? '（無し）'}"）。` +
+        'microCMS の「画面プレビュー」URLに {CONTENT_ID} が含まれているか確認してください。',
+      { status: 400 }
+    )
   }
 
   draftMode().enable()
 
-  // draftKey は記事ページ側で使う。プレビュー中のみ有効な短命Cookieにする。
-  cookies().set(DRAFT_KEY_COOKIE, draftKey, {
-    httpOnly: true,
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 60 * 30, // 30分
-  })
+  // draftKey は表示側で使う。プレビュー中のみ有効な短命Cookieにする。
+  //
+  // 【draftKey が空のことがある】
+  // microCMS は下書きが存在しないコンテンツ（「公開中」のまま変更が無いもの）では
+  // {DRAFT_KEY} を空文字に置換する。これを弾くとプレビューボタンが常に
+  // エラーになるため、空なら「公開中の内容をプレビューする」として通す。
+  // 前回のプレビューのCookieが残っていると、そのキーで取得しようとして
+  // microCMS に弾かれるので、空のときは必ず消す。
+  if (key) {
+    cookies().set(DRAFT_KEY_COOKIE, key, {
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 30, // 30分
+    })
+  } else {
+    cookies().delete(DRAFT_KEY_COOKIE)
+  }
 
   // 下書きは slug で引けないため、contentId でそのままプレビュー先へ送る
   const path = type === 'course'
-    ? `/courses/preview/${encodeURIComponent(contentId)}`
-    : `/blog/${encodeURIComponent(contentId)}`
+    ? `/courses/preview/${encodeURIComponent(id)}`
+    : `/blog/${encodeURIComponent(id)}`
   redirect(path)
 }

@@ -119,7 +119,9 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
     <>
       {isPreview && (
         <div className="bg-amber-500 px-4 py-2 text-center text-sm font-bold text-white">
-          下書きのプレビューを表示しています（この内容はまだ公開されていません）
+          {draftKey
+            ? '下書きのプレビューを表示しています（この内容はまだ公開されていません）'
+            : 'プレビューを表示しています（下書きが無いため、公開中の内容です）'}
         </div>
       )}
       <script

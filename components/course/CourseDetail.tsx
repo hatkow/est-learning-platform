@@ -22,7 +22,14 @@ import BusinessBanner from '@/components/business/BusinessBanner'
  * 下書きを取得して渡す。下書きはビルド時生成の静的データに含まれないため、
  * 表示部分をここに切り出して両方から使えるようにしている。
  */
-export default function CourseDetail({ course, preview = false }: { course?: Course; preview?: boolean }) {
+export default function CourseDetail({
+  course,
+  preview = false,
+}: {
+  course?: Course
+  // 'draft' … 下書きを見ている / 'published' … 公開中の内容をプレビューしている
+  preview?: 'draft' | 'published' | false
+}) {
   const router = useRouter()
   const user = useStore((s) => s.user)
   const isEnrolled = useStore((s) => s.isEnrolled)
@@ -66,7 +73,9 @@ export default function CourseDetail({ course, preview = false }: { course?: Cou
     <>
       {preview && (
         <div className="bg-amber-500 px-4 py-2 text-center text-sm font-bold text-white">
-          下書きのプレビューを表示しています（この内容はまだ公開されていません）
+          {preview === 'draft'
+            ? '下書きのプレビューを表示しています（この内容はまだ公開されていません）'
+            : 'プレビューを表示しています（下書きが無いため、公開中の内容です）'}
         </div>
       )}
       {/* Hero */}

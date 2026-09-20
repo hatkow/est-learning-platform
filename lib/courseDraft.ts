@@ -17,19 +17,25 @@ const API_KEY = process.env.MICROCMS_API_KEY
 const ENDPOINT = process.env.MICROCMS_COURSE_ENDPOINT || 'course'
 
 /**
- * draftKey 付きで下書きを1件取得する。
+ * プレビュー用に講座を1件取得する。
+ *
+ * draftKey があれば下書きを、無ければ公開中の内容を取る。
+ * microCMS は下書きが無いコンテンツのプレビューでは draftKey を空で渡してくるため、
+ * 「下書き専用」にすると公開中コンテンツのプレビューボタンが機能しなくなる。
+ *
  * 取得できない（未設定・キー違い・IDなし）場合は null。
  */
-export async function getCourseDraft(contentId: string, draftKey: string): Promise<Course | null> {
+export async function getCourseDraft(contentId: string, draftKey?: string): Promise<Course | null> {
   if (!DOMAIN || !API_KEY) return null
   try {
-    const url = `https://${DOMAIN}.microcms.io/api/v1/${ENDPOINT}/${encodeURIComponent(contentId)}?draftKey=${encodeURIComponent(draftKey)}`
+    const query = draftKey ? `?draftKey=${encodeURIComponent(draftKey)}` : ''
+    const url = `https://${DOMAIN}.microcms.io/api/v1/${ENDPOINT}/${encodeURIComponent(contentId)}${query}`
     const res = await fetch(url, {
       headers: { 'X-MICROCMS-API-KEY': API_KEY },
       cache: 'no-store',
     })
     if (!res.ok) {
-      console.error(`[courseDraft] 下書きの取得に失敗 (HTTP ${res.status})`)
+      console.error(`[courseDraft] 取得に失敗 (HTTP ${res.status}) contentId=${contentId} draftKey=${draftKey ? 'あり' : '無し'}`)
       return null
     }
     const item = (await res.json()) as MicroCMSCourse

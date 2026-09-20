@@ -23,12 +23,13 @@ export const metadata = {
 }
 
 export default async function CoursePreviewPage({ params }: { params: { contentId: string } }) {
+  // Draft Mode が入口。draftKey は「下書きがある場合だけ」付く（無ければ公開中の内容を見る）
   const { isEnabled } = draftMode()
-  const draftKey = isEnabled ? cookies().get(DRAFT_KEY_COOKIE)?.value : undefined
-  if (!draftKey) notFound()
+  if (!isEnabled) notFound()
+  const draftKey = cookies().get(DRAFT_KEY_COOKIE)?.value
 
   const course = await getCourseDraft(params.contentId, draftKey)
   if (!course) notFound()
 
-  return <CourseDetail course={course} preview />
+  return <CourseDetail course={course} preview={draftKey ? 'draft' : 'published'} />
 }
