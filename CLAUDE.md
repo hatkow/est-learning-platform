@@ -53,12 +53,33 @@
 - サンプル・仮データを追加する場合は、コード内コメントと画面上の注記（例：「※掲載情報はサンプルです」）の両方で明示する（[app/(main)/business/team/page.tsx](<app/(main)/business/team/page.tsx>)、[app/(main)/business/cases/page.tsx](<app/(main)/business/cases/page.tsx>)が実例）。
 - 画像アセットは`public/images/`にファイルを置く運用。AI生成画像（実写風、青系トーン、日本人ビジネスパーソン＋AIエージェント協働がサイト全体のビジュアルテーマ）を使用しており、既存の[public/images/](public/images/)配下のファイルとテイストを揃えること。
 
-## 現状の既知のギャップ（本番公開前に要対応）
+## このサイトは本番稼働中（最重要の前提）
 
-詳細は[docs/client-briefing-implementation-summary.html](docs/client-briefing-implementation-summary.html)を参照。要点のみ：
+**https://ai.est.co.jp で公開・運用されている実サイト**。2026年9月時点で本番稼働に入っており、初期開発は完了している。以降の作業は「公開前の追い込み」ではなく、**動いているサイトへの改修**。
 
-1. 本番ドメイン未確定（`NEXT_PUBLIC_SITE_URL`はVercelの仮URLのまま）
-2. `LEADS_WEBHOOK_URL`未設定（会員登録データの転送先が確定していない）
-3. 講座動画が実データに未差し替え（全レッスンが仮のサンプル動画）
-4. microCMSのコース管理がクライアント側で未セットアップ
-5. `app/admin/`配下の管理画面はすべて見た目のみのモック（保存機能なし）
+この前提を取り違えると、実態と違う話をクライアントにしてしまう。実際に、この節が「本番公開前に要対応」のまま放置されていたために、すでに解決済みの項目を未完として報告する事故が起きた（2026-09-20）。**記述を鵜呑みにせず、必ず現物で確認してから話すこと**（microCMSのAPI・本番URL・Vercelの設定）。
+
+作業上の帰結：
+
+- `main`へのpushは、そのまま本番へデプロイされる。pushは必ずユーザーの明示的な確認を取る（後述の運用ルール）
+- 公開ページに触れる変更は、ローカルで確認したあと、デプロイ後に本番でも確認する
+- microCMSのコンテンツを消す・公開状態を変える操作は、実ユーザーに見えている内容を変える行為。必ず事前確認を取る
+
+### 現況（2026-09-20時点。話す前に現物で検証すること）
+
+稼働中のもの：
+
+- 本番ドメイン `https://ai.est.co.jp`（`NEXT_PUBLIC_SITE_URL`設定済み。sitemap・canonicalに反映済み）
+- コラム13本を公開中（microCMSの`blog`エンドポイント）
+- 講座2本を公開中（microCMSの`course`エンドポイント。全14レッスンに**実際のYouTube URL**が入っている。仮のサンプル動画が残るのは`lib/data.ts`のサンプル講座のうち`isPublished: false`の4件のみで、サイトには出ない）
+- GA4・Search Console・robots.txt（生成AIのクローラを明示的に許可）
+- microCMSの画面プレビュー（コラム・講座とも。`/api/preview`）
+
+残っている宿題：
+
+1. `LEADS_WEBHOOK_URL`（会員登録を一覧として貯める先）の設定。未設定でもローカル保存が"成功"してしまうため、APIは200を返し、**取りこぼしても誰も気づかない**。なお通知メールは別変数`CONTACT_WEBHOOK_URL`が担うので、両者を混同しないこと
+2. 監修者が`lib/authors.ts`に未登録（表示・構造化データの実装は完了済み。名前を入れれば有効になる）
+3. `app/admin/`配下の管理画面はすべて見た目のみのモック（保存機能なし）
+4. `scripts/lib/blog-lint.mjs`の`COURSE_PROMOTION_ENABLED`が`false`のまま。無効化の理由だった「講座がサンプル・動画が仮」はすでに解消しているので、解禁を検討できる状態（ただし講座はPower Appsの2本のみ）
+
+経緯の詳細は[docs/client-briefing-implementation-summary.html](docs/client-briefing-implementation-summary.html)を参照（こちらも公開前提で書かれた箇所が残っている点に注意）。
