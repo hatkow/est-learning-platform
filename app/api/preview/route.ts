@@ -1,9 +1,13 @@
 // microCMS の「画面プレビュー」から呼ばれる受け口。
 //
 // microCMS 側の設定（API設定 →「画面プレビュー」）に、次の形式でURLを登録する:
-//   https://<サイトのURL>/api/preview?contentId={CONTENT_ID}&draftKey={DRAFT_KEY}&secret=<合言葉>
+//   コラム（blog API）:
+//     https://<サイトのURL>/api/preview?contentId={CONTENT_ID}&draftKey={DRAFT_KEY}&secret=<合言葉>
+//   講座（course API）:
+//     https://<サイトのURL>/api/preview?type=course&contentId={CONTENT_ID}&draftKey={DRAFT_KEY}&secret=<合言葉>
 //
 // {CONTENT_ID} と {DRAFT_KEY} は microCMS が自動で置き換える。
+// type は転送先を決めるだけで、省略するとコラム扱い（既存のURL設定をそのまま使える）。
 //
 // ここでは Next.js の Draft Mode を有効にし、draftKey を Cookie に持たせてから
 // 記事ページへ転送する。記事ページは Draft Mode のときだけ下書きを取りに行く。
@@ -23,6 +27,7 @@ export async function GET(req: NextRequest) {
   const contentId = searchParams.get('contentId')
   const draftKey = searchParams.get('draftKey')
   const secret = searchParams.get('secret')
+  const type = searchParams.get('type')
 
   const expected = process.env.MICROCMS_PREVIEW_SECRET
   if (!expected) {
@@ -48,6 +53,9 @@ export async function GET(req: NextRequest) {
     maxAge: 60 * 30, // 30分
   })
 
-  // 下書きは slug で引けないため、contentId でそのまま記事ページへ送る
-  redirect(`/blog/${encodeURIComponent(contentId)}`)
+  // 下書きは slug で引けないため、contentId でそのままプレビュー先へ送る
+  const path = type === 'course'
+    ? `/courses/preview/${encodeURIComponent(contentId)}`
+    : `/blog/${encodeURIComponent(contentId)}`
+  redirect(path)
 }
