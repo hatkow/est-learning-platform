@@ -30,6 +30,14 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
   },
+  // Google Search Console の所有権確認（URLプレフィックスプロパティ／HTMLタグ方式）。
+  // ドメインプロパティはDNSのTXTレコードでしか確認できず、この方式では通らない。
+  // <meta name="google-site-verification" content="..."> として出力される。
+  // このトークンは公開HTMLに載る前提のもので秘密情報ではない（ドメインと対になっており、
+  // 他サイトに貼っても意味をなさない）。確認が通った後も、外すと所有権が失われるため残す。
+  verification: {
+    google: 'O0wrvlf7P3ze5XigGNejtJeNiKTUNDUEeGUnEEqshpU',
+  },
 }
 
 const jsonLd = {
