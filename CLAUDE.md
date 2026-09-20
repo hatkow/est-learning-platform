@@ -77,9 +77,13 @@
 
 残っている宿題：
 
-1. `LEADS_WEBHOOK_URL`（会員登録を一覧として貯める先）の設定。未設定でもローカル保存が"成功"してしまうため、APIは200を返し、**取りこぼしても誰も気づかない**。なお通知メールは別変数`CONTACT_WEBHOOK_URL`が担うので、両者を混同しないこと
-2. 監修者が`lib/authors.ts`に未登録（表示・構造化データの実装は完了済み。名前を入れれば有効になる）
-3. `app/admin/`配下の管理画面はすべて見た目のみのモック（保存機能なし）
-4. `scripts/lib/blog-lint.mjs`の`COURSE_PROMOTION_ENABLED`が`false`のまま。無効化の理由だった「講座がサンプル・動画が仮」はすでに解消しているので、解禁を検討できる状態（ただし講座はPower Appsの2本のみ）
+1. **モックのログイン画面と管理画面が本番に出ている**。`/login`は「デモ環境です。任意のメール／パスワードでログインできます。メールに『admin』を含めると管理者としてログインします」と表示し、`/admin`（→ログインへ転送）の会員一覧には架空の個人データが並ぶ（`山田 太郎 / taro@example.com`…、クライアント実ドメインの`admin@est.co.jp`を含む）。`noindex`が付きどこからもリンクされていないため検索には出ないが、URLを直接叩けば誰でも到達できる。そもそも「ログイン機能は作らない」方針（上述）と矛盾する旧仕様の残骸なので、削除を検討すること
+2. 監修者が`lib/authors.ts`に未登録（表示・構造化データの実装は完了済み。名前を入れれば有効になる）。現在は全13記事の`author`が「EST編集部」で、構造化データも`Person: EST編集部`のみ＝個人の経歴・資格が出ていない
+3. `scripts/lib/blog-lint.mjs`の`COURSE_PROMOTION_ENABLED`が`false`のまま。無効化の理由だった「講座がサンプル・動画が仮」はすでに解消しているので、解禁を検討できる状態（ただし講座はPower Appsの2本のみ）
+
+設定済みで、未対応と誤認しやすいもの（2026-09-20に`vercel env ls production`で確認）：
+
+- `LEADS_WEBHOOK_URL`（2026年7月下旬〜）・`CONTACT_WEBHOOK_URL`（同7月末〜）はいずれもProductionに設定済み。「リードがどこにも残らない」というのは誤り。ただし未設定時はローカル保存が"成功"してAPIが200を返す設計なので、将来変数を消すと取りこぼしが表に出ない点には注意
+- 環境変数の有無は`npx vercel env ls production`で名前だけ一覧できる（値は表示されない）。推測で語らず、これで確認すること
 
 経緯の詳細は[docs/client-briefing-implementation-summary.html](docs/client-briefing-implementation-summary.html)を参照（こちらも公開前提で書かれた箇所が残っている点に注意）。
