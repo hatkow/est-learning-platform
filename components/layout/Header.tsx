@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
-import { GraduationCap, Search, Menu, X, LayoutDashboard, Shield, LogOut } from 'lucide-react'
+import { GraduationCap, Search, Menu, X, LayoutDashboard, LogOut } from 'lucide-react'
 import { useStore } from '@/lib/store'
 
 export default function Header() {
@@ -88,11 +88,6 @@ export default function Header() {
                     <Link href="/dashboard" className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-slate-50" onClick={() => setUserMenu(false)}>
                       <LayoutDashboard size={16} /> マイページ
                     </Link>
-                    {user.role === 'ADMIN' && (
-                      <Link href="/admin" className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-slate-50" onClick={() => setUserMenu(false)}>
-                        <Shield size={16} /> 管理画面
-                      </Link>
-                    )}
                     <button
                       onClick={() => { logout(); setUserMenu(false); router.push('/') }}
                       className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50"
@@ -130,11 +125,6 @@ export default function Header() {
                 <Link href="/dashboard" className="btn-ghost justify-start" onClick={() => setMenuOpen(false)}>
                   <LayoutDashboard size={16} /> マイページ
                 </Link>
-                {user.role === 'ADMIN' && (
-                  <Link href="/admin" className="btn-ghost justify-start" onClick={() => setMenuOpen(false)}>
-                    <Shield size={16} /> 管理画面
-                  </Link>
-                )}
                 <button onClick={() => { logout(); setMenuOpen(false); router.push('/') }} className="btn-ghost justify-start text-red-600">
                   <LogOut size={16} /> ログアウト
                 </button>

@@ -13,7 +13,6 @@ interface AppState {
   watch: WatchMap // lessonId -> 視聴位置（YouTube埋め込み視聴時のみ更新）
   orders: Order[]
 
-  login: (email: string, name?: string) => User
   register: (email: string, name: string) => User
   logout: () => void
 
@@ -29,12 +28,14 @@ interface AppState {
   getWatchProgress: (lessonId: string) => { seconds: number; percent: number }
 }
 
+// 役割は常に USER。以前はデモ用に「メールに admin を含むと管理者」としていたが、
+// 本物の会員登録もこの関数を通るため、admin@会社.co.jp で登録した実ユーザーが
+// 管理者扱いになり、モックの管理画面へ入れてしまっていた。管理画面は削除済み。
 const makeUser = (email: string, name?: string): User => ({
   id: `u-${email}`,
   email,
-  // メールに "admin" を含む場合は管理者として扱う（デモ用）
   name: name || email.split('@')[0] || 'ゲスト',
-  role: email.toLowerCase().includes('admin') ? 'ADMIN' : 'USER',
+  role: 'USER',
   createdAt: new Date().toISOString(),
 })
 
@@ -47,11 +48,6 @@ export const useStore = create<AppState>()(
       watch: {},
       orders: [],
 
-      login: (email, name) => {
-        const user = makeUser(email, name)
-        set({ user })
-        return user
-      },
       register: (email, name) => {
         const user = makeUser(email, name)
         set({ user })
@@ -115,6 +111,16 @@ export const useStore = create<AppState>()(
         return { seconds: w.seconds, percent: Math.min(100, Math.round((w.seconds / w.duration) * 100)) }
       },
     }),
-    { name: 'est-learning-store' },
+    {
+      name: 'est-learning-store',
+      // v1: 以前「admin を含むメール」で登録したブラウザには role: 'ADMIN' が保存されている。
+      // 読み込み時に USER へ直す（受講状況・視聴位置などは そのまま引き継ぐ）
+      version: 1,
+      migrate: (persisted) => {
+        const state = persisted as AppState
+        if (state?.user) state.user = { ...state.user, role: 'USER' }
+        return state
+      },
+    },
   ),
 )
