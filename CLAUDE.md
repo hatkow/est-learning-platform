@@ -29,11 +29,11 @@
 - Cloudinary（署名付きURL配信）を含む複数の動画ホスティング案を比較検討した結果、**YouTube限定公開（無料）を採用**
 - 理由：サイトの主目的が動画販売ではなく法人研修への送客であるため、動画配信に課金インフラを持つ投資対効果が低いと判断
 - [components/video/VideoPlayer.tsx](components/video/VideoPlayer.tsx) はYouTube URLをIFrame Player APIで埋め込み、視聴位置の取得・続きから再生に対応済み（同一ブラウザ内のみ。ログイン機能が無いため端末をまたいだ再開はできない）
-- **現状、レッスン動画はすべて仮のサンプル動画**（Big Buck Bunny）。実際の講座動画のYouTubeアップロード・URL差し替えは未実施（本番公開前の必須タスク）
+- 講座動画はmicroCMSの`course`の各レッスン`videoUrl`にYouTube URLを入れる運用。公開中の2講座（全14レッスン）は実際の講座動画に差し替え済み。`lib/data.ts`のサンプル講座には仮のサンプル動画（Big Buck Bunny）が残るが、microCMSと同じslugのものは上書きされ、残り4件は`isPublished: false`なのでサイトには出ない
 
 ### 4. コンテンツはmicroCMS優先、無ければファイル/サンプルにフォールバック
 - コラム（[lib/blog.ts](lib/blog.ts)）：`MICROCMS_SERVICE_DOMAIN`等が未設定なら`content/blog/*.md`を読む。設定した瞬間にmicroCMSへ自動切替。セットアップ手順は[docs/microcms-setup.md](docs/microcms-setup.md)
-- コース（[lib/courseCms.ts](lib/courseCms.ts)）：同様の仕組みだが、現状クライアントのmicroCMSアカウント未設定のためサンプルコース6件で稼働中
+- コース（[lib/courseCms.ts](lib/courseCms.ts)）：同様の仕組み。本番ではmicroCMSの`course`から取得した講座が表示される（ビルド前に[scripts/fetch-courses.mjs](scripts/fetch-courses.mjs)が`lib/generated/courses.json`へ焼き込む＝講座の公開・更新がサイトに出るのは次のビルド後。microCMSのWebhookからVercelのDeploy Hookを呼ぶ設定が本番で入っているかは未確認。[docs/microcms-setup.md](docs/microcms-setup.md)参照）。microCMS未設定の環境（ローカル等）では`lib/data.ts`のサンプル講座で動く。下書きは焼き込みに乗らないため、プレビューだけ`/courses/preview/[contentId]`がリクエストごとに取得する
 - **新しい記事やコースを追加する時、まずこのフォールバック構造を壊さないこと**
 
 ### 5. GitHubリポジトリはPublic
