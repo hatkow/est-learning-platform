@@ -24,8 +24,11 @@ const QUALITY = process.env.OPENAI_IMAGE_QUALITY || 'medium'
 export const IMAGES_DIR = path.join(process.cwd(), 'data', 'images')
 
 /** CLAUDE.md のビジュアルテーマ。既存の public/images/ とテイストを揃える。 */
+// サイトの用途（「DX研修サイト向け」等）を書かないこと。モデルがそれを描く対象と取り違え、
+// 「DX」の文字入りホワイトボードや講義風景、卒業帽を、記事の内容と無関係に描き込んでいた。
+// 描くべきものは各プロンプトの Concept だけに書く。
 const STYLE_BASE =
-  'Clean minimal conceptual diagram for a Japanese corporate DX training website. ' +
+  'Clean minimal conceptual diagram for a business article. ' +
   'Flat vector illustration style, deep blue (#1a56a0) and light blue palette on white background, ' +
   'plenty of whitespace, no photographic texture. ' +
   // AI生成画像は文字（特に日本語）が崩れる。ラベルは入れさせない。
