@@ -33,7 +33,10 @@ export interface PostMeta {
   slug: string
   title: string
   description: string
-  date: string // YYYY-MM-DD
+  date: string // YYYY-MM-DD（表示用）
+  // 並べ替え専用。microCMS の date は時刻まで持つが、表示用の date は日付で切り捨てるため、
+  // 同じ日の記事の前後関係はこちらで判断する。
+  sortKey: string
   updated?: string
   category: string
   tags: string[]
@@ -92,6 +95,7 @@ function fromMicroCMS(item: MicroCMSBlog): Post {
     title: item.title ?? '',
     description: item.description ?? '',
     date: rawDate ? String(rawDate).slice(0, 10) : '1970-01-01',
+    sortKey: rawDate ? String(rawDate) : '1970-01-01',
     updated: rawUpdated ? String(rawUpdated).slice(0, 10) : undefined,
     category: toName(item.category) || '未分類',
     tags,
@@ -103,6 +107,14 @@ function fromMicroCMS(item: MicroCMSBlog): Post {
     html,
   }
 }
+
+// 新しい順。日時が同じときは 0 を返して元の順序を保つ。
+//
+// 以前は `a.date < b.date ? 1 : -1` だった。同じ値のとき -1 を返すため比較が矛盾し、
+// 同じ日の記事の順序が不定（実際には API の順の逆）になっていた。さらに date を日付で
+// 切り捨てていたので、microCMS で時刻を変えても同じ日の中の並びを変えられなかった。
+const byNewest = (a: PostMeta, b: PostMeta) =>
+  a.sortKey < b.sortKey ? 1 : a.sortKey > b.sortKey ? -1 : 0
 
 // Next.js の fetch キャッシュを無効化し、常に最新のCMSデータを取得する
 const NO_STORE = { cache: 'no-store' as const }
@@ -116,7 +128,7 @@ async function cmsGetAll(): Promise<Post[]> {
   })
   return res.contents
     .map(fromMicroCMS)
-    .sort((a, b) => (a.date < b.date ? 1 : -1))
+    .sort(byNewest)
 }
 
 /**
@@ -188,6 +200,7 @@ function parseFile(fileName: string): Post {
     title: data.title ?? slug,
     description: data.description ?? '',
     date: toDateString(data.date) ?? '1970-01-01',
+    sortKey: toDateString(data.date) ?? '1970-01-01',
     updated: toDateString(data.updated),
     category: data.category ?? '未分類',
     tags: Array.isArray(data.tags) ? data.tags : [],
@@ -207,7 +220,7 @@ function fileGetAll(): Post[] {
     .filter((f) => f.endsWith('.md'))
     .map(parseFile)
     .filter((p) => !p.draft)
-    .sort((a, b) => (a.date < b.date ? 1 : -1))
+    .sort(byNewest)
 }
 
 // ===== 公開 API（呼び出し側はデータ源を意識しない） =====
