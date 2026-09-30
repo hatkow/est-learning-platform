@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { CheckCircle2, Clock, Mail, Send } from 'lucide-react'
 import PageHero from '@/components/layout/PageHero'
 
-const topics = ['コース内容について', '料金・お支払いについて', '法人・団体での導入', '不具合の報告', 'その他']
+const topics = ['コース内容について', '料金・お支払いについて', '法人・団体での導入', 'AI・データガバナンスについて', '不具合の報告', 'その他']
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', topic: topics[0], message: '', agree: false })
