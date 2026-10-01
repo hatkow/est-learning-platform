@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { sendContactMail } from '@/lib/contactMail'
+import { sendContactMail, inquiryConfirmation } from '@/lib/contactMail'
+import { siteUrl } from '@/lib/site'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -24,6 +25,7 @@ export async function POST(req: Request) {
         'お問い合わせ種別': topic,
         'お問い合わせ内容': message,
       },
+      ...inquiryConfirmation(email, name, siteUrl),
     })
     return NextResponse.json({ ok: true })
   } catch {
